@@ -1,0 +1,37 @@
+﻿path,width,height,source_type,usage,object_fit,focal_point
+assets/brand/logo-clean.png,1254,1254,brand,Logo contain; no cropping,contain,50% 50%
+assets/brand/logo-original.png,1254,1254,brand,Logo contain; no cropping,contain,50% 50%
+assets/interiors/care-still-life.png,1086,1448,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/interiors/hero-salon-wide.png,1672,941,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/interiors/pedicure-wide.png,1448,1086,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/interiors/real-detail.jpg,900,1600,real_photo,User supplied source,cover,50% 50%
+assets/interiors/real-manicure.jpg,1600,900,real_photo,User supplied source,cover,50% 50%
+assets/interiors/real-pedicure.jpg,1600,900,real_photo,User supplied source,cover,50% 50%
+assets/interiors/real-salon.jpg,1600,900,real_photo,User supplied source,cover,50% 50%
+assets/interiors/real-treatment.jpg,900,1600,real_photo,User supplied source,cover,50% 50%
+assets/interiors/studio-portrait.png,1086,1448,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/nails/nail-blossom.png,1254,1254,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/nails/nail-cat-eye.png,1254,1254,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/nails/nail-french.png,1254,1254,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/nails/nail-nude.png,1254,1254,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/nails/nail-pearl.png,1254,1254,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+assets/nails/nail-rose.png,1254,1254,ai_concept,Concept illustration; not documentary evidence,cover,50% 50%
+reference/originals/1.jpg,900,1600,original_reference,User supplied source,cover,50% 50%
+reference/originals/2.jpg,1600,900,original_reference,User supplied source,cover,50% 50%
+reference/originals/5.jpg,1600,900,original_reference,User supplied source,cover,50% 50%
+reference/originals/6.jpg,900,1600,original_reference,User supplied source,cover,50% 50%
+reference/originals/7.jpg,1600,900,original_reference,User supplied source,cover,50% 50%
+reference/originals/Screenshot 2026-09-18 150822.png,605,1079,original_reference,User supplied source,cover,50% 50%
+reference/originals/Screenshot 2026-09-18 151033.png,599,879,original_reference,User supplied source,cover,50% 50%
+screens/01-home.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/02-services.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/03-nail-looks.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/04-booking.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/05-checkout.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/06-studio.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/07-vouchers.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/08-account.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/09-ai-stylist.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/10-admin.png,1672,941,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/11-mobile-home.png,941,1672,ui_reference,Layout only; build actual components,cover,50% 50%
+screens/12-mobile-booking.png,941,1672,ui_reference,Layout only; build actual components,cover,50% 50%

@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.data/
+.tmp/
+*.tsbuildinfo
+.env
+.env.local
+shots/
+.tmp-shots/
+.dev.log

@@ -1,0 +1,206 @@
+{
+  "photo": {
+    "hero-salon-wide": {
+      "width": 1672,
+      "height": 941,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1280,
+        1600,
+        1672
+      ],
+      "kind": "ai_concept"
+    },
+    "studio-portrait": {
+      "width": 1086,
+      "height": 1448,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1086
+      ],
+      "kind": "ai_concept"
+    },
+    "pedicure-wide": {
+      "width": 1448,
+      "height": 1086,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1280,
+        1448
+      ],
+      "kind": "ai_concept"
+    },
+    "care-still-life": {
+      "width": 1086,
+      "height": 1448,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1086
+      ],
+      "kind": "ai_concept"
+    },
+    "real-salon": {
+      "width": 1600,
+      "height": 900,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1280,
+        1600
+      ],
+      "kind": "real_photo"
+    },
+    "real-manicure": {
+      "width": 1600,
+      "height": 900,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1280,
+        1600
+      ],
+      "kind": "real_photo"
+    },
+    "real-pedicure": {
+      "width": 1600,
+      "height": 900,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1280,
+        1600
+      ],
+      "kind": "real_photo"
+    },
+    "real-detail": {
+      "width": 900,
+      "height": 1600,
+      "widths": [
+        360,
+        540,
+        720,
+        900
+      ],
+      "kind": "real_photo"
+    },
+    "real-treatment": {
+      "width": 900,
+      "height": 1600,
+      "widths": [
+        360,
+        540,
+        720,
+        900
+      ],
+      "kind": "real_photo"
+    },
+    "nail-french": {
+      "width": 1254,
+      "height": 1254,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1254
+      ],
+      "kind": "ai_concept"
+    },
+    "nail-rose": {
+      "width": 1254,
+      "height": 1254,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1254
+      ],
+      "kind": "ai_concept"
+    },
+    "nail-cat-eye": {
+      "width": 1254,
+      "height": 1254,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1254
+      ],
+      "kind": "ai_concept"
+    },
+    "nail-nude": {
+      "width": 1254,
+      "height": 1254,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1254
+      ],
+      "kind": "ai_concept"
+    },
+    "nail-blossom": {
+      "width": 1254,
+      "height": 1254,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1254
+      ],
+      "kind": "ai_concept"
+    },
+    "nail-pearl": {
+      "width": 1254,
+      "height": 1254,
+      "widths": [
+        360,
+        540,
+        720,
+        960,
+        1254
+      ],
+      "kind": "ai_concept"
+    }
+  },
+  "brand": {
+    "flower": {
+      "width": 674,
+      "height": 650
+    },
+    "wordmark": {
+      "width": 687,
+      "height": 315
+    },
+    "logo-card": {
+      "width": 1254,
+      "height": 1254
+    },
+    "logo-card-original": {
+      "width": 1254,
+      "height": 1254
+    }
+  }
+}

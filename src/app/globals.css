@@ -1,0 +1,1028 @@
+/*
+ * The design system.
+ *
+ * Tokens first, then the primitives every page reuses. The values come from the
+ * kit's design-tokens.json and from measuring the design screens: cream canvas,
+ * blush and sage from the logo, dark olive for text and the primary button. No
+ * gold — it is not a brand colour here, whatever the nail photography does.
+ *
+ * Layout rule that runs through the whole file: grid columns are minmax(0, 1fr),
+ * never 1fr. A bare 1fr refuses to shrink below its content, so one long row of
+ * buttons silently widens the whole page and the right edge gets cut off on a
+ * phone with no scrollbar to tell you why.
+ */
+
+/* ------------------------------------------------------------------ fonts */
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-400-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-400-normal-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-600-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/manrope-400-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/manrope-400-normal-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/manrope-500-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/manrope-600-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/manrope-700-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122;
+}
+
+/* The handwritten accents in the design screens. Decorative only: nothing that
+   has to be read is set in it. */
+@font-face {
+  font-family: 'Allura';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/allura-400-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122;
+}
+
+/* ----------------------------------------------------------------- tokens */
+
+:root {
+  --canvas: #f7f2e9;
+  --panel: #fffcf8;
+  --panel-soft: #f3ece0;
+  --blush: #e6beb2;
+  --blush-soft: #f5e3dd;
+  --sage: #8e9a80;
+  --sage-soft: #dfe3d8;
+  --ink: #283025;
+  --muted: #5e6258;
+  --hairline: #e2dacb;
+  --hairline-soft: #ece5d9;
+
+  --cta: #283025;
+  --cta-ink: #fffcf8;
+  --focus: #5b6b4e;
+
+  --font-head: 'Cormorant Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-body: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-script: 'Allura', 'Segoe Script', cursive;
+
+  /* An 8px grid. Every gap and pad below is a multiple of it. */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 40px;
+  --s6: 48px;
+  --s8: 64px;
+
+  --r-panel: 16px;
+  --r-button: 12px;
+  --r-pill: 999px;
+
+  --header-h: 80px;
+  --footer-h: 32px;
+  --dock-h: 76px;
+  --mobile-header-h: 64px;
+  --mobile-nav-h: 64px;
+
+  --shell-x: clamp(16px, 3vw, 40px);
+
+  --shadow-soft: 0 1px 2px rgb(40 48 37 / 4%), 0 8px 24px rgb(40 48 37 / 6%);
+  --shadow-lift: 0 2px 4px rgb(40 48 37 / 5%), 0 18px 44px rgb(40 48 37 / 10%);
+
+  --t-fast: 160ms;
+  --t-slow: 220ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* The brand is a light brand. A dark repaint would need its own artwork and
+   its own approval, so the scheme is declared rather than inherited — otherwise
+   a phone in dark mode renders the form controls in colours nobody chose. */
+:root { color-scheme: light; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-fast: 0ms; --t-slow: 0ms; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------- base */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  /* The one thing that must never happen: a sideways scrollbar on a phone. */
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: none; }
+
+img, svg { max-width: 100%; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* One visible focus ring everywhere, and it is never removed — only replaced
+   when a control draws its own. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection { background: var(--blush-soft); }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  z-index: 100;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 10px 16px;
+  border-radius: var(--r-button);
+  box-shadow: var(--shadow-lift);
+}
+.skip-link:focus { left: 16px; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------------ shell */
+
+/*
+ * The app shell is a three-row grid: header, a content row that takes whatever
+ * is left, and the footer. `minmax(0, 1fr)` on the middle row is what lets a
+ * page scroll inside itself on a desktop without the whole document scrolling,
+ * and 100dvh rather than 100vh keeps the mobile browser's collapsing toolbar
+ * from cutting off the bottom.
+ */
+.shell {
+  display: grid;
+  grid-template-rows: var(--header-h) minmax(0, 1fr) auto;
+  min-height: 100dvh;
+}
+
+ /*
+  * `min-width: 0` as well as `min-height: 0`: a grid item defaults to a minimum
+  * size of its content, so one wide child — a five-step progress bar, a row of
+  * chips — silently makes this track wider than the viewport and takes the
+  * whole page with it. The body hides the overflow, so the only symptom is a
+  * right edge that is quietly cut off on a phone.
+  */
+.shell-main { min-height: 0; min-width: 0; }
+
+/*
+ * Pages that are designed to fit one screen opt into this. The design targets
+ * 1440x900 and 1920x1080, and a browser window at 1440x900 leaves roughly 780px
+ * of viewport once the chrome is taken off — hence the threshold. Below that,
+ * and at heavy zoom, the page simply scrolls: a locked viewport at 200% zoom is
+ * a page whose bottom nobody can reach.
+ */
+@media (min-width: 1100px) and (min-height: 780px) {
+  .shell--fixed { height: 100dvh; }
+  .shell--fixed .shell-main { overflow: hidden; }
+  .shell--fixed .scroll-area { overflow-y: auto; height: 100%; }
+}
+
+.page { padding-inline: var(--shell-x); }
+
+/* ----------------------------------------------------------------- header */
+
+.header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s3);
+  padding-inline: var(--shell-x);
+  height: var(--header-h);
+  background: var(--canvas);
+  position: relative;
+  z-index: 40;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+.logo img { display: block; height: auto; }
+.logo .logo-flower { width: 52px; }
+.logo .logo-word { width: 108px; margin-bottom: 2px; }
+
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(14px, 2.2vw, 36px);
+  min-width: 0;
+}
+
+.nav a {
+  font-size: 15px;
+  color: var(--ink);
+  padding: 6px 2px;
+  border-bottom: 1px solid transparent;
+  white-space: nowrap;
+  transition: border-color var(--t-fast) var(--ease), opacity var(--t-fast) var(--ease);
+}
+.nav a:hover { border-bottom-color: var(--hairline); }
+.nav a[aria-current='page'] { border-bottom-color: var(--ink); }
+
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex: none;
+}
+
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.lang a { padding-bottom: 2px; border-bottom: 1px solid transparent; }
+.lang a[aria-current='true'] { color: var(--ink); border-bottom-color: var(--ink); }
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease);
+}
+.icon-button:hover { background: var(--panel-soft); }
+.icon-button[aria-pressed='true'] { color: var(--blush); }
+
+/* ----------------------------------------------------------------- footer */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  min-height: var(--footer-h);
+  padding: 0 var(--shell-x) 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer nav { display: flex; gap: var(--s2); }
+.footer a:hover { color: var(--ink); }
+.footer-claim { display: inline-flex; align-items: center; gap: 8px; }
+
+/* ---------------------------------------------------------------- buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 26px;
+  border-radius: var(--r-pill);
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  /* A button label that wraps has been squeezed past the point of working.
+     Better to let the button keep its width and something else give. */
+  white-space: nowrap;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled, .btn[aria-disabled='true'] { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.btn--primary { background: var(--cta); color: var(--cta-ink); }
+.btn--primary:hover:not(:disabled) { background: #1d241b; }
+
+.btn--secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn--secondary:hover:not(:disabled) { background: var(--panel); }
+
+.btn--ghost { background: var(--panel); color: var(--ink); border-color: var(--hairline); }
+.btn--ghost:hover:not(:disabled) { border-color: var(--ink); }
+
+.btn--text {
+  background: transparent;
+  min-height: 40px;
+  padding: 0 4px;
+  border-radius: var(--r-button);
+  color: var(--ink);
+}
+.btn--text:hover:not(:disabled) { color: var(--sage); }
+
+.btn--block { width: 100%; }
+.btn--sm { min-height: 40px; padding: 0 18px; font-size: 14px; }
+
+.btn .arrow { transition: transform var(--t-fast) var(--ease); }
+.btn:hover:not(:disabled) .arrow { transform: translateX(3px); }
+
+/* A round arrow button, as used on the service and look cards. */
+.round-arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  flex: none;
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.round-arrow:hover { border-color: var(--ink); }
+.round-arrow--sm { width: 36px; height: 36px; }
+
+/* ----------------------------------------------------------------- panels */
+
+.panel {
+  background: var(--panel);
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow-soft);
+}
+.panel--flat { box-shadow: none; border: 1px solid var(--hairline-soft); }
+.panel--pad { padding: var(--s4); }
+
+.card {
+  background: var(--panel);
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rule {
+  width: 56px;
+  height: 1px;
+  background: var(--ink);
+  opacity: 0.35;
+  border: 0;
+  margin: 0;
+}
+
+.lede { color: var(--muted); font-size: 16px; line-height: 1.65; }
+
+.script {
+  font-family: var(--font-script);
+  color: var(--muted);
+  line-height: 1;
+  opacity: 0.75;
+}
+
+.motto {
+  display: grid;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ forms */
+
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > label { font-size: 14px; color: var(--muted); }
+
+.input, .select, .textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-button);
+  color: var(--ink);
+  transition: border-color var(--t-fast) var(--ease);
+}
+.input::placeholder, .textarea::placeholder { color: #a8a596; }
+.input:hover, .select:hover, .textarea:hover { border-color: #d3c9b5; }
+.input:focus-visible, .select:focus-visible, .textarea:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+  border-color: var(--focus);
+}
+.textarea { min-height: 112px; resize: vertical; }
+
+.field-error { font-size: 13px; color: #9b3f3f; }
+.input[aria-invalid='true'] { border-color: #9b3f3f; }
+
+/* A radio or checkbox drawn as a row, the way the checkout screen does it. */
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-button);
+  background: var(--panel);
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.choice:hover { border-color: #d3c9b5; }
+.choice:has(input:checked) { background: var(--sage-soft); border-color: var(--sage); }
+.choice:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 1px; }
+.choice input { accent-color: var(--sage); width: 18px; height: 18px; flex: none; }
+.choice-label { font-size: 15px; }
+.choice-hint { font-size: 13px; color: var(--muted); }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
+}
+.chip:hover { border-color: #d3c9b5; }
+.chip[aria-pressed='true'], .chip[data-active='true'] {
+  background: var(--blush-soft);
+  border-color: var(--blush);
+  color: var(--ink);
+}
+.chip--sage[aria-pressed='true'], .chip--sage[data-active='true'] {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: var(--panel);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 12px;
+  border-radius: var(--r-pill);
+  background: var(--blush-soft);
+  color: #8a5a4c;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.badge--sage { background: var(--sage-soft); color: #4b5741; }
+
+/* ------------------------------------------------------------------ media */
+
+.media {
+  position: relative;
+  overflow: hidden;
+  background: var(--panel-soft);
+  min-width: 0;
+}
+.media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.media--fill { height: 100%; }
+
+.media-note {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgb(255 252 248 / 88%);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 45%);
+}
+
+.ratio-1-1 { aspect-ratio: 1 / 1; }
+.ratio-4-3 { aspect-ratio: 4 / 3; }
+.ratio-3-4 { aspect-ratio: 3 / 4; }
+.ratio-16-9 { aspect-ratio: 16 / 9; }
+
+/* --------------------------------------------------------- decorative art */
+
+/*
+ * The folded petals in the corners of the design screens. They are cut from the
+ * logo artwork, are purely decorative and must never take a pointer event or
+ * appear in the reading order.
+ */
+.petal {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.petal img { display: block; width: 100%; height: auto; }
+
+.petal--tl { top: -14%; left: -10%; width: 260px; transform: rotate(196deg); opacity: 0.85; }
+.petal--tr { top: -18%; right: -8%; width: 300px; transform: rotate(24deg); opacity: 0.8; }
+.petal--bl { bottom: -16%; left: -12%; width: 300px; transform: rotate(-24deg); opacity: 0.8; }
+.petal--br { bottom: -18%; right: -10%; width: 280px; transform: rotate(150deg); opacity: 0.75; }
+
+/* Inside a panel the petal is smaller and fainter, and everything beside it is
+   lifted a layer so the artwork cannot sit on top of the text. */
+.booking-summary .petal,
+.services-detail .petal,
+.looks-detail .petal,
+.admin-side .petal {
+  width: 190px;
+  opacity: 0.5;
+}
+.booking-summary > *:not(.petal),
+.services-detail > *:not(.petal),
+.looks-detail > *:not(.petal),
+.vouchers-form > *:not(.petal) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1099px) {
+  .petal { display: none; }
+}
+
+/* ------------------------------------------------------------------ dock */
+
+/*
+ * The booking dock: a floating white pill at the bottom of the home and
+ * services pages. It is a landmark, not an overlay — the page pads its own
+ * bottom by the dock height so nothing can end up underneath it.
+ */
+.dock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--dock-h);
+  padding: 8px 8px 8px var(--s2);
+  background: var(--panel);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-lift);
+  min-width: 0;
+}
+.dock-fields {
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.dock-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+/*
+ * The bar is at its tightest on a 1440 screen, where the middle column is about
+ * 640px and has to hold three labelled fields and a button. Trimming the type a
+ * step here is what keeps "Bitte wählen" readable instead of "Bitte wä…".
+ */
+@media (min-width: 1100px) and (max-width: 1600px) {
+  .dock-field-label { font-size: 11px; }
+  .dock-field select,
+  .dock-date { font-size: 14px; }
+  .dock .btn { padding-inline: 20px; font-size: 14px; }
+  /* "Egal" needs a fraction of the room "Bitte wählen" does, so the team field
+     takes what it needs and the other two share the rest. */
+  .dock-field--team { flex: 0 1 auto; }
+}
+.dock-field + .dock-field { border-left: 1px solid var(--hairline-soft); }
+.dock-field svg { color: var(--ink); flex: none; }
+.dock-field-body { display: grid; gap: 1px; min-width: 0; }
+.dock-field-label { font-size: 12px; color: var(--muted); }
+.dock-field select {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 24px;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100%;
+  min-width: 0;
+}
+/*
+ * The date cell shows our own text and keeps the native input on top of it,
+ * transparent and full size. The input still receives the click, the focus and
+ * the keyboard; what the eye reads is the span underneath, which says "Bitte
+ * wählen" instead of the browser's own locale placeholder.
+ */
+.dock-date {
+  position: relative;
+  display: block;
+  min-height: 24px;
+  font-size: 15px;
+  min-width: 0;
+}
+.dock-date > span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dock-date input[type='date'] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+}
+/* Chrome paints the picker indicator even when the text is transparent. */
+.dock-date input[type='date']::-webkit-calendar-picker-indicator { opacity: 0; cursor: pointer; }
+.dock-date:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+
+/* ------------------------------------------------------------- calendar */
+
+.calendar { display: grid; gap: var(--s2); min-width: 0; }
+.calendar-head {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: var(--s2);
+}
+.calendar-title { font-family: var(--font-head); font-size: 26px; text-align: center; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.calendar-weekday {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  padding-bottom: 6px;
+}
+.calendar-day {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  font-size: 15px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.calendar-day:hover:not(:disabled) { background: var(--panel-soft); }
+.calendar-day[aria-pressed='true'] { background: var(--sage); color: var(--panel); }
+.calendar-day:disabled { color: #bfb9a8; cursor: not-allowed; }
+.calendar-day[data-outside='true'] { color: #c3bdad; }
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+.slot {
+  min-height: 52px;
+  border-radius: var(--r-button);
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
+}
+.slot:hover { border-color: #d3c9b5; }
+.slot[aria-pressed='true'] { background: var(--sage); border-color: var(--sage); color: var(--panel); }
+
+/* ------------------------------------------------------------- stepper */
+
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  min-width: 0;
+}
+.step { display: grid; justify-items: center; gap: 8px; flex: 0 0 auto; width: 104px; }
+.step-dot {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  font-size: 15px;
+  color: var(--muted);
+}
+.step[data-state='current'] .step-dot { background: var(--sage); border-color: var(--sage); color: var(--panel); }
+.step[data-state='done'] .step-dot { background: var(--panel); border-color: var(--sage); color: var(--sage); }
+.step-label { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.25; }
+.step[data-state='current'] .step-label { color: var(--ink); font-weight: 500; }
+.step-line { flex: 1 1 auto; height: 1px; background: var(--hairline); margin-top: 20px; min-width: 16px; }
+
+/* --------------------------------------------------------------- states */
+
+.empty-state {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+  justify-items: start;
+  padding: var(--s5) var(--s4);
+  /* Without align-content the whole block stretches to fill its grid row, and a
+     pill button stretched to 400px tall renders as a circle. */
+  background: var(--panel);
+  border-radius: var(--r-panel);
+  border: 1px dashed var(--hairline);
+}
+.empty-state h3 { font-size: 24px; }
+
+.notice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: var(--r-button);
+  background: var(--blush-soft);
+  color: #7c4e42;
+  font-size: 14px;
+}
+.notice--sage { background: var(--sage-soft); color: #45513c; }
+.notice--error { background: #f6e3e0; color: #8c3a35; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--panel-soft) 25%, #f7f1e6 37%, var(--panel-soft) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--r-button);
+}
+@keyframes shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* --------------------------------------------------------------- overlays */
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(40 48 37 / 28%);
+  z-index: 60;
+  animation: fade var(--t-slow) var(--ease);
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.drawer {
+  position: fixed;
+  z-index: 61;
+  background: var(--panel);
+  box-shadow: var(--shadow-lift);
+  display: flex;
+  flex-direction: column;
+  max-height: 100dvh;
+}
+.drawer--right {
+  top: 0; right: 0; bottom: 0;
+  width: min(440px, 92vw);
+  border-radius: var(--r-panel) 0 0 var(--r-panel);
+  animation: slide-in var(--t-slow) var(--ease);
+}
+.drawer--sheet {
+  left: 0; right: 0; bottom: 0;
+  border-radius: var(--r-panel) var(--r-panel) 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: slide-up var(--t-slow) var(--ease);
+}
+@keyframes slide-in { from { transform: translateX(16px); opacity: 0; } }
+@keyframes slide-up { from { transform: translateY(24px); opacity: 0; } }
+
+.drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: var(--s3) var(--s3) var(--s2);
+}
+.drawer-body { overflow-y: auto; padding: 0 var(--s3) var(--s3); }
+.drawer-foot { padding: var(--s2) var(--s3) var(--s3); border-top: 1px solid var(--hairline-soft); }
+
+.toast-wrap {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 80;
+  display: grid;
+  gap: 8px;
+  width: min(420px, calc(100vw - 32px));
+}
+.toast {
+  padding: 14px 16px;
+  border-radius: var(--r-button);
+  background: var(--ink);
+  color: var(--cta-ink);
+  font-size: 14px;
+  box-shadow: var(--shadow-lift);
+  animation: slide-up var(--t-slow) var(--ease);
+}
+.toast--error { background: #8c3a35; }
+
+/* ------------------------------------------------------------ demo badge */
+
+.demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px var(--shell-x);
+  background: var(--sage-soft);
+  color: #3f4b37;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------- mobile */
+
+.mobile-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--panel);
+  border-top: 1px solid var(--hairline-soft);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.mobile-nav a {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 10px 4px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  min-height: var(--mobile-nav-h);
+}
+.mobile-nav a[aria-current='page'] { color: var(--ink); }
+.mobile-nav a[aria-current='page'] span { border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
+
+@media (max-width: 1099px) {
+  :root { --header-h: var(--mobile-header-h); }
+  .nav { display: none; }
+  .header { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .logo .logo-flower { width: 40px; }
+  .logo .logo-word { width: 88px; }
+}
+
+@media (min-width: 1100px) {
+  .mobile-only { display: none !important; }
+}
+@media (max-width: 1099px) {
+  .desktop-only { display: none !important; }
+}
+
+/* --------------------------------------------------------------- utility */
+
+.stack { display: grid; align-content: start; }
+.stack--1 { gap: var(--s1); }
+.stack--2 { gap: var(--s2); }
+.stack--3 { gap: var(--s3); }
+.stack--4 { gap: var(--s4); }
+.stack--5 { gap: var(--s5); }
+
+.row { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; min-width: 0; }
+.row--tight { gap: var(--s1); }
+.row--between { justify-content: space-between; }
+.row--nowrap { flex-wrap: nowrap; }
+
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.tiny { font-size: 13px; }
+.strong { font-weight: 600; }
+.serif { font-family: var(--font-head); }
+.center { text-align: center; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+.relative { position: relative; }
+.grow { flex: 1 1 auto; min-width: 0; }
+
+/*
+ * The booking bar on a narrow phone.
+ *
+ * At 390px the one-row version squeezes the two fields to five characters and
+ * wraps the button's label. The design's proportions only work from about a
+ * tablet up, so below 430px the bar becomes fields on top and a full-width
+ * button underneath — same controls, same order, and a tap target that is
+ * actually the width of a thumb.
+ */
+@media (max-width: 430px) {
+  .dock {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px;
+    border-radius: var(--r-panel);
+  }
+  .dock-fields { width: 100%; }
+  .dock-field { padding: 0 10px; }
+  .dock .btn { width: 100%; }
+}
+
+/* A two-word link should not become two lines. */
+.btn--text { white-space: nowrap; }
