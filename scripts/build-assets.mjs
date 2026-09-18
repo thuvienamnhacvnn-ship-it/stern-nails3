@@ -108,16 +108,25 @@ for (const photo of PHOTOS) {
 
 /**
  * The logo arrives as a 1254² render of a cream card: the folded flower above
- * the "stern NAILS 3" wordmark, lit from the upper left so the card carries a
- * faint gradient. The header wants those two elements next to each other, at
- * different sizes, over the site's own cream — which is a slightly different
- * cream. So the card has to come off.
+ * the "stern NAILS 3" wordmark, lit from the upper left, casting a soft shadow
+ * onto the card. The header wants those two elements side by side, over the
+ * site's own cream — a slightly different cream — and, since the site has a
+ * dark theme, over a near-black olive as well. So the card has to come off
+ * cleanly, shadow and all.
  *
- * A flat colour key cannot do it: there is no flat colour. Instead each row's
- * background is estimated from its own left and right margins (the artwork
- * never reaches the edge), and a pixel's opacity is how far it has travelled
- * from that estimate. Colour is kept as delivered; only alpha is computed. The
- * SOFT..HARD band gives the petals a feathered edge instead of a cut one.
+ * A colour key cannot do it, and the first version of this function proved it
+ * twice. Keyed gently, the card's soft shadow survives as a cream halo that is
+ * invisible on cream and obvious on dark. Keyed hard enough to kill the shadow,
+ * the palest pink petal — which is barely lighter than the card — is punched
+ * out with it, leaving a hole through the flower.
+ *
+ * The background is not a colour, though. It is a *region*: one connected area
+ * that touches every edge of the image, which the artwork never does. So this
+ * floods inwards from the border, walking only through pixels close to the
+ * local background, and whatever the flood never reaches is artwork. The shadow
+ * is a gentle ramp, so the flood walks straight down it and removes all of it;
+ * the pale petal is enclosed by darker edges the flood cannot cross, so it
+ * survives intact. One pass, both problems.
  */
 function liftOffCard(pngPath) {
   const { w, h } = size(pngPath);
@@ -125,14 +134,17 @@ function liftOffCard(pngPath) {
   ff(['-i', pngPath, '-f', 'rawvideo', '-pix_fmt', 'rgb24', raw]);
   const rgb = readFileSync(raw);
 
-  const SOFT = 14; // below this, pure background
-  const HARD = 30; // above this, fully opaque artwork
+  /*
+   * How far from its row's background a pixel may still be and count as
+   * background for the flood. Generous on purpose: it has to be able to travel
+   * the whole length of the shadow ramp. It is safe to be generous precisely
+   * because connectivity, not the threshold, is what protects the artwork.
+   */
+  const WALKABLE = 26;
 
-  const rgba = Buffer.alloc(w * h * 4);
-  const opaqueRows = new Int32Array(h);
-  const colMin = new Int32Array(h).fill(w);
-  const colMax = new Int32Array(h).fill(-1);
-
+  // Distance from the local background, per pixel. The row's own margins are
+  // the estimate, because the card is lit unevenly top to bottom.
+  const distance = new Float32Array(w * h);
   for (let y = 0; y < h; y += 1) {
     const left = (y * w + 3) * 3;
     const right = (y * w + w - 4) * 3;
@@ -143,9 +155,148 @@ function liftOffCard(pngPath) {
     ];
     for (let x = 0; x < w; x += 1) {
       const i = (y * w + x) * 3;
+      distance[y * w + x] = Math.hypot(rgb[i] - bg[0], rgb[i + 1] - bg[1], rgb[i + 2] - bg[2]);
+    }
+  }
+
+  // Flood from every border pixel. An explicit stack rather than recursion: a
+  // million-pixel fill would blow the call stack.
+  const isBackground = new Uint8Array(w * h);
+  const stack = [];
+  const visit = (x, y) => {
+    if (x < 0 || y < 0 || x >= w || y >= h) return;
+    const index = y * w + x;
+    if (isBackground[index] || distance[index] >= WALKABLE) return;
+    isBackground[index] = 1;
+    stack.push(index);
+  };
+  for (let x = 0; x < w; x += 1) {
+    visit(x, 0);
+    visit(x, h - 1);
+  }
+  for (let y = 0; y < h; y += 1) {
+    visit(0, y);
+    visit(w - 1, y);
+  }
+  const flood = () => {
+    while (stack.length > 0) {
+      const index = stack.pop();
+      const x = index % w;
+      const y = (index - x) / w;
+      visit(x - 1, y);
+      visit(x + 1, y);
+      visit(x, y - 1);
+      visit(x, y + 1);
+    }
+  };
+  flood();
+
+  /*
+   * One petal defeats the flood on its own. The palest pink one is lit almost
+   * to the colour of the card along its upper edge, so there is a narrow
+   * low-contrast channel between its interior and the outside — and the flood
+   * walks through it and empties the petal, leaving a white patch that is faint
+   * on cream and glaring on dark.
+   *
+   * Closing the artwork mask seals it: grow the artwork by a few pixels, which
+   * bridges any channel narrower than twice that, then shrink it back, which
+   * returns every genuine edge to where it was. The flood is then re-run
+   * against the sealed mask, and the petal's interior is no longer reachable.
+   *
+   * The radius has to stay well under the narrowest real gap in the mark — the
+   * spaces between the petals, which are far wider — or the flower would close
+   * into a blob.
+   */
+  const SEAL = 5;
+  const artwork = new Uint8Array(w * h);
+  for (let i = 0; i < artwork.length; i += 1) artwork[i] = isBackground[i] ? 0 : 1;
+
+  /** Separable box dilate/erode: two 1-D passes instead of one 2-D window. */
+  const morph = (mask, radius, grow) => {
+    const pick = grow ? Math.max : Math.min;
+    const horizontal = new Uint8Array(w * h);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        let value = grow ? 0 : 1;
+        for (let d = -radius; d <= radius; d += 1) {
+          const nx = x + d;
+          if (nx < 0 || nx >= w) continue;
+          value = pick(value, mask[y * w + nx]);
+        }
+        horizontal[y * w + x] = value;
+      }
+    }
+    const result = new Uint8Array(w * h);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        let value = grow ? 0 : 1;
+        for (let d = -radius; d <= radius; d += 1) {
+          const ny = y + d;
+          if (ny < 0 || ny >= h) continue;
+          value = pick(value, horizontal[ny * w + x]);
+        }
+        result[y * w + x] = value;
+      }
+    }
+    return result;
+  };
+
+  const sealed = morph(morph(artwork, SEAL, true), SEAL, false);
+
+  isBackground.fill(0);
+  stack.length = 0;
+  const visitSealed = (x, y) => {
+    if (x < 0 || y < 0 || x >= w || y >= h) return;
+    const index = y * w + x;
+    if (isBackground[index] || sealed[index]) return;
+    isBackground[index] = 1;
+    stack.push(index);
+  };
+  for (let x = 0; x < w; x += 1) {
+    visitSealed(x, 0);
+    visitSealed(x, h - 1);
+  }
+  for (let y = 0; y < h; y += 1) {
+    visitSealed(0, y);
+    visitSealed(w - 1, y);
+  }
+  while (stack.length > 0) {
+    const index = stack.pop();
+    const x = index % w;
+    const y = (index - x) / w;
+    visitSealed(x - 1, y);
+    visitSealed(x + 1, y);
+    visitSealed(x, y - 1);
+    visitSealed(x, y + 1);
+  }
+
+  /*
+   * A hard mask would leave a stair-stepped edge on a curve. Alpha is averaged
+   * over a 3×3 neighbourhood, which feathers the boundary by about a pixel —
+   * enough to read as smooth at any size the mark is used at, and not enough to
+   * bring the shadow back.
+   */
+  const rgba = Buffer.alloc(w * h * 4);
+  const opaqueRows = new Int32Array(h);
+  const colMin = new Int32Array(h).fill(w);
+  const colMax = new Int32Array(h).fill(-1);
+
+  for (let y = 0; y < h; y += 1) {
+    for (let x = 0; x < w; x += 1) {
+      let solid = 0;
+      let counted = 0;
+      for (let dy = -1; dy <= 1; dy += 1) {
+        for (let dx = -1; dx <= 1; dx += 1) {
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+          counted += 1;
+          if (!isBackground[ny * w + nx]) solid += 1;
+        }
+      }
+      const a = Math.round((solid / counted) * 255);
+      const i = (y * w + x) * 3;
       const o = (y * w + x) * 4;
-      const d = Math.hypot(rgb[i] - bg[0], rgb[i + 1] - bg[1], rgb[i + 2] - bg[2]);
-      const a = d <= SOFT ? 0 : d >= HARD ? 255 : Math.round(((d - SOFT) / (HARD - SOFT)) * 255);
       rgba[o] = rgb[i];
       rgba[o + 1] = rgb[i + 1];
       rgba[o + 2] = rgb[i + 2];
@@ -158,6 +309,41 @@ function liftOffCard(pngPath) {
     }
   }
   return { w, h, rgba, opaqueRows, colMin, colMax };
+}
+
+/**
+ * The wordmark, recoloured for a dark background.
+ *
+ * "stern NAILS 3" is moulded in dark olive on cream: on the site's near-black
+ * it would be a hole rather than a word. Inverting it would also invert the
+ * moulding, lighting the letters from below and reading as a dent.
+ *
+ * So the shape is kept and the ink is replaced. Each pixel's own lightness sets
+ * how bright its cream is, with the ramp reversed — the deepest parts of the
+ * letterform become the brightest ink — which preserves the relief while
+ * turning it the right way up for light-on-dark.
+ */
+function recolourForDark(part, box, ink = [237, 231, 218]) {
+  const [x0, y0, x1, y1] = box;
+  const w = x1 - x0 + 1;
+  const h = y1 - y0 + 1;
+  const out = Buffer.alloc(w * h * 4);
+
+  for (let y = 0; y < h; y += 1) {
+    for (let x = 0; x < w; x += 1) {
+      const source = ((y0 + y) * part.w + x0 + x) * 4;
+      const target = (y * w + x) * 4;
+      const luma = (part.rgba[source] * 0.299 + part.rgba[source + 1] * 0.587 + part.rgba[source + 2] * 0.114) / 255;
+      // 0.62..1 rather than 0..1: even the lightest edge of the original stays
+      // clearly readable instead of fading into the background.
+      const level = 0.62 + (1 - luma) * 0.38;
+      out[target] = Math.min(255, Math.round(ink[0] * level));
+      out[target + 1] = Math.min(255, Math.round(ink[1] * level));
+      out[target + 2] = Math.min(255, Math.round(ink[2] * level));
+      out[target + 3] = part.rgba[source + 3];
+    }
+  }
+  return { w, h, rgba: out };
 }
 
 /**
@@ -227,13 +413,27 @@ const xOf = (band) => {
 
 const PAD = 6; // a hair of transparent margin so the feathered edge is not clipped
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const boxes = {};
 for (const [band, name] of [[flowerBand, 'flower'], [wordBand, 'wordmark']]) {
   const [x0, x1] = xOf(band);
-  writeCrop(card, [
+  boxes[name] = [
     clamp(x0 - PAD, 0, card.w - 1), clamp(band[0] - PAD, 0, card.h - 1),
     clamp(x1 + PAD, 0, card.w - 1), clamp(band[1] + PAD, 0, card.h - 1),
-  ], name);
+  ];
+  writeCrop(card, boxes[name], name);
 }
+
+/*
+ * The flower needs no dark variant: sage and blush both hold their own against
+ * a near-black, and the flood fill has already taken the shadow with it. The
+ * wordmark does — dark olive ink on a dark background is a hole, not a word.
+ */
+const lightWordmark = recolourForDark(card, boxes.wordmark);
+writeCrop(
+  { w: lightWordmark.w, rgba: lightWordmark.rgba },
+  [0, 0, lightWordmark.w - 1, lightWordmark.h - 1],
+  'wordmark-dark',
+);
 
 // The delivered card itself, for the gift-card mockup and social previews,
 // where the cream board is part of the picture.

@@ -296,7 +296,13 @@ export default async function AdminCalendar({
                 <form action="/api/admin/bookings/cancel" method="post">
                   <input type="hidden" name="bookingId" value={selected.id} />
                   <input type="hidden" name="date" value={dateIso} />
-                  <button type="submit" className="btn btn--sm" style={{ color: '#9b3f3f', border: '1px solid #e3c9c6' }}>
+                  <button
+                    type="submit"
+                    className="btn btn--sm"
+                    // Tokens rather than hexes: cancelling is a destructive
+                    // action in both themes, and the red has to change with them.
+                    style={{ color: 'var(--error-line)', border: '1px solid var(--error-border)' }}
+                  >
                     <Trash size={16} />
                     {copy.admin.cancelBooking}
                   </button>

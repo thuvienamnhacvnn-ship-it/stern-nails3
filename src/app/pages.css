@@ -67,7 +67,7 @@
   right: clamp(24px, 6%, 80px);
   bottom: 132px;
   font-size: clamp(26px, 2.6vw, 40px);
-  color: #fffcf8;
+  color: var(--on-photo);
   opacity: 0.95;
   text-shadow: 0 2px 14px rgb(40 48 37 / 35%);
   transform: rotate(-6deg);
@@ -333,8 +333,8 @@
   position: absolute;
   left: 0; right: 0; bottom: 0;
   padding: var(--s4) 16px 14px;
-  background: linear-gradient(to top, rgb(40 48 37 / 55%), transparent);
-  color: #fffcf8;
+  background: linear-gradient(to top, var(--scrim), transparent);
+  color: var(--on-photo);
 }
 .look-card-caption .tag { font-size: 11px; letter-spacing: 0.08em; opacity: 0.85; }
 .look-card-caption h3 { font-size: 22px; }
@@ -346,12 +346,14 @@
   display: grid; place-items: center;
   border: 0;
   border-radius: var(--r-pill);
-  background: rgb(255 252 248 / 88%);
-  color: var(--ink);
+  background: var(--chip-on-photo);
+  /* Fixed ink: the disc stays cream in both themes, so a cream heart would be
+     an invisible button on a dark page. */
+  color: var(--on-chip-ink);
   cursor: pointer;
   z-index: 2;
 }
-.look-fav[aria-pressed='true'] { color: var(--blush); }
+.look-fav[aria-pressed='true'] { color: #b6705d; }
 
 .looks-detail {
   position: relative;
@@ -493,7 +495,9 @@
   gap: 6px;
   padding: var(--s3);
   background: linear-gradient(100deg, rgb(255 252 248 / 92%) 40%, rgb(255 252 248 / 10%));
+  color: var(--on-chip-ink);
 }
+.checkout-summary-media .overlay .muted { color: #5e6258; }
 .checkout-summary-body { display: grid; gap: var(--s2); padding: var(--s3); }
 .summary-line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2); }
 .summary-total { font-size: 20px; font-weight: 600; }
@@ -629,7 +633,7 @@
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
+  /* Fixed ink: the card is cream in both themes. See globals.css. */
   text-align: right;
 }
 
@@ -733,6 +737,8 @@
   width: 56px; height: 56px;
   border-radius: var(--r-pill);
   background: rgb(255 252 248 / 70%);
+  /* Fixed ink: the disc is cream in both themes. */
+  color: var(--on-chip-ink);
 }
 
 @media (max-width: 1099px) {
@@ -934,6 +940,7 @@
   display: grid; place-items: center;
   border-radius: var(--r-pill);
   background: rgb(255 252 248 / 80%);
+  color: var(--on-chip-ink);
   font-size: 12px;
   flex: none;
 }

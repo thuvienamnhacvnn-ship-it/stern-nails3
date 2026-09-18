@@ -60,7 +60,7 @@ stop the server.
 | `npm run db:generate` | generate a migration after editing `src/db/schema.ts` |
 | `npm run assets` | rebuild every image from `assets/` |
 | `npm run fonts` | re-download the self-hosted webfonts |
-| `npm run shots` | screenshots of every page, desktop and mobile, into `shots/` |
+| `npm run shots` | screenshots of every page — desktop and mobile, light and dark — into `shots/` |
 
 ## How it is put together
 
@@ -83,6 +83,28 @@ Next.js 16 with the app router, React 19, Drizzle over PGlite, Zod at every
 boundary, and hand-written CSS with design tokens. No UI library, no CSS
 framework, no icon package — the design is specific enough that each of those
 would have cost more than it saved.
+
+### Light and dark
+
+One design, two palettes. The default follows the visitor's system; a three-way
+switch in the header — light, dark, match my device — overrides it and is
+remembered per browser.
+
+Three things make it work rather than half-work:
+
+- **Every colour is a token.** There is no hex typed into a component, because a
+  hex is a thing that will not follow the theme. `npm run shots` captures both
+  palettes on every page for exactly that reason.
+- **Photographs are never touched.** No overlay, no filter, no dimming. The nail
+  sets and the studio's own photographs are the product.
+- **The wordmark has two inks.** "stern NAILS 3" is moulded in dark olive and
+  would be a hole on a dark page, so the asset build generates a cream version
+  and CSS picks one. The flower needs no variant. A handful of surfaces that are
+  a colour in their own right — the gift card, a caption over a photograph —
+  keep their own ink in both themes.
+
+A small inline script applies a remembered theme before the first paint.
+Without it, someone who chose dark gets a white flash on every navigation.
 
 ### Images
 
@@ -176,6 +198,12 @@ mechanisms are what hold.
 Layout was checked at 390, 768, 960, 1280, 1440 and 1920 CSS pixels in both
 languages: no page scrolls sideways, and the one-screen desktop layout gives up
 and scrolls normally below 1100×780, which is also what happens at 200% zoom.
+
+Contrast was measured rather than judged, by walking the rendered DOM in both
+themes and comparing every piece of text against its computed background. Body
+text sits around 13:1 and secondary text around 7:1. The only things below 4.5:1
+are calendar days that cannot be booked, which are disabled controls and exempt,
+and which still read at about 3:1.
 
 ## What is not built
 

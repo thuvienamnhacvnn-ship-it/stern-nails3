@@ -187,12 +187,16 @@
   },
   "brand": {
     "flower": {
-      "width": 674,
-      "height": 650
+      "width": 671,
+      "height": 649
     },
     "wordmark": {
-      "width": 687,
-      "height": 315
+      "width": 685,
+      "height": 314
+    },
+    "wordmark-dark": {
+      "width": 685,
+      "height": 314
     },
     "logo-card": {
       "width": 1254,

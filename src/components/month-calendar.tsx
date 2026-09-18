@@ -63,13 +63,10 @@ export function MonthCalendar({
         ))}
         {days.map((day) =>
           day.disabled ? (
-            <span
-              key={day.iso}
-              className="calendar-day"
-              data-outside={!day.inMonth}
-              aria-disabled="true"
-              style={{ color: '#bfb9a8' }}
-            >
+            // No inline colour: an inline style wins over the stylesheet, which
+            // would pin this to a light-theme grey and make a day that cannot be
+            // booked look brighter than one that can.
+            <span key={day.iso} className="calendar-day" data-outside={!day.inMonth} aria-disabled="true">
               {day.day}
             </span>
           ) : (

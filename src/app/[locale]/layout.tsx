@@ -27,7 +27,15 @@ export default async function LocaleLayout({
   const copy = t(locale as Locale);
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
+      {/*
+        The inline script below sets `data-theme` before React hydrates, which
+        is deliberate and is the whole point of it — but it means the attribute
+        on this element legitimately differs from what the server rendered, and
+        React flags that as a mismatch. `suppressHydrationWarning` applies to
+        this element's own attributes only, not to its subtree, so it silences
+        exactly the warning we caused and nothing else.
+      */}
       <head>
         {/*
           The two faces above the fold are preloaded. Everything else — the
@@ -42,6 +50,26 @@ export default async function LocaleLayout({
           as="font"
           type="font/woff2"
           crossOrigin=""
+        />
+        {/*
+          Applies a remembered theme before the first paint.
+
+          This has to be inline and synchronous. The server cannot know what the
+          visitor chose — that lives in their browser — so without it every page
+          load would render in the system theme and then snap to the chosen one
+          once React hydrated: a white flash on every navigation for somebody
+          who picked dark, which is exactly the person least able to tolerate it.
+
+          It is three lines, it touches one attribute, and it is wrapped so that
+          a browser with storage blocked gets the system theme rather than an
+          exception.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('stern.theme');" +
+              "if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}",
+          }}
         />
       </head>
       <body>

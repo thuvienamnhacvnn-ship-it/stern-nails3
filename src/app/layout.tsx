@@ -19,7 +19,13 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   // No maximum-scale and no user-scalable=no: pinch zoom stays available.
-  themeColor: '#f7f2e9',
+  //
+  // Two theme colours so the phone's own browser bar matches the page instead
+  // of staying cream above a dark site.
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f7f2e9' },
+    { media: '(prefers-color-scheme: dark)', color: '#1e241c' },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

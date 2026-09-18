@@ -380,6 +380,12 @@ const de = {
     save: 'Speichern',
     pendingContent: 'Fehlende Angaben vor dem Livegang',
   },
+  theme: {
+    label: 'Darstellung',
+    light: 'Helles Design',
+    dark: 'Dunkles Design',
+    system: 'Wie auf dem Gerät',
+  },
   common: {
     demo: 'DEMO',
     demoBanner: 'Demoversion – Preise, Termine und Team sind Beispieldaten. Es werden keine echten Zahlungen ausgelöst.',
@@ -721,6 +727,12 @@ const en: Dictionary = {
     unpublished: 'Draft',
     save: 'Save',
     pendingContent: 'Missing before go-live',
+  },
+  theme: {
+    label: 'Appearance',
+    light: 'Light',
+    dark: 'Dark',
+    system: 'Match my device',
   },
   common: {
     demo: 'DEMO',

@@ -17,8 +17,22 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  // suppressHydrationWarning: the pre-paint script below sets data-theme on
+  // <html> before React hydrates, so that attribute legitimately differs from
+  // what the server rendered. See [locale]/layout.tsx for the full reasoning.
   return (
-    <html lang="de">
+    <html lang="de" suppressHydrationWarning>
+      <head>
+        {/* The same pre-paint theme guard as the customer site; the admin is a
+            separate document and would otherwise flash on every load. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('stern.theme');" +
+              "if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}",
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

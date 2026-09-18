@@ -117,3 +117,16 @@ demo mode and out of it. That is not a demo restriction.
   what somebody already agreed to pay, and the test suite holds that line.
 - **The audit log is the answer to "it said fifty yesterday".** Price changes,
   cancellations and refunds are recorded with both values and who did it.
+- **Never type a colour into a component.** Every colour is a token in
+  `globals.css`, because a hex in a component is a thing that stops following
+  the theme — which is how the calendar ended up with light-mode grey on a dark
+  page, and how the favourite heart ended up cream on a cream disc.
+- **A few surfaces keep a fixed ink on purpose.** The gift card is a cream card
+  in both themes, and a caption over a photograph sits on the photograph, not on
+  the page. Those use `--on-chip-ink` and the fixed values beside it rather than
+  `--ink`.
+- **The logo's wordmark exists in two inks.** `npm run assets` generates the
+  cream one; re-run it after any change to `assets/brand/`. The flower is lifted
+  off its card by a flood fill from the border rather than a colour key — a key
+  either leaves a cream halo that only shows on dark, or punches a hole through
+  the palest petal.

@@ -72,6 +72,21 @@ const VIEWPORTS = [
   { suffix: 'mobile', width: 390, height: 844, mobile: true },
 ];
 
+/*
+ * Both themes, every time. The dark one is not a variant to check occasionally:
+ * it is half of what ships, and a shot of only the light one would hide exactly
+ * the kind of regression a theme causes — a hard-coded colour that stopped
+ * following the palette.
+ *
+ * The theme is applied the way a visitor's own choice is, by writing the same
+ * localStorage key the site reads, so the capture exercises the real code path
+ * rather than a special one.
+ */
+const THEMES = [
+  { suffix: '', value: null },
+  { suffix: '-dark', value: 'dark' },
+];
+
 /* ------------------------------------------------------------------ chrome */
 
 const PORT = 9333 + (process.pid % 200);
@@ -138,35 +153,51 @@ mkdirSync(OUT, { recursive: true });
 
 let taken = 0;
 
-for (const viewport of VIEWPORTS) {
-  for (const page of PAGES) {
-    const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
-    const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
+for (const theme of THEMES) {
+  for (const viewport of VIEWPORTS) {
+    for (const page of PAGES) {
+      const name = `${page.name}-${viewport.suffix}${theme.suffix}`;
+      const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
+      const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
 
-    try {
-      await send('Page.enable', {}, sessionId);
-      await send('Emulation.setDeviceMetricsOverride', {
-        width: viewport.width,
-        height: viewport.height,
-        // A retina-sharp picture either way; the viewport above is in CSS
-        // pixels and is what the media queries see.
-        deviceScaleFactor: 2,
-        mobile: viewport.mobile,
-      }, sessionId);
+      try {
+        await send('Page.enable', {}, sessionId);
+        await send('Emulation.setDeviceMetricsOverride', {
+          width: viewport.width,
+          height: viewport.height,
+          // A retina-sharp picture either way; the viewport above is in CSS
+          // pixels and is what the media queries see.
+          deviceScaleFactor: 2,
+          mobile: viewport.mobile,
+        }, sessionId);
 
-      await send('Page.navigate', { url: `${BASE}${page.path}` }, sessionId);
-      // Fonts, the hero image and the lazily-loaded cards below it all need a
-      // moment; a shorter wait catches the page mid-swap with fallback type.
-      await sleep(3500);
+        /*
+         * The theme has to be in storage before the page's own pre-paint script
+         * reads it, and that script runs on the first document of the origin.
+         * So: load the origin once, write the key, then navigate for real.
+         */
+        await send('Page.navigate', { url: `${BASE}/de/start` }, sessionId);
+        await sleep(900);
+        await send('Runtime.evaluate', {
+          expression: theme.value
+            ? `localStorage.setItem('stern.theme', ${JSON.stringify(theme.value)})`
+            : "localStorage.removeItem('stern.theme')",
+        }, sessionId);
 
-      const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }, sessionId);
-      writeFileSync(join(OUT, `${page.name}-${viewport.suffix}.png`), Buffer.from(data, 'base64'));
-      taken += 1;
-      console.log(`  ${page.name}-${viewport.suffix}.png`);
-    } catch (error) {
-      console.warn(`  skipped ${page.name}-${viewport.suffix}: ${error instanceof Error ? error.message : error}`);
-    } finally {
-      await send('Target.closeTarget', { targetId });
+        await send('Page.navigate', { url: `${BASE}${page.path}` }, sessionId);
+        // Fonts, the hero image and the lazily-loaded cards below it all need a
+        // moment; a shorter wait catches the page mid-swap with fallback type.
+        await sleep(3500);
+
+        const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }, sessionId);
+        writeFileSync(join(OUT, `${name}.png`), Buffer.from(data, 'base64'));
+        taken += 1;
+        console.log(`  ${name}.png`);
+      } catch (error) {
+        console.warn(`  skipped ${name}: ${error instanceof Error ? error.message : error}`);
+      } finally {
+        await send('Target.closeTarget', { targetId });
+      }
     }
   }
 }
