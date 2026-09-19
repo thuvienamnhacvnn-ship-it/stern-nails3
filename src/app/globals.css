@@ -628,6 +628,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .page { padding-inline: var(--shell-x); }
 
+/* The legal links in the drawer, where the footer is not. */
+.drawer-legal {
+  display: flex;
+  gap: var(--s2);
+  margin-top: var(--s3);
+  padding-top: var(--s2);
+  border-top: 1px solid var(--hairline-soft);
+  font-size: 13px;
+  color: var(--muted);
+}
+.drawer-legal a:hover { color: var(--ink); }
+
 /* --------------------------------------------------------------- pointer */
 
 /*

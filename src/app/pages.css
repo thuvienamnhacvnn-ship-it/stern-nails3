@@ -1362,14 +1362,78 @@
   position: relative;
   justify-self: center;
   align-self: center;
-  width: min(470px, 100%);
+  width: min(564px, 100%);
   aspect-ratio: 1.58 / 1;
+  /*
+   * A camera in front of the pair. Without it `rotateY` below is a flat squash
+   * rather than a card turning — perspective is what makes the near edge of a
+   * rotated card larger than the far one, and that is the whole effect.
+   */
+  perspective: 1200px;
+  perspective-origin: 50% 46%;
 }
 
 .giftcard {
   position: absolute;
   border-radius: 16px;
   aspect-ratio: 1.58 / 1;
+  transform-style: preserve-3d;
+  transition:
+    transform 460ms var(--ease),
+    box-shadow 460ms var(--ease);
+}
+
+/*
+ * Hovering the pair turns them apart, as if picked up: the front card tips
+ * towards you and lifts off the page, the back one leans away and drops
+ * behind. They move together, from a hover on the scene rather than on either
+ * card, so the two never fight over which is being pointed at.
+ */
+.giftcard-scene:hover .giftcard--front,
+.giftcard-scene:focus-within .giftcard--front {
+  transform: rotate(-5deg) rotateX(7deg) rotateY(-17deg) translate3d(-7%, -5%, 68px);
+  box-shadow: 0 48px 90px rgb(0 0 0 / 60%), 0 2px 8px rgb(0 0 0 / 26%);
+}
+.giftcard-scene:hover .giftcard--back,
+.giftcard-scene:focus-within .giftcard--back {
+  transform: rotate(7deg) rotateX(-5deg) rotateY(13deg) translate3d(7%, 5%, -44px);
+  box-shadow: 0 18px 44px rgb(0 0 0 / 42%);
+}
+
+/*
+ * The light running across the lacquer as they turn. It is a wide band on a
+ * background three times the width of the card, so moving the background moves
+ * the band from one corner to the other.
+ */
+.giftcard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background-image: linear-gradient(
+    115deg,
+    rgb(255 255 255 / 0%) 36%,
+    rgb(255 255 255 / 34%) 48%,
+    rgb(255 255 255 / 0%) 60%
+  );
+  background-size: 280% 100%;
+  background-position: 170% 0;
+  transition: background-position 760ms var(--ease);
+  pointer-events: none;
+  z-index: 2;
+}
+.giftcard-scene:hover .giftcard::before,
+.giftcard-scene:focus-within .giftcard::before { background-position: -70% 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* The pair stays as it lies. */
+  .giftcard-scene:hover .giftcard--front,
+  .giftcard-scene:hover .giftcard--back,
+  .giftcard-scene:focus-within .giftcard--front,
+  .giftcard-scene:focus-within .giftcard--back { transform: none; }
+  .giftcard-scene:hover .giftcard--front { transform: rotate(-5deg); }
+  .giftcard-scene:hover .giftcard--back { transform: rotate(7deg); }
+  .giftcard::before { transition: none; }
 }
 
 /* Behind and to the right, tipped the other way, so both cards are readable. */

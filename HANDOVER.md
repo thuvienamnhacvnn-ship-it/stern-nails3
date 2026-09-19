@@ -96,6 +96,13 @@ Everything the customer can see a number or a name for:
 5. Have the imprint and the privacy notice read by someone qualified. The
    privacy text describes what the application actually does — which is the part
    we can write — but it is not legal advice.
+   **Decide where the imprint link belongs.** The footer carrying it was taken
+   off every page except the start page, so that the working pages keep the
+   height. On a phone it is still one tap away in the menu; on a desktop
+   sub-page it is not, and a German site is expected to carry the imprint on
+   every page. Either put a slim legal line back on the sub-pages — the rule is
+   `key === 'start' ? <Footer/> : null` in `[locale]/[page]/page.tsx`, one line
+   — or have the studio's lawyer confirm that the start page is enough.
 6. Configure mail, then payments, each with a sandbox first.
 7. Set `DEMO_MODE=0` and `PUBLIC_URL` to the real domain. Change
    `ADMIN_SEED_PASSWORD` and every staff password.

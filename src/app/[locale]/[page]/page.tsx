@@ -107,7 +107,19 @@ export default async function Page({
       </main>
       <div>
         {env.demoMode ? <DemoBanner locale={locale} /> : null}
-        <Footer locale={locale} />
+        {/*
+          The footer belongs to the start page.
+          Every other page is a working surface — a form, a calendar, a column
+          of looks — and the band of legal links, claim and social marks at the
+          foot of it costs those columns about fifty pixels of height they need
+          more than the page needs a claim repeated on it.
+
+          The legal links are in the menu on every page so they stay one click
+          away. On a desktop sub-page they are now only reachable via the start
+          page, which is a point for the go-live checklist in HANDOVER.md: a
+          German site has to carry its imprint on every page.
+        */}
+        {key === 'start' ? <Footer locale={locale} /> : null}
         <MobileNav locale={locale} current={key} />
       </div>
     </div>

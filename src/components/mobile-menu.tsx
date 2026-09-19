@@ -135,6 +135,18 @@ export function MobileMenu({
                 ))}
               </nav>
 
+              {/* The imprint and the privacy notice. They live in the footer,
+                  and the footer is only on the start page, so this is where
+                  they stay reachable from anywhere. */}
+              <nav className="drawer-legal" aria-label={copy.common.imprint}>
+                <Link href={path(locale, 'imprint')} onClick={() => setOpen(false)}>
+                  {copy.common.imprint}
+                </Link>
+                <Link href={path(locale, 'privacy')} onClick={() => setOpen(false)}>
+                  {copy.common.privacy}
+                </Link>
+              </nav>
+
               <div className="row" style={{ marginTop: 'var(--s3)' }}>
                 <span className="tiny muted">{copy.nav.language}</span>
                 <div className="lang">
