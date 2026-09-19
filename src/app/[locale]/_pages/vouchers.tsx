@@ -41,6 +41,9 @@ export async function VouchersPage({ locale }: { locale: Locale }) {
         <span className="vouchers-scrim" />
       </div>
 
+      {/* The pane the words sit on by day. Decoration only. */}
+      <span className="vouchers-plate" aria-hidden="true" />
+
       <div className="vouchers-grid">
         {/* ------------------------------------------------------- the word */}
         <section className="vouchers-copy">

@@ -94,6 +94,9 @@ export async function HomePage({
           anybody who cannot see it. */}
       <p className="sr-only">{copy.home.heroAlt}</p>
 
+      {/* The pane the words sit on by day. Decoration only. */}
+      <span className="banner-plate" aria-hidden="true" />
+
       <div className="banner-grid">
         {/* ------------------------------------------------------- the word */}
         <section className="banner-copy">

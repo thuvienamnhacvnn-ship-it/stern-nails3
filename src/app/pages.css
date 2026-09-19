@@ -112,13 +112,57 @@
       rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.95)) 24%,
       rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.45)) 38%,
       rgb(var(--hero-veil) / 0%) var(--scrim-reach)),
-    linear-gradient(to top, rgb(var(--hero-veil) / 70%) 0%, rgb(var(--hero-veil) / 8%) 22%, rgb(var(--hero-veil) / 0%) 38%),
-    linear-gradient(to left, rgb(var(--hero-veil) / 80%) 0%, rgb(var(--hero-veil) / 24%) 20%, rgb(var(--hero-veil) / 0%) 36%);
+    linear-gradient(to top,
+      rgb(var(--hero-veil) / var(--scrim-edge)) 0%,
+      rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.11)) 22%,
+      rgb(var(--hero-veil) / 0%) 38%),
+    linear-gradient(to left,
+      rgb(var(--hero-veil) / calc(var(--scrim-edge) * 1.08)) 0%,
+      rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.32)) 20%,
+      rgb(var(--hero-veil) / 0%) 36%);
+}
+
+/*
+ * The plate.
+ *
+ * By day the words do not sit on a fog, they sit on this: a pane of frosted
+ * glass bled off the left of the picture, cut with one long curved edge and a
+ * gold hairline down it, with a breath of gold rising from its foot. Everything
+ * to the right of that edge is the photograph exactly as taken.
+ *
+ * By night it paints nothing at all — the dark scrim is part of that look — so
+ * the element is here in both themes and only the day theme gives it a surface.
+ */
+.banner-plate,
+.vouchers-plate {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: clamp(300px, 32%, 580px);
+  z-index: 1;
+  pointer-events: none;
+  background-image: var(--plate-glow), var(--plate-fill);
+  border-right: 1.5px solid var(--plate-line);
+  /*
+   * The curve: a tall, narrow ellipse on the right-hand corners, so the edge
+   * bows gently over the full height instead of closing into a circle. At a
+   * radius near the plate's own width it stops being an edge and becomes a
+   * disc cut out of the picture.
+   */
+  border-radius: 0 clamp(70px, 8vw, 150px) clamp(70px, 8vw, 150px) 0 / 0 50% 50% 0;
+  backdrop-filter: var(--plate-blur);
+  box-shadow: var(--plate-shadow);
+}
+
+@media (max-width: 1099px) {
+  /* On a phone the copy is the top of a scrolling page, not a column beside a
+     picture, so the plate would be a curve around nothing. */
+  .banner-plate,
+  .vouchers-plate { display: none; }
 }
 
 .banner-grid {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: grid;
   grid-template-columns: minmax(0, 22fr) minmax(0, 52fr) minmax(0, 26fr);
   grid-template-rows: minmax(0, 1fr);
@@ -378,6 +422,23 @@
   color: var(--on-hero);
 }
 .banner-rail-head { display: flex; align-items: center; justify-content: flex-end; min-height: 40px; }
+/*
+ * The counter and its arrows on their own pane.
+ *
+ * They sit at the top of the picture, where there is no plate and nothing else
+ * to read them against — on the day theme that put "01 / 02" at 3:1 over a lit
+ * ceiling. The same smoked glass the cards below are made of fixes it and ties
+ * the group to them.
+ */
+.banner-rail-head .row {
+  padding: 4px 8px 4px 14px;
+  border-radius: var(--r-pill);
+  background:
+    linear-gradient(135deg, rgb(var(--hero-lift) / 34%), rgb(var(--hero-glass) / 10%)),
+    rgb(var(--hero-glass) / 68%);
+  border: 1px solid rgb(var(--hero-line) / 14%);
+  backdrop-filter: blur(8px);
+}
 
 .banner-rail-list {
   list-style: none;
@@ -1294,13 +1355,19 @@
       rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.95)) 24%,
       rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.45)) 38%,
       rgb(var(--hero-veil) / 0%) var(--scrim-reach)),
-    linear-gradient(to top, rgb(var(--hero-veil) / 72%) 0%, rgb(var(--hero-veil) / 10%) 26%, rgb(var(--hero-veil) / 0%) 44%),
-    linear-gradient(to left, rgb(var(--hero-veil) / 58%) 0%, rgb(var(--hero-veil) / 8%) 30%, rgb(var(--hero-veil) / 0%) 44%);
+    linear-gradient(to top,
+      rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.97)) 0%,
+      rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.14)) 26%,
+      rgb(var(--hero-veil) / 0%) 44%),
+    linear-gradient(to left,
+      rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.78)) 0%,
+      rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.11)) 30%,
+      rgb(var(--hero-veil) / 0%) 44%);
 }
 
 .vouchers-grid {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: grid;
   grid-template-columns: minmax(0, 22fr) minmax(0, 46fr) minmax(0, 32fr);
   grid-template-rows: minmax(0, 1fr);
@@ -1530,13 +1597,27 @@
 }
 
 /* Four short reassurances, ruled off from one another. */
+/*
+ * The four reassurances on their own pane.
+ *
+ * They run across the foot of the picture, where the day theme no longer washes
+ * anything — over the dark wooden wall behind the chairs the ink measured 1:1,
+ * which is to say it was not there. The same smoked glass as the cards and the
+ * counter, so the three read as one family rather than three rescues.
+ */
 .vouchers-assurances {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 12px 8px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-self: end;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgb(var(--hero-lift) / 30%), rgb(var(--hero-glass) / 10%)),
+    rgb(var(--hero-glass) / 66%);
+  border: 1px solid rgb(var(--hero-line) / 12%);
+  backdrop-filter: blur(8px);
 }
 .vouchers-assurances li {
   display: grid;

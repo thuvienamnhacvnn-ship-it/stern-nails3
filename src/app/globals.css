@@ -198,12 +198,34 @@
    * cream hero it measures 1.5:1 and simply is not there.
    */
   --blush-hero: #8f4634;
-  /* How strong the wash under the left-hand column is, and how far across the
-     picture it reaches. Cream needs a touch more of both than near-black: a
-     dark photograph shows through a pale wash more than a bright one shows
-     through a dark wash. */
-  --scrim-peak: 96%;
-  --scrim-reach: 58%;
+  /*
+   * No wash at all by day.
+   *
+   * A pale wash over a photograph is a haze: it takes the room the picture is
+   * of and leaves weather. By night a dark scrim is part of the look and stays;
+   * by day the words get a shape of their own instead — see `--plate-*` below
+   * and `.banner-plate` in pages.css — and the picture is left alone.
+   */
+  --scrim-peak: 0%;
+  --scrim-reach: 0%;
+  --scrim-edge: 0%;
+
+  /*
+   * The plate: a pane of frosted glass with one long curved edge, bled off the
+   * left of the picture, with a gold hairline down the curve. It is a thing on
+   * the photograph rather than a fog over it — it has an edge you can see, and
+   * everything to the right of that edge is the photograph as taken.
+   */
+  --plate-fill: linear-gradient(
+    102deg,
+    rgb(238 244 234 / 96%) 0%,
+    rgb(238 244 234 / 93%) 58%,
+    rgb(238 244 234 / 86%) 100%
+  );
+  --plate-line: rgb(201 169 97 / 78%);
+  --plate-blur: blur(7px);
+  --plate-shadow: 26px 0 70px rgb(34 48 30 / 16%);
+  --plate-glow: radial-gradient(70% 46% at 16% 92%, rgb(201 169 97 / 22%), rgb(201 169 97 / 0%) 70%);
   /* The band of light that travels through the written line. It has to be
      lighter than `--gold-hero` and still hold its own against the surface, so
      it is pale gold on cream rather than the near-white used on dark. */
@@ -364,6 +386,12 @@
     --blush-hero: #d9afa3;
     --scrim-peak: 92%;
     --scrim-reach: 46%;
+    --scrim-edge: 74%;
+    --plate-fill: none;
+    --plate-line: transparent;
+    --plate-blur: none;
+    --plate-shadow: none;
+    --plate-glow: none;
     --gold-sheen: #fffaf0;
     --on-hero: #fffff2;
     --on-hero-muted: rgb(255 255 242 / 82%);
@@ -458,6 +486,12 @@
   --blush-hero: #d9afa3;
   --scrim-peak: 92%;
   --scrim-reach: 46%;
+  --scrim-edge: 74%;
+  --plate-fill: none;
+  --plate-line: transparent;
+  --plate-blur: none;
+  --plate-shadow: none;
+  --plate-glow: none;
   --gold-sheen: #fffaf0;
   --on-hero: #fffff2;
   --on-hero-muted: rgb(255 255 242 / 82%);
