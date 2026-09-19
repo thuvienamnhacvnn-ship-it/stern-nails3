@@ -70,7 +70,7 @@ const FIXED_HEIGHT: PageKey[] = ['start', 'services', 'looks', 'booking', 'studi
  * has no surface of its own and floats over the picture, so the shell gives up
  * its header row and lets the content start at the very top.
  */
-const FULL_BLEED: PageKey[] = ['start', 'studio'];
+const FULL_BLEED: PageKey[] = ['start', 'studio', 'vouchers'];
 
 export default async function Page({
   params,

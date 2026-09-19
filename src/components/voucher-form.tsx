@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { formatCents } from '@/lib/money';
 import { t, type Locale } from '@/lib/i18n';
-import { ArrowRight, Mail } from './icons';
+import { ArrowRight, Mail, Note, User } from './icons';
 
 /**
  * Designing and buying a gift card.
@@ -90,27 +90,35 @@ export function VoucherForm({ locale, amounts }: { locale: Locale; amounts: numb
 
       <div className="field">
         <label htmlFor="voucher-recipient">{copy.vouchers.recipient}</label>
-        <input
-          id="voucher-recipient"
-          className="input"
-          value={recipientName}
-          onChange={(event) => setRecipientName(event.target.value)}
-          placeholder={copy.vouchers.recipientPlaceholder}
-          autoComplete="off"
-        />
+        {/* The icon marks what the field is for at a glance. It sits inside the
+            box rather than beside the label, so the three fields line up. */}
+        <span className="field-with-icon">
+          <User size={20} aria-hidden="true" />
+          <input
+            id="voucher-recipient"
+            className="input"
+            value={recipientName}
+            onChange={(event) => setRecipientName(event.target.value)}
+            placeholder={copy.vouchers.recipientPlaceholder}
+            autoComplete="off"
+          />
+        </span>
       </div>
 
       <div className="field">
         <label htmlFor="voucher-message">{copy.vouchers.message}</label>
-        <textarea
-          id="voucher-message"
-          className="textarea"
-          value={message}
-          maxLength={MAX_MESSAGE}
-          onChange={(event) => setMessage(event.target.value)}
-          placeholder={copy.vouchers.messagePlaceholder}
-          aria-describedby="voucher-message-count"
-        />
+        <span className="field-with-icon field-with-icon--top">
+          <Note size={20} aria-hidden="true" />
+          <textarea
+            id="voucher-message"
+            className="textarea"
+            value={message}
+            maxLength={MAX_MESSAGE}
+            onChange={(event) => setMessage(event.target.value)}
+            placeholder={copy.vouchers.messagePlaceholder}
+            aria-describedby="voucher-message-count"
+          />
+        </span>
         <p id="voucher-message-count" className="tiny muted" style={{ textAlign: 'right' }}>
           {message.length} / {MAX_MESSAGE}
         </p>
@@ -118,16 +126,19 @@ export function VoucherForm({ locale, amounts }: { locale: Locale; amounts: numb
 
       <div className="field">
         <label htmlFor="voucher-email">{copy.vouchers.deliverTo}</label>
-        <input
-          id="voucher-email"
-          className="input"
-          type="email"
-          value={recipientEmail}
-          onChange={(event) => setRecipientEmail(event.target.value)}
-          placeholder={copy.checkout.email}
-          autoComplete="email"
-          required
-        />
+        <span className="field-with-icon">
+          <Mail size={20} aria-hidden="true" />
+          <input
+            id="voucher-email"
+            className="input"
+            type="email"
+            value={recipientEmail}
+            onChange={(event) => setRecipientEmail(event.target.value)}
+            placeholder={copy.checkout.email}
+            autoComplete="email"
+            required
+          />
+        </span>
       </div>
 
       <p className="notice">
@@ -141,19 +152,18 @@ export function VoucherForm({ locale, amounts }: { locale: Locale; amounts: numb
         </p>
       ) : null}
 
-      <div className="row row--between" style={{ paddingTop: 'var(--s1)', borderTop: '1px solid var(--hairline)' }}>
-        <span className="stack" style={{ gap: 0 }}>
-          <span className="serif" style={{ fontSize: 22 }}>
-            {copy.vouchers.total}
-          </span>
-          <span className="tiny muted">{copy.vouchers.vat}</span>
+      {/* The rule above the total is a class rather than an inline border: this
+          form sits on smoked glass, where `--hairline` is a dark green line
+          nobody can see. */}
+      <div className="voucher-total">
+        <span>
+          <span className="voucher-total-label">{copy.vouchers.total}</span>
+          <span className="voucher-total-vat">{copy.vouchers.vat}</span>
         </span>
-        <span className="serif" style={{ fontSize: 34 }}>
-          {formatCents(amount, locale)}
-        </span>
+        <span className="voucher-total-sum">{formatCents(amount, locale)}</span>
       </div>
 
-      <button type="submit" className="btn btn--primary btn--block" disabled={busy} aria-busy={busy}>
+      <button type="submit" className="btn btn--cream btn--block" disabled={busy} aria-busy={busy}>
         {busy ? copy.vouchers.buying : copy.vouchers.buy}
         <ArrowRight size={18} />
       </button>

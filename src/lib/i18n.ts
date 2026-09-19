@@ -273,6 +273,18 @@ const de = {
   vouchers: {
     eyebrow: 'Gutscheine',
     title: 'Ein schöner Moment. Verschenkt.',
+    /* Two inks again, and here the accent is blush rather than gold: a gift
+       card is the one page where the pink of the mark leads. */
+    titleLead: 'Ein schöner Moment.',
+    titleAccent: 'Verschenkt.',
+    /* Four short reassurances under the cards, two lines each. The break is
+       part of the copy because it differs per language. */
+    assurances: [
+      ['Perfekt für', 'jeden Anlass'],
+      ['Wellness', 'und Selfcare'],
+      ['Ein Geschenk,', 'das bleibt'],
+      ['Beauty', 'Good Vibes'],
+    ],
     intro:
       'Schönheit ist immer eine gute Idee. Mit einem Gutschein von Stern Nails 3 verschenkst du Zeit für sich – und ein besonderes Gefühl.',
     perks: ['Flexibel einlösbar', 'Wunderschön gestaltet', 'Per E-Mail direkt verfügbar'],
@@ -291,7 +303,7 @@ const de = {
     seedNote: 'Die Beträge sind Beispielwerte und werden vom Studio freigegeben.',
     issued: 'Dein Gutschein ist unterwegs.',
     issuedHint: 'Den Code findest du in der E-Mail an die beschenkte Person.',
-    cardFront: { top: 'Schöne Momente bleiben', bottom: 'A gift for you' },
+    cardFront: { bottom: 'A gift for beautiful moments' },
   },
   account: {
     title: 'Mein Bereich',
@@ -637,6 +649,14 @@ const en: Dictionary = {
   vouchers: {
     eyebrow: 'Gift cards',
     title: 'A beautiful moment. Given.',
+    titleLead: 'A beautiful moment.',
+    titleAccent: 'Given.',
+    assurances: [
+      ['Perfect for', 'any occasion'],
+      ['Wellness', 'and self-care'],
+      ['A gift', 'that stays'],
+      ['Beauty', 'Good Vibes'],
+    ],
     intro:
       'Beauty is always a good idea. With a Stern Nails 3 gift card you give someone time for themselves – and a feeling that stays.',
     perks: ['Flexible to redeem', 'Beautifully made', 'Delivered by email'],
@@ -655,7 +675,7 @@ const en: Dictionary = {
     seedNote: 'These amounts are examples and are approved by the studio.',
     issued: 'Your gift card is on its way.',
     issuedHint: 'The code is in the email to the person receiving it.',
-    cardFront: { top: 'Beautiful moments stay', bottom: 'A gift for you' },
+    cardFront: { bottom: 'A gift for beautiful moments' },
   },
   account: {
     title: 'My area',
