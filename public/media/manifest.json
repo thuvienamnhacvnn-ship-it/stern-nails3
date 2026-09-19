@@ -238,6 +238,18 @@
     "logo-card-original": {
       "width": 1254,
       "height": 1254
+    },
+    "app-icon-192": {
+      "width": 192,
+      "height": 192
+    },
+    "app-icon-512": {
+      "width": 512,
+      "height": 512
+    },
+    "app-icon-maskable": {
+      "width": 512,
+      "height": 512
     }
   }
 }

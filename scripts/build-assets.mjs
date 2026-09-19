@@ -560,6 +560,35 @@ for (const [file, name] of [['logo-clean.png', 'logo-card'], ['logo-original.png
   manifest.brand[name] = { width: dims.w, height: dims.h };
 }
 
+/*
+ * The icons a phone puts on its home screen.
+ *
+ * Square, and on a cream ground rather than transparent: a launcher draws the
+ * icon on whatever wallpaper is there, and a transparent flower on a dark
+ * wallpaper is three pale petals floating in nothing.
+ *
+ * Two shapes. The plain one fills its square; the maskable one keeps the mark
+ * inside the middle third, because a launcher is free to crop an icon to a
+ * circle, a rounded square or a squircle and will cut the corners off anything
+ * that reaches them.
+ */
+for (const [edge, inset, name] of [
+  [192, 0.2, 'app-icon-192'],
+  [512, 0.2, 'app-icon-512'],
+  [512, 0.34, 'app-icon-maskable'],
+]) {
+  const mark = Math.round(edge * (1 - inset * 2));
+  ff([
+    '-f', 'lavfi', '-i', `color=c=0xf7f2e9:s=${edge}x${edge}`,
+    '-i', join(OUT, 'brand', 'flower.png'),
+    '-filter_complex',
+    `[1:v]scale=${mark}:${mark}:force_original_aspect_ratio=decrease[m];[0:v][m]overlay=(W-w)/2:(H-h)/2`,
+    '-frames:v', '1', join(OUT, 'brand', `${name}.png`),
+  ]);
+  manifest.brand[name] = { width: edge, height: edge };
+  console.log(`brand ${name} ${edge}x${edge}`);
+}
+
 writeFileSync(join(OUT, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 rmSync(TMP, { recursive: true, force: true });
 console.log(`\nwrote ${Object.keys(manifest.photo).length} photo ladders and ${Object.keys(manifest.brand).length} brand marks`);

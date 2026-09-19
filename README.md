@@ -137,6 +137,21 @@ picture's near-black foliage edges run straight into, and which the headline and
 the lookbook rail sit on. On a phone the picture is a header strip instead and
 is cropped to the model.
 
+### On a phone
+
+The site installs. `src/app/manifest.ts` gives it a name, a start URL and the
+square icons the asset build generates from the mark, and `display: standalone`
+means a home-screen launch opens without the browser's own bars — which is what
+makes the bar along the foot read as a tab bar rather than as a strip at the
+bottom of a web page.
+
+That bar has five places and the middle one is the flower of the mark, raised
+out of the bar, going to the booking page: the one thing the site is for. It is
+`position: fixed`, not sticky — sticky only pins an element once its own place
+in the flow would scroll past the pin, and this bar's place is at the very end
+of the document, so it never stuck at all. `body` carries a matching
+padding-bottom on phone widths so nothing ends up underneath it.
+
 ### The pointer
 
 On a desktop the cursor is a polish brush with petals trailing it, drawn on a

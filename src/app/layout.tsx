@@ -9,7 +9,12 @@ import './pages.css';
 export const metadata: Metadata = {
   title: { default: 'Stern Nails 3', template: '%s · Stern Nails 3' },
   description: 'Nagelstudio Stern Nails 3 – Maniküre, Modellage, Pediküre und Nail Looks.',
-  icons: { icon: '/media/brand/flower.png' },
+  icons: {
+    icon: '/media/brand/flower.png',
+    // What iOS puts on the home screen. It ignores the manifest's icons and
+    // reads this, and given nothing it screenshots the page instead.
+    apple: '/media/brand/app-icon-192.png',
+  },
   // Nothing here is meant for a search index until the studio has approved the
   // content and filled in the missing business details.
   robots: { index: false, follow: false },

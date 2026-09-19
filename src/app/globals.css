@@ -1462,30 +1462,97 @@ a.card:hover,
 
 /* --------------------------------------------------------------- mobile */
 
+/*
+ * The bar along the foot of the phone: five places, the middle one raised.
+ *
+ * `overflow: visible` matters — the raised button stands a good inch above the
+ * bar and would otherwise be sliced off at the top edge.
+ */
 .mobile-nav {
-  position: sticky;
-  bottom: 0;
+  /*
+   * Fixed, not sticky.
+   *
+   * `position: sticky; bottom: 0` only pins an element once its own place in
+   * the flow would scroll past the pin — and this bar's place is at the very
+   * end of the document, below the fold. So it never stuck: it simply sat at
+   * the bottom of the page and you had to scroll to the end to reach it, which
+   * is the opposite of a tab bar. Fixed, it is where a phone expects it, and
+   * `body` below keeps that last bar's worth of page out from under it.
+   */
+  position: fixed;
+  inset: auto 0 0 0;
   z-index: 50;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
   background: var(--panel);
   border-top: 1px solid var(--hairline-soft);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -10px 28px rgb(0 0 0 / 14%);
   padding-bottom: env(safe-area-inset-bottom);
 }
 .mobile-nav a {
   display: grid;
   justify-items: center;
+  align-content: end;
   gap: 4px;
   padding: 10px 4px 12px;
   font-size: 12px;
   color: var(--muted);
   min-height: var(--mobile-nav-h);
+  transition: color var(--t-fast) var(--ease);
 }
 .mobile-nav a[aria-current='page'] { color: var(--ink); }
 .mobile-nav a[aria-current='page'] span { border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
 
+/*
+ * The one action. It is the flower of the mark on a sage disc, lifted out of
+ * the bar and ringed in the bar's own colour so the bar appears to be cut away
+ * behind it. Its label keeps the line of the other four.
+ */
+.mobile-nav-book { position: relative; }
+.mobile-nav-book span:not(.mobile-nav-orb) { color: var(--ink); font-weight: 500; }
+.mobile-nav-book[aria-current='page'] span:not(.mobile-nav-orb) { border-bottom: 0; }
+
+.mobile-nav-orb {
+  position: absolute;
+  left: 50%;
+  top: -30px;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: var(--r-pill);
+  /*
+   * Cream in both themes, like the primary pill in the header. The mark is
+   * drawn for cream — sage and blush petals with a white rim — and on the dark
+   * theme's panel green it loses the rim and half its contrast. The ring is the
+   * bar's own colour, so the bar reads as cut away behind the button.
+   */
+  background: linear-gradient(150deg, #fffdf9, #f2e9dc);
+  border: 4px solid var(--panel);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 28%), 0 0 0 1px rgb(215 179 124 / 55%);
+  transition: translate var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.mobile-nav-orb img { width: 34px; height: auto; display: block; }
+.mobile-nav-book:active .mobile-nav-orb { translate: -50% 2px; box-shadow: 0 6px 14px rgb(0 0 0 / 22%); }
+.mobile-nav-book[aria-current='page'] .mobile-nav-orb {
+  box-shadow: 0 10px 24px rgb(0 0 0 / 30%), 0 0 0 2.5px var(--gold);
+}
+
 @media (max-width: 1099px) {
   :root { --header-h: var(--mobile-header-h); }
+  /*
+   * The room the fixed bar stands in, so the foot of every page stays
+   * reachable rather than sitting underneath it. A little more than the bar's
+   * nominal height: the links inside carry the 64px, and the bar's own border
+   * and rounding sit on top of that — measured at 68, and the demo strip was
+   * losing its last line to the difference.
+   */
+  body { padding-bottom: calc(var(--mobile-nav-h) + var(--s2) + env(safe-area-inset-bottom)); }
+  /* And the toasts clear it too. */
+  .toast-wrap { bottom: calc(var(--mobile-nav-h) + 24px + env(safe-area-inset-bottom)); }
   .nav { display: none; }
   .header { grid-template-columns: auto minmax(0, 1fr) auto; }
   .logo .logo-flower { width: 40px; }

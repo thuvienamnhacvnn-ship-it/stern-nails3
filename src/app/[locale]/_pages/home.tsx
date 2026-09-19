@@ -80,11 +80,13 @@ export async function HomePage({
           className="desktop-only"
         />
         {/*
-          The same photograph on a phone, cropped to the model rather than to
-          the middle of the room: a 16:9 frame cut to portrait on its centre
-          point keeps the plant wall and loses the person the picture is of.
+          The same photograph on a phone, held on the room rather than on the
+          model: a 16:9 frame cut to portrait shows about a third of its width,
+          and at 58% that third is the planted wall, the sign and the work
+          stations — the studio itself, which is what somebody arriving on a
+          phone is trying to see.
         */}
-        <Photo id="hero-banner" alt="" sizes="100vw" priority focalPoint="17% 44%" className="mobile-only" />
+        <Photo id="hero-banner" alt="" sizes="100vw" priority focalPoint="58% 46%" className="mobile-only" />
         <span className="banner-scrim" />
       </div>
 

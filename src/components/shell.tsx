@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { brand } from '@/lib/media';
 import { settings } from '@/lib/settings';
 import { path, t, otherLocale, type Locale, type PageKey } from '@/lib/i18n';
-import { ArrowRight, CalendarIcon, Facebook, Grid, Heart, Home, Instagram, TikTok, User, YouTube } from './icons';
+import { ArrowRight, Facebook, Gift, Grid, Heart, Home, Instagram, TikTok, User, YouTube } from './icons';
 import { MobileMenu } from './mobile-menu';
 import { ThemeToggle } from './theme-toggle';
 
@@ -197,22 +197,54 @@ export async function Footer({ locale }: { locale: Locale }) {
  * page flow rather than fixed, so it cannot cover the last field of a form when
  * the on-screen keyboard is up.
  */
+/**
+ * The bar along the foot of the phone.
+ *
+ * Five places, and the middle one is the flower of the mark raised out of the
+ * bar — the way a phone app puts its one action in the centre. That action is
+ * booking an appointment, which is what the whole site is for; everything else
+ * on the bar is somewhere to look first.
+ *
+ * The raised button is a link like the other four, not a button: it goes to a
+ * page, so it has to be something you can open in a new tab, and it carries a
+ * proper label rather than only the mark.
+ */
 export function MobileNav({ locale, current }: { locale: Locale; current?: PageKey }) {
   const copy = t(locale);
-  const tabs: { key: PageKey; label: string; icon: React.ReactNode }[] = [
+  const flower = brand('flower');
+
+  const left: { key: PageKey; label: string; icon: React.ReactNode }[] = [
     { key: 'start', label: copy.nav.mobile.start, icon: <Home size={22} /> },
     { key: 'looks', label: copy.nav.mobile.looks, icon: <Grid size={22} /> },
-    { key: 'booking', label: copy.nav.mobile.book, icon: <CalendarIcon size={22} /> },
+  ];
+  const right: { key: PageKey; label: string; icon: React.ReactNode }[] = [
+    { key: 'vouchers', label: copy.nav.vouchers, icon: <Gift size={22} /> },
     { key: 'account', label: copy.nav.mobile.account, icon: <User size={22} /> },
   ];
+
+  const tab = (item: { key: PageKey; label: string; icon: React.ReactNode }) => (
+    <Link key={item.key} href={path(locale, item.key)} aria-current={current === item.key ? 'page' : undefined}>
+      {item.icon}
+      <span>{item.label}</span>
+    </Link>
+  );
+
   return (
     <nav className="mobile-nav mobile-only" aria-label={copy.nav.menu}>
-      {tabs.map((tab) => (
-        <Link key={tab.key} href={path(locale, tab.key)} aria-current={current === tab.key ? 'page' : undefined}>
-          {tab.icon}
-          <span>{tab.label}</span>
-        </Link>
-      ))}
+      {left.map(tab)}
+
+      <Link
+        className="mobile-nav-book"
+        href={path(locale, 'booking')}
+        aria-current={current === 'booking' ? 'page' : undefined}
+      >
+        <span className="mobile-nav-orb" aria-hidden="true">
+          <img src={flower.src} width={flower.width} height={flower.height} alt="" />
+        </span>
+        <span>{copy.nav.mobile.book}</span>
+      </Link>
+
+      {right.map(tab)}
     </nav>
   );
 }
