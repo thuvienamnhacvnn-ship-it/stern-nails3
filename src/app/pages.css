@@ -25,43 +25,10 @@
  * scrim anchored to the left and bottom edges, which is what makes cream type
  * legible over a bright salon without touching the middle of the frame.
  */
-/*
- * The two pages whose type sits on a photograph keep one set of inks, whichever
- * theme is chosen: cream and bright gold on a dark wash.
- *
- * They are not being excused from the theme. It is that a photograph is not a
- * surface the theme controls — this one is a warm, brightly lit room in both
- * themes — and dark type on it needs the picture washed pale enough to stop
- * being the picture. Cream type needs a dark wash, and a dark wash over a lit
- * room is the look the design references use anyway.
- *
- * The studio page is not in this list: nothing there sits on a photograph, so
- * it follows the theme like the rest of the site.
- */
-.banner,
-.vouchers {
-  --hero-canvas: #181b11;
-  --hero-veil: 11 13 9;
-  --hero-line: 255 255 242;
-  --hero-glass: 34 37 24;
-  --hero-lift: 51 57 34;
-  --on-hero: #fffff2;
-  --on-hero-muted: rgb(255 255 242 / 82%);
-  --gold-hero: #ffdfb3;
-  --blush-hero: #d9afa3;
-  --gold-sheen: #fffaf0;
-  --scrim-edge: 74%;
-  --scrim-main: linear-gradient(
-    100deg,
-    rgb(11 13 9 / 92%) 0%,
-    rgb(11 13 9 / 85%) 24%,
-    rgb(11 13 9 / 37%) 37%,
-    rgb(11 13 9 / 0%) 46%
-  );
-}
-
 .banner {
   position: relative;
+  /* One number for the mark: its height, and the room the column leaves it. */
+  --mark-h: clamp(160px, 37vh, 330px);
   /*
    * The banner is the screen: one screenful, never a scroll. Giving it the
    * picture's own 16:9 instead makes it 1080px tall in a 1920px window, and
@@ -178,7 +145,9 @@
    * underneath.
    */
   align-content: start;
-  padding-top: clamp(20px, 7vh, 76px);
+  /* Below the mark hanging above it. Never negative: on a short window the mark
+     is smaller than the space the header already reserves. */
+  padding-top: max(0px, calc(var(--mark-h) + clamp(18px, 3.4vh, 34px) + 24px - var(--header-h) - var(--s1)));
   justify-items: start;
   gap: 12px;
   min-width: 0;
@@ -248,11 +217,27 @@
  * headline, a paragraph and a button. `30vh` is what is left over once those
  * have what they need; past that the column runs off the bottom of the picture.
  */
+/*
+ * The mark reaches into the top left corner.
+ *
+ * It is taken out of the column's flow and hung from the top of the banner, so
+ * it can start above where the column starts — that corner was empty and dark,
+ * and the flower is what belongs in it. The column then pads itself down by the
+ * mark's own height, so the words sit under it exactly as they did.
+ *
+ * `--mark-h` is in one place because two rules need the same number: the height
+ * here and the room the column has to leave for it.
+ */
 .banner-mark {
+  position: absolute;
+  /* Inset from both edges: hung flush it reads as falling out of the frame
+     rather than sitting in the corner of it. */
+  left: calc(var(--shell-x) + clamp(6px, 1.4vw, 26px));
+  top: clamp(18px, 3.4vh, 34px);
   width: auto;
-  height: clamp(96px, 21vh, 186px);
-  margin-bottom: 2px;
-  filter: drop-shadow(0 6px 20px rgb(6 26 22 / 45%));
+  height: var(--mark-h);
+  filter: drop-shadow(0 8px 26px rgb(var(--hero-veil) / 55%));
+  pointer-events: none;
 }
 
 .banner-eyebrow {
@@ -630,11 +615,38 @@
     container-type: normal;
   }
   /* Clear of the headline block, which fills the top of the strip here. */
-  .banner-script { left: 6%; top: 77%; font-size: 23px; }
+  /*
+   * The mark leads the column on a phone, so the written line is one brand
+   * statement too many — and it is placed against the picture, which here is a
+   * header strip the copy scrolls over, so it landed across the paragraph.
+   */
+  .banner-script { display: none; }
+  /* Room for the mark without it crowding the eyebrow under it. */
+  .banner-mark {
+    position: static;
+    height: clamp(96px, 18vh, 150px);
+    margin-bottom: 10px;
+  }
+  .banner-copy { padding-top: 0; }
   .banner-stage { bottom: auto; height: 78vh; }
+  /*
+   * A heavy wash across the whole strip, not a band at each end.
+   *
+   * On a desktop the copy has a column of its own beside the picture; on a
+   * phone it is laid straight over it, top to bottom, so there is nowhere the
+   * picture can be left alone. Measured at 390px the headline sat at 2.4:1 and
+   * the eyebrow at 2.7:1 against the lit room behind them. The photograph reads
+   * as a texture here rather than as a picture, which is the right way round
+   * when the words are the page.
+   */
   .banner-scrim {
-    background:
-      linear-gradient(to top, rgb(var(--hero-veil) / 92%) 0%, rgb(var(--hero-veil) / 42%) 38%, rgb(var(--hero-veil) / 12%) 66%, rgb(var(--hero-veil) / 2%) 100%);
+    background: linear-gradient(
+      to bottom,
+      rgb(var(--hero-veil) / 90%) 0%,
+      rgb(var(--hero-veil) / 84%) 38%,
+      rgb(var(--hero-veil) / 90%) 76%,
+      rgb(var(--hero-veil) / 97%) 100%
+    );
   }
   .banner-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -1797,10 +1809,15 @@
   .vouchers-stage { bottom: auto; height: 62vh; }
   /* Top down as well as bottom up: the headline sits over the brightest part
      of the room here, and "Verschenkt." in blush had nothing to sit on. */
+  /* Same reasoning as the banner above. */
   .vouchers-scrim {
-    background:
-      linear-gradient(to bottom, rgb(var(--hero-veil) / 88%) 0%, rgb(var(--hero-veil) / 62%) 24%, rgb(var(--hero-veil) / 26%) 48%, rgb(var(--hero-veil) / 0%) 70%),
-      linear-gradient(to top, rgb(var(--hero-veil) / 94%) 0%, rgb(var(--hero-veil) / 58%) 34%, rgb(var(--hero-veil) / 12%) 62%, rgb(var(--hero-veil) / 0%) 100%);
+    background: linear-gradient(
+      to bottom,
+      rgb(var(--hero-veil) / 90%) 0%,
+      rgb(var(--hero-veil) / 84%) 38%,
+      rgb(var(--hero-veil) / 90%) 76%,
+      rgb(var(--hero-veil) / 97%) 100%
+    );
   }
   .vouchers-grid {
     grid-template-columns: minmax(0, 1fr);

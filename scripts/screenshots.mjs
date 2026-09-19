@@ -82,18 +82,11 @@ const VIEWPORTS = [
  * localStorage key the site reads, so the capture exercises the real code path
  * rather than a special one.
  */
-const THEMES = [
-  /*
-   * Both themes named outright, neither left to the system.
-   *
-   * The unsuffixed one used to clear the key and let `prefers-color-scheme`
-   * decide, on the assumption that headless Chrome is light. It is not: it
-   * reports dark, so half of these files were a second copy of the other half
-   * and the light theme went unphotographed for as long as that lasted.
-   */
-  { suffix: '', value: 'light' },
-  { suffix: '-dark', value: 'dark' },
-];
+/*
+ * One theme now. The site was light and dark; the light one was dropped, so
+ * there is one pass rather than two and the files lose their suffix.
+ */
+const THEMES = [{ suffix: '', value: 'dark' }];
 
 /* ------------------------------------------------------------------ chrome */
 

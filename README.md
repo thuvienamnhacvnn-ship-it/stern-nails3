@@ -84,44 +84,17 @@ boundary, and hand-written CSS with design tokens. No UI library, no CSS
 framework, no icon package — the design is specific enough that each of those
 would have cost more than it saved.
 
-### Light and dark
+### One theme
 
-One design, two palettes. The default follows the visitor's system; a three-way
-switch in the header — light, dark, match my device — overrides it and is
-remembered per browser.
+The site is dark: deep green, cream type, brass-gold accents, the colours of the
+delivered mark. It had a light theme as well and the light theme is gone — with
+it the switch in the header, the pre-paint script in the layout and the second
+half of every colour token.
 
-Three things make it work rather than half-work:
-
-- **Every colour is a token.** There is no hex typed into a component, because a
-  hex is a thing that will not follow the theme. `npm run shots` captures both
-  palettes on every page for exactly that reason.
-- **Photographs are never touched.** No overlay, no filter, no dimming. The nail
-  sets and the studio's own photographs are the product.
-- **The wordmark has two inks.** "stern NAILS 3" is moulded in dark olive and
-  would be a hole on a dark page, so the asset build generates a cream version
-  and CSS picks one. The flower needs no variant. A handful of surfaces that are
-  a colour in their own right — the gift card, a caption over a photograph —
-  keep their own ink in both themes.
-
-A small inline script applies a remembered theme before the first paint.
-Without it, someone who chose dark gets a white flash on every navigation.
-
-
-The day theme is pale pastel green with soft gold; the night theme is the deep
-green the design references use. Gold as a **fill** is soft — the primary
-button, the light across a panel. Gold as **ink** is deep, because a soft gold
-on a pale page measures about 2:1 and is not text.
-
-The three photograph pages — the start page, the studio, the gift cards — follow
-the theme as well. They were dark whichever theme was chosen, which left the day
-theme with nothing to do on the page everybody arrives on. They are painted from
-`--hero-*` tokens, one set per theme, and the wash that makes type legible over
-the picture has its own strength and reach per theme: a dark photograph shows
-through a pale wash more than a bright one shows through a dark wash.
-
-There are two buttons in the theme switch, because there are two themes. With
-nothing stored the system decides, and the switch shows whichever one that
-produced.
+What made it worth dropping rather than fixing: three of the pages are a
+photograph with the words laid on it, and a photograph is not a surface a theme
+controls. Dark type on a lit room needs the picture washed pale enough to stop
+being the picture, and every attempt at that traded the room for legibility.
 
 ### Images
 

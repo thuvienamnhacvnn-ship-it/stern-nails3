@@ -4,7 +4,6 @@ import { settings } from '@/lib/settings';
 import { path, t, otherLocale, type Locale, type PageKey } from '@/lib/i18n';
 import { ArrowRight, Facebook, Gift, Grid, Heart, Home, Instagram, TikTok, User, YouTube } from './icons';
 import { MobileMenu } from './mobile-menu';
-import { ThemeToggle } from './theme-toggle';
 
 /**
  * The frame every page sits in: header, footer, and on a phone the bottom nav.
@@ -95,8 +94,6 @@ export function Header({
             EN
           </Link>
         </div>
-
-        <ThemeToggle locale={locale} />
 
         <Link className="icon-button desktop-only" href={path(locale, 'account')} aria-label={copy.nav.account}>
           <User size={22} />

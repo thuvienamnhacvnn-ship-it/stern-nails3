@@ -52,26 +52,6 @@ export default async function LocaleLayout({
           type="font/woff2"
           crossOrigin=""
         />
-        {/*
-          Applies a remembered theme before the first paint.
-
-          This has to be inline and synchronous. The server cannot know what the
-          visitor chose — that lives in their browser — so without it every page
-          load would render in the system theme and then snap to the chosen one
-          once React hydrated: a white flash on every navigation for somebody
-          who picked dark, which is exactly the person least able to tolerate it.
-
-          It is three lines, it touches one attribute, and it is wrapped so that
-          a browser with storage blocked gets the system theme rather than an
-          exception.
-        */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "try{var t=localStorage.getItem('stern.theme');" +
-              "if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}",
-          }}
-        />
       </head>
       <body>
         <a className="skip-link" href="#main">
