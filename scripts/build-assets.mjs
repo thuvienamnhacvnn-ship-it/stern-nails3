@@ -290,7 +290,7 @@ const xOf = (band) => {
 const PAD = 6; // a hair of transparent margin so the feathered edge is not clipped
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const boxes = {};
-for (const [band, name] of [[flowerBand, 'flower'], [wordBand, 'wordmark']]) {
+for (const [band, name] of [[flowerBand, 'flower'], [[inkTop, inkBottom], 'logo']]) {
   const [x0, x1] = xOf(band);
   boxes[name] = [
     clamp(x0 - PAD, 0, card.w - 1), clamp(band[0] - PAD, 0, card.h - 1),
@@ -298,19 +298,6 @@ for (const [band, name] of [[flowerBand, 'flower'], [wordBand, 'wordmark']]) {
   ];
   writeCrop(card, boxes[name], name);
 }
-
-/*
- * Neither part needs a second ink any more.
- *
- * The wordmark used to be flat dark olive, which is a hole on a dark
- * background, so the build generated a cream copy of it for the dark theme.
- * The mark as delivered now is polished gold, and gold is what gold is for: it
- * reads on the cream page and on the dark one. The dark variant is therefore
- * the same picture, kept under its own name so the markup and the stylesheet
- * that choose between them do not have to change — and so that a future mark
- * in a single flat ink can put a real second version back here.
- */
-writeCrop(card, boxes.wordmark, 'wordmark-dark');
 
 // The delivered card itself, for the gift-card mockup and social previews,
 // where the cream board is part of the picture.

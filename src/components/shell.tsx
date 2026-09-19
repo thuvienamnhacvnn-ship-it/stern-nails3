@@ -16,52 +16,32 @@ import { ThemeToggle } from './theme-toggle';
  */
 
 export function Logo({ locale, small = false }: { locale: Locale; small?: boolean }) {
-  const flower = brand('flower');
-  const word = brand('wordmark');
-  const wordDark = brand('wordmark-dark');
+  const mark = brand('logo');
   const copy = t(locale);
 
   /*
-   * The flower carries both themes on its own — sage and blush read against
-   * cream and against near-black alike. The wordmark does not: it is moulded in
-   * dark olive, which is a hole rather than a word on a dark page. So both inks
-   * are in the markup and CSS shows one.
+   * One picture, as delivered.
    *
-   * Both, rather than a `<picture>` or a swap in JavaScript: a media query
-   * cannot see a theme somebody chose by hand, and swapping the `src` after
-   * hydration would flash the wrong ink on every load. The hidden one is a few
-   * kilobytes and is fetched once.
+   * It used to be two — a blossom crop beside a lettering crop — which is a
+   * rearrangement of something somebody drew as a lockup: the stem runs out of
+   * the flower and into the "S" of Stérn, and cutting between them cuts the
+   * drawing. And it needed a second ink for the dark theme, because the old
+   * lettering was flat olive. This one is gold, and gold reads on both.
    */
   return (
     <Link href={path(locale, 'start')} className="logo" aria-label={copy.brand.name}>
       <img
-        className="logo-flower"
-        src={flower.src}
-        width={flower.width}
-        height={flower.height}
+        src={mark.src}
+        width={mark.width}
+        height={mark.height}
         alt=""
-        style={small ? { width: 40 } : undefined}
-      />
-      <img
-        className="logo-word logo-word--light"
-        src={word.src}
-        width={word.width}
-        height={word.height}
-        alt=""
-        style={small ? { width: 88 } : undefined}
-      />
-      <img
-        className="logo-word logo-word--dark"
-        src={wordDark.src}
-        width={wordDark.width}
-        height={wordDark.height}
-        alt=""
-        style={small ? { width: 88 } : undefined}
+        style={small ? { height: 56 } : undefined}
       />
     </Link>
   );
 }
 
+/** The five places in the top navigation, in order. */
 const NAV: { key: PageKey; label: (c: ReturnType<typeof t>) => string }[] = [
   { key: 'start', label: (c) => c.nav.start },
   { key: 'services', label: (c) => c.nav.services },
@@ -91,6 +71,9 @@ export function Header({
     <header className={`header${onHero ? ' header--onHero' : ''}`}>
       <Logo locale={locale} />
 
+      {/* The menu and the tools are one group, centred together: the bar reads
+          as a single cluster rather than as three things pushed apart. */}
+      <div className="header-centre">
       <nav className="nav" aria-label={copy.nav.menu}>
         {NAV.map((item) => (
           <Link
@@ -132,6 +115,7 @@ export function Header({
         </Link>
 
         <MobileMenu locale={locale} current={current} switchTo={switchTo} />
+      </div>
       </div>
     </header>
   );

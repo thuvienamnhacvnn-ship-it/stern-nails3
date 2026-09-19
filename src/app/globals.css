@@ -116,17 +116,17 @@
    * family but left it so pale that switching day themes looked like nothing
    * had happened; the fills below carry a little more of the leaf's brass.
    */
-  --canvas: #eef2e3;
-  --panel: #fbfdf8;
-  --panel-soft: #e2e8d2;
+  --canvas: #e7eedb;
+  --panel: #f7fbef;
+  --panel-soft: #d9e4c6;
   --blush: #e6beb2;
   --blush-soft: #f7e7e2;
-  --sage: #94a35e;
-  --sage-soft: #dfe7c9;
+  --sage: #8b9b56;
+  --sage-soft: #d6e2bb;
   --ink: #2a2e1d;
   --muted: #5a604f;
-  --hairline: #d8decc;
-  --hairline-soft: #e8ecde;
+  --hairline: #c9d6b0;
+  --hairline-soft: #dde6cb;
   /*
    * A third surface above `--panel-soft`, so a page is not two tones and a
    * photograph. What lifts off the page is meant to look lifted.
@@ -141,7 +141,7 @@
   /* The menu. Quieter than body ink at rest, full ink under the pointer. */
   --nav-ink: #4f5444;
   --nav-ink-strong: #2a2e1d;
-  --nav-hover: #e4e8db;
+  --nav-hover: #dbe6c8;
 
   --cta: #c9a961;
   --cta-ink: #2a2e1d;
@@ -173,7 +173,7 @@
   --gold-fill: #c9a961;
   /* The green band at the foot of the page, and the gold that washes down over
      it from the rule above. */
-  --footer-green: #e2e7d3;
+  --footer-green: #d7e3c2;
   --gold-wash: 201 169 97;
 
   /*
@@ -281,8 +281,8 @@
   --toast-bg: #2c3025;
   --toast-ink: #fffcf8;
 
-  --skeleton-a: #e6ebdd;
-  --skeleton-b: #f0f3ea;
+  --skeleton-a: #d9e4c6;
+  --skeleton-b: #e7eedb;
 
   --overlay: rgb(44 48 37 / 28%);
   /* The wash under a caption sitting on a photograph. Dark in both themes,
@@ -324,10 +324,10 @@
   --r-button: 12px;
   --r-pill: 999px;
 
-  --header-h: 80px;
+  --header-h: 104px;
   --footer-h: 32px;
   --dock-h: 76px;
-  --mobile-header-h: 64px;
+  --mobile-header-h: 76px;
   --mobile-nav-h: 64px;
 
   --shell-x: clamp(16px, 3vw, 40px);
@@ -605,16 +605,7 @@
  * picks one, because a `<picture>` media query cannot see a theme chosen by
  * hand, and swapping the `src` in JavaScript would flash the wrong one.
  */
-.logo-word--dark { display: none; }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .logo-word--light { display: none; }
-  :root:not([data-theme='light']) .logo-word--dark { display: block; }
-}
-:root[data-theme='dark'] .logo-word--light { display: none; }
-:root[data-theme='dark'] .logo-word--dark { display: block; }
-:root[data-theme='light'] .logo-word--light { display: block; }
-:root[data-theme='light'] .logo-word--dark { display: none; }
 
 /* The default before any choice is made. */
 :root { color-scheme: light; }
@@ -805,7 +796,17 @@ html.has-polish-cursor * {
  */
 .header {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  /*
+   * Symmetric tracks, so the menu in the middle sits on the middle of the page.
+   *
+   * It used to be `auto 1fr auto`, which centres the menu in whatever is left
+   * between the mark and the tools — and those are nowhere near the same width,
+   * so the menu sat a good way left of centre, and on the start page, where the
+   * mark is hidden, further left still. Two equal side tracks put it where the
+   * eye expects it, and unlike pinning it to 50% it cannot end up underneath
+   * the booking button when the window is narrow: the tracks simply tighten.
+   */
+  grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
   align-items: center;
   gap: var(--s3);
   padding-inline: var(--shell-x);
@@ -866,27 +867,59 @@ html.has-polish-cursor * {
   color: #fffff2;
   box-shadow: none;
 }
-/* And the cream wordmark, because the surface under it is the picture. */
-.header--onHero .logo-word--light { display: none; }
-.header--onHero .logo-word--dark { display: block; }
+
 
 .logo {
   display: inline-flex;
   align-items: center;
   gap: 12px;
   flex: none;
+  grid-column: 1;
+  justify-self: start;
 }
-.logo img { display: block; height: auto; }
-.logo .logo-flower { width: 52px; }
-.logo .logo-word { width: 108px; margin-bottom: 2px; }
+/*
+ * Sized by height, because the mark is a portrait lockup and the bar is a
+ * horizontal thing: height is what has to fit. The header is taller than a
+ * plain bar for the same reason — at 64px of mark the words "NAILS 3" under
+ * the name come out four pixels tall.
+ */
+.logo img { display: block; width: auto; height: 84px; }
+
+/*
+ * On the start page the mark leads the column at full size, so the small one in
+ * the header would be the same thing twice within an inch of itself. `:has()`
+ * asks the page whether the big one is there rather than threading a flag down
+ * from the route — and the header's home link is the one link you do not need
+ * on the page it goes to.
+ */
+.shell--banner:has(.banner-mark) .header .logo { display: none; }
+
+/*
+ * Centred on the screen, not on the space left over — see the symmetric tracks
+ * on `.header` above.
+ */
+.header-centre {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.2vw, 40px);
+  min-width: 0;
+}
 
 .nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: clamp(14px, 2.2vw, 36px);
+  /*
+   * Tighter than it was. The menu is centred by two equal side tracks, and they
+   * can only stay equal while the tools fit in theirs — so the width the menu
+   * does not take is the width that keeps it in the middle.
+   */
+  gap: clamp(12px, 1.5vw, 26px);
   min-width: 0;
 }
+
+
 
 /*
  * A menu that reads as a menu.
@@ -929,10 +962,17 @@ html.has-polish-cursor * {
 .nav a[aria-current='page'] { color: var(--gold); }
 .nav a[aria-current='page']::after { width: 22px; }
 
+/* The booking pill carries the page default everywhere else; in the bar it is
+   a size down so the three groups balance. */
+.header-tools .btn { padding: 0 20px; }
+
 .header-tools {
   display: flex;
   align-items: center;
-  gap: var(--s2);
+  justify-content: flex-end;
+  /* Same reason as the gap in the menu: every pixel the tools give back is a
+     pixel of symmetry. */
+  gap: 12px;
   flex: none;
 }
 
@@ -1725,9 +1765,9 @@ a.card:hover,
   /* And the toasts clear it too. */
   .toast-wrap { bottom: calc(var(--mobile-nav-h) + 24px + env(safe-area-inset-bottom)); }
   .nav { display: none; }
-  .header { grid-template-columns: auto minmax(0, 1fr) auto; }
-  .logo .logo-flower { width: 40px; }
-  .logo .logo-word { width: 88px; }
+  .header { grid-template-columns: minmax(0, 1fr) auto; }
+  .header-centre { grid-column: 2; }
+  .logo img { height: 60px; }
 }
 
 @media (min-width: 1100px) {

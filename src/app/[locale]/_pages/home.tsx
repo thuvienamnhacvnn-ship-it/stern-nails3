@@ -4,6 +4,7 @@ import { db, schema } from '@/db/client';
 import { path, t, type Locale } from '@/lib/i18n';
 import { hasPhoto, type PhotoId } from '@/lib/media';
 import { Photo } from '@/components/image';
+import { brand } from '@/lib/media';
 import { BookingDock } from '@/components/booking-dock';
 import { ArrowRight, ChevronLeft, ChevronRight, Heart, Sparkle } from '@/components/icons';
 
@@ -27,6 +28,7 @@ export async function HomePage({
   query: Record<string, string | string[] | undefined>;
 }) {
   const copy = t(locale);
+  const mark = brand('logo');
 
   const services = await db
     .select({ slug: schema.service.slug, nameDe: schema.service.nameDe, nameEn: schema.service.nameEn })
@@ -98,6 +100,17 @@ export async function HomePage({
       <div className="banner-grid">
         {/* ------------------------------------------------------- the word */}
         <section className="banner-copy">
+          {/* The mark, large, leading the column. It is the same file the header
+              carries; here it is the thing you see first. */}
+          <img
+            className="banner-mark"
+            src={mark.src}
+            width={mark.width}
+            height={mark.height}
+            alt=""
+            aria-hidden="true"
+          />
+
           <span className="banner-eyebrow">{copy.home.eyebrow}</span>
 
           <h1 className="banner-title">

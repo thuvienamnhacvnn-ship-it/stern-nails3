@@ -21,8 +21,7 @@ import { VoucherForm } from '@/components/voucher-form';
 export async function VouchersPage({ locale }: { locale: Locale }) {
   const copy = t(locale);
   const amounts = await allowedAmounts();
-  const flower = brand('flower');
-  const word = brand('wordmark');
+  const mark = brand('logo');
 
   const PERK_ICON = [<Gift key="g" size={20} />, <Leaf key="l" size={20} />, <Mail key="m" size={20} />];
   const ASSURANCE_ICON = [
@@ -84,8 +83,7 @@ export async function VouchersPage({ locale }: { locale: Locale }) {
             {/* In front: the mark, as it is printed. */}
             <div className="giftcard giftcard--front">
               <span className="giftcard-logo">
-                <img src={flower.src} width={flower.width} height={flower.height} alt="" />
-                <img className="word" src={word.src} width={word.width} height={word.height} alt="" />
+                <img src={mark.src} width={mark.width} height={mark.height} alt="" />
               </span>
               <span className="giftcard-note">{copy.vouchers.cardFront.bottom}</span>
             </div>

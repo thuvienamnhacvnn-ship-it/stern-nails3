@@ -167,6 +167,9 @@
 .banner-copy {
   grid-column: 1 / span 2;
   grid-row: 1;
+  /* Held off the edge of the screen rather than sitting on the shell's gutter:
+     the mark leads this column and a mark wants air around it. */
+  padding-left: clamp(0px, 2vw, 34px);
   display: grid;
   /*
    * Held near the top rather than centred. Centred, the eyebrow and the two
@@ -237,6 +240,21 @@
 .studio-copy,
 .vouchers-copy { grid-template-columns: minmax(0, 1fr); }
 
+/*
+ * The mark at the head of the column.
+ *
+ * Sized against the height of the screen rather than in pixels, because the
+ * banner is one screenful and this has to share it with three lines of
+ * headline, a paragraph and a button. `30vh` is what is left over once those
+ * have what they need; past that the column runs off the bottom of the picture.
+ */
+.banner-mark {
+  width: auto;
+  height: clamp(96px, 21vh, 186px);
+  margin-bottom: 2px;
+  filter: drop-shadow(0 6px 20px rgb(6 26 22 / 45%));
+}
+
 .banner-eyebrow {
   font-size: 12px;
   letter-spacing: 0.3em;
@@ -245,7 +263,7 @@
 }
 
 .banner-title {
-  font-size: clamp(34px, min(4.1vw, 8.6vh), 74px);
+  font-size: clamp(30px, min(3.5vw, 6.4vh), 54px);
   line-height: 1.0;
   letter-spacing: -0.015em;
   color: var(--on-hero);
@@ -300,8 +318,8 @@
  */
 .banner-script {
   position: absolute;
-  left: 3%;
-  top: 80%;
+  left: 24%;
+  top: 82%;
   white-space: nowrap;
   pointer-events: auto;
   cursor: pointer;
@@ -1575,9 +1593,9 @@
 /* Sized off the card rather than in pixels, so the mark keeps its proportion
    to the card at every width — and small enough that the line along the foot
    of the card is not walked on. */
-.giftcard-logo { margin-bottom: 10%; }
-.giftcard-logo img { width: 26%; min-width: 40px; height: auto; }
-.giftcard-logo .word { width: 46%; min-width: 74px; }
+/* The whole mark, sized off the card so it keeps its proportion at any width. */
+.giftcard-logo { margin-bottom: 4%; }
+.giftcard-logo img { width: auto; height: 62%; max-width: 54%; }
 .giftcard-note {
   position: absolute;
   right: 16px;
