@@ -97,37 +97,51 @@
 
 /* ----------------------------------------------------------------- tokens */
 
+/*
+ * The day theme: pale pastel green with soft gold.
+ *
+ * It used to be cream on cream — the same warm board the logo was delivered on,
+ * used for the page as well — and it read as beige on beige with nothing
+ * leading the eye. The page is now the palest of the mark's greens, the
+ * surfaces above it lift towards white, and gold does the leading: the primary
+ * button, the rules, the light across a panel.
+ *
+ * Gold as type stays deep. A soft gold is a lovely fill and a poor ink; the
+ * shade below measures 5.6:1 on the canvas, while the one people picture when
+ * they say gold measures about 2.
+ */
 :root {
-  --canvas: #f7f2e9;
-  --panel: #fffcf8;
-  --panel-soft: #f3ece0;
+  --canvas: #eef4ea;
+  --panel: #fbfdf8;
+  --panel-soft: #e3ece0;
   --blush: #e6beb2;
-  --blush-soft: #f5e3dd;
-  --sage: #8e9a80;
-  --sage-soft: #dfe3d8;
-  --ink: #283025;
-  --muted: #5e6258;
-  --hairline: #e2dacb;
-  --hairline-soft: #ece5d9;
+  --blush-soft: #f7e7e2;
+  --sage: #9cb38f;
+  --sage-soft: #dcead6;
+  --ink: #22301e;
+  --muted: #566150;
+  --hairline: #d3e0cd;
+  --hairline-soft: #e4ede0;
   /*
    * A third surface above `--panel-soft`, so a page is not two tones and a
    * photograph. What lifts off the page is meant to look lifted.
    */
   --panel-raised: #ffffff;
-  /* A light across the top-left of a panel. Very slight on cream, where the
-     page is already bright; it does the real work on the dark theme, where a
-     flat fill reads as a hole. */
-  --sheen: linear-gradient(158deg, rgb(255 255 255 / 70%), rgb(255 255 255 / 0%) 58%);
+  /* A light across the top-left of a panel. On the day theme it carries a trace
+     of gold, which is what keeps a white panel on a green page from reading as
+     a cut-out; on the dark theme it does the harder job of stopping a flat fill
+     reading as a hole. */
+  --sheen: linear-gradient(158deg, rgb(255 248 228 / 82%), rgb(255 248 228 / 0%) 58%);
 
   /* The menu. Quieter than body ink at rest, full ink under the pointer. */
-  --nav-ink: #4a4f44;
-  --nav-ink-strong: #283025;
-  --nav-hover: #ece5d9;
+  --nav-ink: #4a5545;
+  --nav-ink-strong: #22301e;
+  --nav-hover: #e0e9dc;
 
-  --cta: #283025;
-  --cta-ink: #fffcf8;
-  --cta-hover: #1d241b;
-  --focus: #5b6b4e;
+  --cta: #c9a961;
+  --cta-ink: #22301e;
+  --cta-hover: #d8bb79;
+  --focus: #6c7f5c;
 
   /*
    * Gold. Measured off the banner reference rather than guessed: the eyebrow
@@ -147,26 +161,54 @@
    * `--gold-bright` is for type sitting on the banner photograph, never on the
    * page.
    */
-  --gold: #7d5f26;
-  --gold-soft: #9a7738;
+  --gold: #7a5c23;
+  --gold-soft: #9c7c3a;
   --gold-bright: #ffdfb3;
-
-  /* Ink for text that sits directly on the hero photograph. */
-  --on-hero: #fffff2;
-  --on-hero-muted: rgb(255 255 242 / 82%);
+  /* The soft gold itself — a fill, never an ink. */
+  --gold-fill: #c9a961;
 
   /*
-   * The start page's surround, and the one colour that does not follow the
-   * theme.
+   * The photograph pages — the start page, the studio and the gift cards.
    *
-   * The banner photograph is bordered on all four sides with near-black
-   * foliage, and the design lets that foliage run out into the page rather
-   * than stopping it at an edge. Fade it into cream instead and the picture
-   * gets a hard rectangular border back, and the cream headline beside it has
-   * nothing to sit on. So the banner stays dark whichever theme is chosen —
-   * everything else on the site still turns over.
+   * They used to be dark whichever theme was chosen, on the argument that a
+   * photograph is a photograph. That left the light theme with nothing to do
+   * on three of the site's pages, including the one everybody arrives on: you
+   * pressed the sun and the page did not change.
+   *
+   * So they are painted from these, and these follow the theme like everything
+   * else. `--hero-veil` is what the scrim over the picture is made of — cream
+   * here, near-black on dark — and the rest are the surfaces and hairlines that
+   * sit on top of it, given as channels so each rule can pick its own opacity.
    */
-  --hero-canvas: #151c11;
+  --hero-canvas: #eef4ea;
+  --hero-veil: 238 244 234;
+  --hero-line: 34 48 30;
+  --hero-glass: 251 253 248;
+  --hero-lift: 255 255 255;
+  /* Gold on a hero follows the same rule as gold anywhere: pale on dark, deep
+     enough to read on cream. */
+  --gold-hero: #6b5120;
+  /*
+   * Blush on a hero, for the one headline whose accent is pink rather than
+   * gold. The page blush is a pale rose made for filling a chip; as type on a
+   * cream hero it measures 1.5:1 and simply is not there.
+   */
+  --blush-hero: #8f4634;
+  /* How strong the wash under the left-hand column is, and how far across the
+     picture it reaches. Cream needs a touch more of both than near-black: a
+     dark photograph shows through a pale wash more than a bright one shows
+     through a dark wash. */
+  --scrim-peak: 96%;
+  --scrim-reach: 58%;
+  /* The band of light that travels through the written line. It has to be
+     lighter than `--gold-hero` and still hold its own against the surface, so
+     it is pale gold on cream rather than the near-white used on dark. */
+  --gold-sheen: #c9a05a;
+
+  /* Ink for text that sits on a hero page. */
+  --on-hero: #22301e;
+  --on-hero-muted: rgb(34 48 30 / 86%);
+
 
   /*
    * Semantic tokens. Everything below names a job rather than a colour, which
@@ -174,10 +216,10 @@
    * copy of every rule. A hex typed straight into a component is a thing that
    * will not follow the theme, so there are none.
    */
-  --placeholder: #a8a596;
-  --input-border-hover: #d3c9b5;
-  --disabled-ink: #8b8574;
-  --outside-ink: #767061;
+  --placeholder: #97a291;
+  --input-border-hover: #bacfb2;
+  --disabled-ink: #86907f;
+  --outside-ink: #6d7568;
 
   --notice-bg: #f5e3dd;
   --notice-ink: #7c4e42;
@@ -199,8 +241,8 @@
   --toast-bg: #283025;
   --toast-ink: #fffcf8;
 
-  --skeleton-a: #f3ece0;
-  --skeleton-b: #f7f1e6;
+  --skeleton-a: #e3ece0;
+  --skeleton-b: #eef4ea;
 
   --overlay: rgb(40 48 37 / 28%);
   /* The wash under a caption sitting on a photograph. Dark in both themes,
@@ -250,8 +292,8 @@
 
   --shell-x: clamp(16px, 3vw, 40px);
 
-  --shadow-soft: 0 1px 2px rgb(40 48 37 / 4%), 0 8px 24px rgb(40 48 37 / 6%);
-  --shadow-lift: 0 2px 4px rgb(40 48 37 / 5%), 0 18px 44px rgb(40 48 37 / 10%);
+  --shadow-soft: 0 1px 2px rgb(34 48 30 / 5%), 0 8px 24px rgb(34 48 30 / 8%);
+  --shadow-lift: 0 2px 4px rgb(34 48 30 / 6%), 0 18px 44px rgb(34 48 30 / 13%);
 
   --t-fast: 160ms;
   --t-slow: 220ms;
@@ -309,11 +351,25 @@
     --nav-ink-strong: #f4efe3;
     --nav-hover: #2f3a26;
 
+    --hero-canvas: #151c11;
+    --hero-veil: 10 14 9;
+    --hero-line: 255 255 242;
+    --hero-glass: 30 38 25;
+    --hero-lift: 45 58 36;
+    --gold-hero: #ffdfb3;
+    --blush-hero: #d9afa3;
+    --scrim-peak: 92%;
+    --scrim-reach: 46%;
+    --gold-sheen: #fffaf0;
+    --on-hero: #fffff2;
+    --on-hero-muted: rgb(255 255 242 / 82%);
+
     --gold: #d7b37c;
     --gold-soft: #c79f5c;
     --gold-bright: #ffdfb3;
 
     /* The primary button inverts with everything else: light pill, dark label. */
+    --gold-fill: #d7b37c;
     --cta: #f6eee5;
     --cta-ink: #11170e;
     --cta-hover: #ffffff;
@@ -387,10 +443,24 @@
   --nav-ink-strong: #f4efe3;
   --nav-hover: #2f3a26;
 
+  --hero-canvas: #151c11;
+  --hero-veil: 10 14 9;
+  --hero-line: 255 255 242;
+  --hero-glass: 30 38 25;
+  --hero-lift: 45 58 36;
+  --gold-hero: #ffdfb3;
+  --blush-hero: #d9afa3;
+  --scrim-peak: 92%;
+  --scrim-reach: 46%;
+  --gold-sheen: #fffaf0;
+  --on-hero: #fffff2;
+  --on-hero-muted: rgb(255 255 242 / 82%);
+
   --gold: #d7b37c;
   --gold-soft: #c79f5c;
   --gold-bright: #ffdfb3;
 
+  --gold-fill: #d7b37c;
   --cta: #f6eee5;
   --cta-ink: #11170e;
   --cta-hover: #ffffff;
@@ -682,27 +752,27 @@ html.has-polish-cursor * {
 }
 
 .header--onHero {
-  background: linear-gradient(to bottom, rgb(10 14 9 / 78%) 0%, rgb(10 14 9 / 34%) 62%, rgb(10 14 9 / 0%) 100%);
+  background: linear-gradient(to bottom, rgb(var(--hero-veil) / 78%) 0%, rgb(var(--hero-veil) / 34%) 62%, rgb(var(--hero-veil) / 0%) 100%);
   color: var(--on-hero);
 }
 .header--onHero .lang a,
 .header--onHero .icon-button { color: var(--on-hero); }
-.header--onHero .nav a { color: rgb(255 255 242 / 88%); }
-.header--onHero .lang { color: rgb(255 255 242 / 68%); }
+.header--onHero .nav a { color: rgb(var(--hero-line) / 88%); }
+.header--onHero .lang { color: rgb(var(--hero-line) / 68%); }
 /* The selected language is `--ink` by default, which is dark in the light
    theme — invisible on a photograph. Over the hero it follows the hero. */
 .header--onHero .lang a[aria-current='true'] {
   color: var(--on-hero);
   border-bottom-color: var(--on-hero);
 }
-.header--onHero .nav a:hover { background: rgb(255 255 242 / 14%); color: var(--on-hero); }
-.header--onHero .nav a[aria-current='page'] { color: var(--gold-bright); }
-.header--onHero .nav a::after { background: var(--gold-bright); }
-.header--onHero .icon-button:hover { background: rgb(255 255 242 / 12%); }
-.header--onHero .theme-toggle { background: rgb(255 255 242 / 12%); }
-.header--onHero .theme-toggle button { color: rgb(255 255 242 / 70%); }
+.header--onHero .nav a:hover { background: rgb(var(--hero-line) / 14%); color: var(--on-hero); }
+.header--onHero .nav a[aria-current='page'] { color: var(--gold-hero); }
+.header--onHero .nav a::after { background: var(--gold-hero); }
+.header--onHero .icon-button:hover { background: rgb(var(--hero-line) / 12%); }
+.header--onHero .theme-toggle { background: rgb(var(--hero-line) / 12%); }
+.header--onHero .theme-toggle button { color: rgb(var(--hero-line) / 70%); }
 .header--onHero .theme-toggle button[aria-pressed='true'] {
-  background: rgb(255 255 242 / 20%);
+  background: rgb(var(--hero-line) / 20%);
   color: var(--on-hero);
   box-shadow: none;
 }
@@ -1676,39 +1746,44 @@ a.card:hover,
  * theme — dark on cream, cream on dark — which is right everywhere except over
  * a picture, where the surface underneath is neither.
  */
+/*
+ * The filled pill on a hero. It carried fixed cream because the hero was fixed
+ * dark; now both turn over together, which is exactly what `--cta` already
+ * means — light pill on the dark theme, dark pill on the light one.
+ */
 .btn--cream {
-  background: #f6eee5;
-  color: #11170e;
+  background: var(--cta);
+  color: var(--cta-ink);
   border-color: transparent;
 }
-.btn--cream:hover:not(:disabled) { background: #ffffff; }
+.btn--cream:hover:not(:disabled) { background: var(--cta-hover); }
 
 /* Its quieter partner: an outline in the hero's own ink, for the second of two
    actions where a second filled pill would fight the first. */
 .btn--onHero {
   background: transparent;
   color: var(--on-hero);
-  border-color: rgb(255 255 242 / 46%);
+  border-color: rgb(var(--hero-line) / 46%);
 }
 .btn--onHero:hover:not(:disabled) {
-  border-color: var(--gold-bright);
-  color: var(--gold-bright);
-  background: rgb(255 255 242 / 8%);
+  border-color: var(--gold-hero);
+  color: var(--gold-hero);
+  background: rgb(var(--hero-line) / 8%);
 }
 
 /* The booking bar as smoked glass rather than a cream pill. */
 .dock--onHero {
-  background: rgb(23 28 19 / 74%);
-  border: 1px solid rgb(255 255 242 / 12%);
+  background: rgb(var(--hero-glass) / 74%);
+  border: 1px solid rgb(var(--hero-line) / 12%);
   backdrop-filter: blur(10px);
   color: var(--on-hero);
 }
-.dock--onHero .dock-field + .dock-field { border-left-color: rgb(255 255 242 / 14%); }
-.dock--onHero .dock-field-label { color: rgb(255 255 242 / 62%); }
+.dock--onHero .dock-field + .dock-field { border-left-color: rgb(var(--hero-line) / 14%); }
+.dock--onHero .dock-field-label { color: rgb(var(--hero-line) / 62%); }
 .dock--onHero .dock-field select,
 .dock--onHero .dock-date,
 .dock--onHero .dock-field svg { color: var(--on-hero); }
-.dock--onHero .dock-field select option { color: #11170e; }
+.dock--onHero .dock-field select option { color: var(--ink); }
 
 /*
  * A full-bleed page: the photograph starts at the very top and the header
@@ -1731,10 +1806,11 @@ a.card:hover,
    page's, whichever theme is on. */
 .shell--banner .shell-main { grid-row: 1; grid-column: 1; background: var(--hero-canvas); }
 
-/* Over a photograph the wordmark is always the cream one, whatever the theme:
-   the surface under it is the picture, not the page. */
-.header--onHero .logo-word--light { display: none; }
-.header--onHero .logo-word--dark { display: block; }
+/*
+ * The wordmark on a hero page follows the theme, like everywhere else. It was
+ * pinned to the cream one here for as long as those pages were dark whatever
+ * the theme; cream on a cream hero is a hole where the name should be.
+ */
 
 /*
  * The decorative petals are lit for cream. On the deep green they read as a

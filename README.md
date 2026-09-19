@@ -106,6 +106,23 @@ Three things make it work rather than half-work:
 A small inline script applies a remembered theme before the first paint.
 Without it, someone who chose dark gets a white flash on every navigation.
 
+
+The day theme is pale pastel green with soft gold; the night theme is the deep
+green the design references use. Gold as a **fill** is soft — the primary
+button, the light across a panel. Gold as **ink** is deep, because a soft gold
+on a pale page measures about 2:1 and is not text.
+
+The three photograph pages — the start page, the studio, the gift cards — follow
+the theme as well. They were dark whichever theme was chosen, which left the day
+theme with nothing to do on the page everybody arrives on. They are painted from
+`--hero-*` tokens, one set per theme, and the wash that makes type legible over
+the picture has its own strength and reach per theme: a dark photograph shows
+through a pale wash more than a bright one shows through a dark wash.
+
+There are two buttons in the theme switch, because there are two themes. With
+nothing stored the system decides, and the switch shows whichever one that
+produced.
+
 ### Images
 
 `npm run assets` turns the kit's originals into what the browser downloads:

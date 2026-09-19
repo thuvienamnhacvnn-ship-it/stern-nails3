@@ -4,11 +4,16 @@ import { useEffect, useState } from 'react';
 import { t, type Locale } from '@/lib/i18n';
 
 /**
- * Light / dark / follow the system.
+ * Day or night. Two buttons, because there are two themes.
  *
- * The choice is written to `data-theme` on <html> and remembered in
- * localStorage. "System" removes the attribute entirely rather than storing a
- * resolved value, so a phone that switches at sunset keeps following it.
+ * There used to be a third for "follow the system". It was the default anyway —
+ * with nothing stored the page follows the system — so the button only ever
+ * meant "forget what I chose", which is not something worth a third of the
+ * control. What it showed instead was a state nobody could read off the page:
+ * three buttons for two outcomes.
+ *
+ * So: nothing stored means the system decides, and the button matching whatever
+ * that produced is the one shown as chosen. Pressing either one writes it down.
  *
  * Nothing renders until after mount. The server cannot know what a visitor
  * chose — that is in their browser — so rendering a guess would light up the
@@ -19,18 +24,15 @@ import { t, type Locale } from '@/lib/i18n';
  * layout; this component only changes it afterwards.
  */
 
-type Choice = 'light' | 'dark' | 'system';
+type Choice = 'light' | 'dark';
 
 const KEY = 'stern.theme';
 
 function apply(choice: Choice) {
-  const root = document.documentElement;
-  if (choice === 'system') root.removeAttribute('data-theme');
-  else root.setAttribute('data-theme', choice);
+  document.documentElement.setAttribute('data-theme', choice);
 
   try {
-    if (choice === 'system') localStorage.removeItem(KEY);
-    else localStorage.setItem(KEY, choice);
+    localStorage.setItem(KEY, choice);
   } catch {
     // Private window, or site data blocked. The choice still applies to this
     // page view; it simply will not be remembered.
@@ -48,13 +50,17 @@ export function ThemeToggle({ locale }: { locale: Locale }) {
     } catch {
       stored = null;
     }
-    setChoice(stored === 'light' || stored === 'dark' ? stored : 'system');
+    if (stored === 'light' || stored === 'dark') {
+      setChoice(stored);
+      return;
+    }
+    // Nothing chosen yet: show whichever one the system is giving them.
+    setChoice(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   }, []);
 
   const options: { value: Choice; label: string }[] = [
     { value: 'light', label: copy.theme.light },
     { value: 'dark', label: copy.theme.dark },
-    { value: 'system', label: copy.theme.system },
   ];
 
   return (
@@ -79,7 +85,7 @@ export function ThemeToggle({ locale }: { locale: Locale }) {
   );
 }
 
-/** Sun, moon, half-and-half. 18px on the same 1.4 stroke as the rest. */
+/** Sun and moon, 18px on the same 1.4 stroke as the rest. */
 function ThemeIcon({ kind }: { kind: Choice }) {
   const common = {
     width: 18,
@@ -102,17 +108,9 @@ function ThemeIcon({ kind }: { kind: Choice }) {
       </svg>
     );
   }
-  if (kind === 'dark') {
-    return (
-      <svg {...common}>
-        <path d="M20 13.6A8.2 8.2 0 0 1 10.4 4a8.4 8.4 0 1 0 9.6 9.6Z" />
-      </svg>
-    );
-  }
   return (
     <svg {...common}>
-      <circle cx="12" cy="12" r="8.2" />
-      <path d="M12 3.8a8.2 8.2 0 0 1 0 16.4Z" fill="currentColor" stroke="none" />
+      <path d="M20 13.6A8.2 8.2 0 0 1 10.4 4a8.4 8.4 0 1 0 9.6 9.6Z" />
     </svg>
   );
 }

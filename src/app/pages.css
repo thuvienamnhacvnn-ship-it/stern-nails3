@@ -46,7 +46,7 @@
    * gives the photograph something to sit in.
    */
   background:
-    radial-gradient(120% 90% at 50% 46%, rgb(45 58 36 / 85%) 0%, rgb(21 28 17 / 0%) 62%),
+    radial-gradient(120% 90% at 50% 46%, rgb(var(--hero-lift) / 85%) 0%, rgb(var(--hero-veil) / 0%) 62%),
     var(--hero-canvas);
   /* So `.banner-frame` below can be told the banner's height as well as its
      width, which is the only way to rebuild the fitted picture's rectangle in
@@ -100,12 +100,24 @@
   --banner-veil: 6%;
   position: absolute;
   inset: 0;
+  /*
+   * Measured, not guessed. The headline runs from 3% to 24% of the frame, and
+   * at the old stops the wash was down to about a third of its strength by the
+   * time it got there — so "Mehr als Nägel." was sitting on the lit ceiling at
+   * 2.5:1 on the dark theme and on the model's hair at 1.5:1 on the light one.
+   * The band now holds most of its strength out to a third of the way across
+   * and fades out at `--scrim-reach`.
+   */
   background:
-    linear-gradient(100deg, rgb(10 14 9 / 90%) 0%, rgb(10 14 9 / 70%) 14%, rgb(10 14 9 / 22%) 26%, rgb(10 14 9 / 0%) 38%),
-    linear-gradient(to top, rgb(10 14 9 / 76%) 0%, rgb(10 14 9 / 10%) 26%, rgb(10 14 9 / 0%) 46%),
-    linear-gradient(to left, rgb(10 14 9 / 72%) 0%, rgb(10 14 9 / 18%) 22%, rgb(10 14 9 / 0%) 38%),
-    radial-gradient(120% 100% at 50% 40%, rgb(10 14 9 / 0%) 34%, rgb(10 14 9 / 26%) 100%),
-    linear-gradient(rgb(10 14 9 / var(--banner-veil)), rgb(10 14 9 / var(--banner-veil)));
+    linear-gradient(100deg,
+      rgb(var(--hero-veil) / var(--scrim-peak)) 0%,
+      rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.95)) 24%,
+      rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.45)) 38%,
+      rgb(var(--hero-veil) / 0%) var(--scrim-reach)),
+    linear-gradient(to top, rgb(var(--hero-veil) / 76%) 0%, rgb(var(--hero-veil) / 10%) 26%, rgb(var(--hero-veil) / 0%) 46%),
+    linear-gradient(to left, rgb(var(--hero-veil) / 72%) 0%, rgb(var(--hero-veil) / 18%) 22%, rgb(var(--hero-veil) / 0%) 38%),
+    radial-gradient(120% 100% at 50% 40%, rgb(var(--hero-veil) / 0%) 34%, rgb(var(--hero-veil) / 26%) 100%),
+    linear-gradient(rgb(var(--hero-veil) / var(--banner-veil)), rgb(var(--hero-veil) / var(--banner-veil)));
 }
 
 .banner-grid {
@@ -156,11 +168,48 @@
   color: var(--on-hero);
 }
 
+/*
+ * Nothing in a text column may grow past it.
+ *
+ * A grid item set to `start` is sized to fit its content, and fit-content is
+ * measured against the grid track — not against the `max-width` on the column
+ * above it. So the studio's paragraph came out 321px wide inside a 289px
+ * column and ran the last of every line onto the arch photograph behind it.
+ */
+/*
+ * `min-width: 0` as well as the cap. A grid item's automatic minimum is its
+ * min-content width, and an automatic minimum beats a maximum — so the studio's
+ * paragraph held itself at 321px inside a 289px column however low the cap was
+ * set, and ran the end of every line onto the arch photograph behind it.
+ */
+.banner-copy > *,
+.studio-copy > *,
+.vouchers-copy > * { max-width: 100%; min-width: 0; }
+
+/*
+ * And the column is a track that cannot grow.
+ *
+ * These columns are one-column grids, and an implicit `auto` track takes the
+ * widest thing in it — so the studio's pair of buttons, which is deliberately
+ * `width: max-content` to keep them on one line, pushed the track out to 321px
+ * inside a 289px column. Every sibling was measured against that track, which
+ * is why the paragraph ran its last words onto the arch photograph behind it,
+ * and why capping the paragraph changed nothing: it was already at 100% of a
+ * track that was too wide.
+ *
+ * `minmax(0, 1fr)` pins the track to the column. The button row still reaches a
+ * few pixels into the gutter, which is what it is for, and now it does that on
+ * its own.
+ */
+.banner-copy,
+.studio-copy,
+.vouchers-copy { grid-template-columns: minmax(0, 1fr); }
+
 .banner-eyebrow {
   font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold-bright);
+  color: var(--gold-hero);
 }
 
 .banner-title {
@@ -173,7 +222,7 @@
 .banner-title-accent {
   display: block;
   font-style: italic;
-  color: var(--gold-bright);
+  color: var(--gold-hero);
 }
 
 .banner-intro {
@@ -231,7 +280,7 @@
   /* A shadow through `filter`, not `text-shadow`: the letters are painted with
      a background clipped to their shapes, and a text-shadow would show through
      the transparent glyphs as a grey ghost of the words. */
-  filter: drop-shadow(0 2px 12px rgb(10 14 9 / 65%));
+  filter: drop-shadow(0 2px 12px rgb(var(--hero-veil) / 65%));
 
   /*
    * The line is not a flat gold. It is painted with a gradient that is three
@@ -246,11 +295,11 @@
    */
   background-image: linear-gradient(
     100deg,
-    var(--gold-bright) 0%,
-    var(--gold-bright) 16%,
-    #fffaf0 25%,
-    var(--gold-bright) 34%,
-    var(--gold-bright) 100%
+    var(--gold-hero) 0%,
+    var(--gold-hero) 16%,
+    var(--gold-sheen) 25%,
+    var(--gold-hero) 34%,
+    var(--gold-hero) 100%
   );
   background-size: 300% 100%;
   background-position: -60% 0;
@@ -281,7 +330,7 @@
   margin-left: 0.45em;
   /* Its own colour, because the parent's is transparent — `currentColor`
      inside the mark would otherwise resolve to nothing at all. */
-  color: var(--gold-bright);
+  color: var(--gold-hero);
   animation: script-heart 3400ms 1200ms var(--ease) infinite;
   transform-origin: center;
 }
@@ -374,9 +423,9 @@
   border-radius: 14px;
   overflow: hidden;
   background:
-    linear-gradient(135deg, rgb(70 84 56 / 34%), rgb(34 42 27 / 10%)),
-    rgb(30 38 25 / 68%);
-  border: 1px solid rgb(255 255 242 / 14%);
+    linear-gradient(135deg, rgb(var(--hero-lift) / 34%), rgb(var(--hero-glass) / 10%)),
+    rgb(var(--hero-glass) / 68%);
+  border: 1px solid rgb(var(--hero-line) / 14%);
   box-shadow: 0 10px 30px rgb(0 0 0 / 26%);
   backdrop-filter: blur(8px);
   transition:
@@ -403,7 +452,7 @@
   transition: color var(--t-fast) var(--ease);
 }
 .rail-card:hover .rail-card-title,
-.rail-card:focus-within .rail-card-title { color: var(--gold-bright); }
+.rail-card:focus-within .rail-card-title { color: var(--gold-hero); }
 
 /*
  * The folded part. `max-height` rather than `height: auto`, because auto does
@@ -444,9 +493,9 @@
   padding: 12px 14px;
   border-radius: 14px;
   background:
-    linear-gradient(135deg, rgb(70 84 56 / 34%), rgb(34 42 27 / 10%)),
-    rgb(30 38 25 / 68%);
-  border: 1px solid rgb(255 255 242 / 14%);
+    linear-gradient(135deg, rgb(var(--hero-lift) / 34%), rgb(var(--hero-glass) / 10%)),
+    rgb(var(--hero-glass) / 68%);
+  border: 1px solid rgb(var(--hero-line) / 14%);
   box-shadow: 0 10px 30px rgb(0 0 0 / 26%);
   backdrop-filter: blur(8px);
   color: var(--on-hero);
@@ -461,9 +510,9 @@
   border-color: rgb(215 179 124 / 62%);
   box-shadow: 0 14px 40px rgb(0 0 0 / 38%), 0 0 0 1px rgb(215 179 124 / 22%);
 }
-.rail-teaser svg:first-child { color: var(--gold-bright); transition: transform var(--t-fast) var(--ease); }
+.rail-teaser svg:first-child { color: var(--gold-hero); transition: transform var(--t-fast) var(--ease); }
 .rail-teaser:hover svg:first-child { transform: scale(1.12); }
-.rail-teaser:hover .rail-teaser-title { color: var(--gold-bright); }
+.rail-teaser:hover .rail-teaser-title { color: var(--gold-hero); }
 .rail-teaser-title { transition: color var(--t-fast) var(--ease); }
 .rail-teaser-title { display: block; font-size: 14px; font-weight: 500; }
 .rail-teaser-sub { display: block; font-size: 12px; color: var(--on-hero-muted); }
@@ -471,10 +520,10 @@
 /* An arrow button on the photograph rather than on a panel. */
 .round-arrow--onHero {
   background: transparent;
-  border-color: rgb(255 255 242 / 32%);
+  border-color: rgb(var(--hero-line) / 32%);
   color: var(--on-hero);
 }
-.round-arrow--onHero:hover { border-color: var(--gold); color: var(--gold-bright); }
+.round-arrow--onHero:hover { border-color: var(--gold); color: var(--gold-hero); }
 
 /* ---------------------------------------------------------------- the dock */
 
@@ -518,7 +567,7 @@
   .banner-stage { bottom: auto; height: 78vh; }
   .banner-scrim {
     background:
-      linear-gradient(to top, rgb(10 14 9 / 92%) 0%, rgb(10 14 9 / 42%) 38%, rgb(10 14 9 / 12%) 66%, rgb(10 14 9 / 2%) 100%);
+      linear-gradient(to top, rgb(var(--hero-veil) / 92%) 0%, rgb(var(--hero-veil) / 42%) 38%, rgb(var(--hero-veil) / 12%) 66%, rgb(var(--hero-veil) / 2%) 100%);
   }
   .banner-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -942,17 +991,10 @@
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(110% 80% at 52% 44%, rgb(45 58 36 / 62%) 0%, rgb(21 28 17 / 0%) 64%),
+    radial-gradient(110% 80% at 52% 44%, rgb(var(--hero-lift) / 62%) 0%, rgb(var(--hero-veil) / 0%) 64%),
     var(--hero-canvas);
   color: var(--on-hero);
 }
-
-/*
- * The decorative petals are lit for cream, and this page is dark whichever
- * theme is on — at full strength the one in the corner sits over the logo like
- * a sticker. Dimmed, it is the out-of-focus foliage the design frames with.
- */
-.studio .petal { opacity: 0.14; }
 
 .studio-grid {
   position: relative;
@@ -984,7 +1026,7 @@
   font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold-bright);
+  color: var(--gold-hero);
 }
 
 .studio-title {
@@ -993,7 +1035,7 @@
   letter-spacing: -0.015em;
   color: var(--on-hero);
 }
-.studio-title-accent { display: block; font-style: italic; color: var(--gold-bright); }
+.studio-title-accent { display: block; font-style: italic; color: var(--gold-hero); }
 
 .studio-intro {
   font-size: clamp(13px, 1.7vh, 15px);
@@ -1037,7 +1079,7 @@
 
 .studio-script {
   font-size: clamp(22px, min(2.2vw, 4.6vh), 36px);
-  color: var(--gold-bright);
+  color: var(--gold-hero);
   line-height: 0.98;
   max-width: 76%;
   margin-top: 6px;
@@ -1112,7 +1154,7 @@
   width: clamp(40px, 5vw, 86px);
   height: 1px;
   margin-top: 2px;
-  background: rgb(255 255 242 / 55%);
+  background: rgb(var(--hero-line) / 55%);
 }
 
 /* The stamp: a ring of type around the mark, set on a real circle. */
@@ -1133,9 +1175,9 @@
   height: 100%;
   animation: studio-stamp-turn 34s linear infinite;
 }
-.studio-stamp-ring circle { fill: none; stroke: rgb(255 255 242 / 30%); stroke-width: 1; }
+.studio-stamp-ring circle { fill: none; stroke: rgb(var(--hero-line) / 30%); stroke-width: 1; }
 .studio-stamp-ring text {
-  fill: var(--gold-bright);
+  fill: var(--gold-hero);
   font-family: var(--font-body);
   font-size: 9px;
   letter-spacing: 0.22em;
@@ -1170,12 +1212,12 @@
   width: 42px;
   height: 42px;
   border-radius: var(--r-pill);
-  border: 1px solid rgb(255 255 242 / 30%);
-  color: var(--gold-bright);
+  border: 1px solid rgb(var(--hero-line) / 30%);
+  color: var(--gold-hero);
   flex: none;
   transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
 }
-.studio-note:hover .studio-note-icon { border-color: var(--gold-bright); transform: translateY(-2px); }
+.studio-note:hover .studio-note-icon { border-color: var(--gold-hero); transform: translateY(-2px); }
 
 .studio-note-body { display: grid; gap: 4px; min-width: 0; }
 .studio-note-title { font-family: var(--font-head); font-size: clamp(18px, 1.3vw, 23px); color: var(--on-hero); }
@@ -1193,7 +1235,7 @@
    */
   font-size: clamp(19px, min(1.7vw, 3.6vh), 28px);
   line-height: 1.06;
-  color: var(--gold-bright);
+  color: var(--gold-hero);
   transform: rotate(-4deg);
   transform-origin: right center;
 }
@@ -1260,10 +1302,14 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(100deg, rgb(10 14 9 / 90%) 0%, rgb(10 14 9 / 68%) 16%, rgb(10 14 9 / 18%) 32%, rgb(10 14 9 / 0%) 46%),
-    linear-gradient(to top, rgb(10 14 9 / 72%) 0%, rgb(10 14 9 / 10%) 26%, rgb(10 14 9 / 0%) 44%),
-    linear-gradient(to left, rgb(10 14 9 / 62%) 0%, rgb(10 14 9 / 10%) 34%, rgb(10 14 9 / 0%) 48%),
-    linear-gradient(rgb(10 14 9 / 12%), rgb(10 14 9 / 12%));
+    linear-gradient(100deg,
+      rgb(var(--hero-veil) / var(--scrim-peak)) 0%,
+      rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.95)) 24%,
+      rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.45)) 38%,
+      rgb(var(--hero-veil) / 0%) var(--scrim-reach)),
+    linear-gradient(to top, rgb(var(--hero-veil) / 72%) 0%, rgb(var(--hero-veil) / 10%) 26%, rgb(var(--hero-veil) / 0%) 44%),
+    linear-gradient(to left, rgb(var(--hero-veil) / 62%) 0%, rgb(var(--hero-veil) / 10%) 34%, rgb(var(--hero-veil) / 0%) 48%),
+    linear-gradient(rgb(var(--hero-veil) / 12%), rgb(var(--hero-veil) / 12%));
 }
 
 .vouchers-grid {
@@ -1295,7 +1341,7 @@
   font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold-bright);
+  color: var(--gold-hero);
 }
 
 .vouchers-title {
@@ -1309,9 +1355,9 @@
  * gold; here it is the pink of the mark, because this is the page about giving
  * something away and the blush is the warmer of the two brand colours.
  */
-.vouchers-title-accent { display: block; color: var(--blush); }
+.vouchers-title-accent { display: block; color: var(--blush-hero); }
 
-.vouchers-rule { display: block; width: 54px; height: 1px; background: rgb(255 255 242 / 42%); margin: 2px 0 4px; }
+.vouchers-rule { display: block; width: 54px; height: 1px; background: rgb(var(--hero-line) / 42%); margin: 2px 0 4px; }
 
 .vouchers-intro {
   font-size: clamp(13px, 1.7vh, 15px);
@@ -1327,11 +1373,11 @@
   font-size: 14px;
   color: var(--on-hero);
 }
-.vouchers-perks svg { color: var(--gold-bright); flex: none; }
+.vouchers-perks svg { color: var(--gold-hero); flex: none; }
 
 .vouchers-script {
   font-size: clamp(22px, min(2.2vw, 4.4vh), 34px);
-  color: var(--gold-bright);
+  color: var(--gold-hero);
   line-height: 0.98;
   max-width: 76%;
   margin-top: var(--s2);
@@ -1517,8 +1563,8 @@
   line-height: 1.4;
   color: var(--on-hero);
 }
-.vouchers-assurances li + li { border-left: 1px solid rgb(255 255 242 / 18%); }
-.vouchers-assurances svg { color: var(--gold-bright); }
+.vouchers-assurances li + li { border-left: 1px solid rgb(var(--hero-line) / 18%); }
+.vouchers-assurances svg { color: var(--gold-hero); }
 .vouchers-assurances span span { display: block; }
 
 /* ------------------------------------------------------------ the designer */
@@ -1552,9 +1598,9 @@
   padding: clamp(13px, 1vw, 16px);
   border-radius: 20px;
   background:
-    linear-gradient(150deg, rgb(70 84 56 / 30%), rgb(20 26 16 / 14%)),
-    rgb(18 24 15 / 82%);
-  border: 1px solid rgb(255 255 242 / 14%);
+    linear-gradient(150deg, rgb(var(--hero-lift) / 30%), rgb(var(--hero-glass) / 14%)),
+    rgb(var(--hero-glass) / 82%);
+  border: 1px solid rgb(var(--hero-line) / 14%);
   box-shadow: 0 26px 70px rgb(0 0 0 / 46%);
   backdrop-filter: blur(10px);
   color: var(--on-hero);
@@ -1580,16 +1626,16 @@
 
 .vouchers-designer .input,
 .vouchers-designer .textarea {
-  background: rgb(255 255 242 / 6%);
-  border-color: rgb(255 255 242 / 22%);
+  background: rgb(var(--hero-line) / 6%);
+  border-color: rgb(var(--hero-line) / 22%);
   color: var(--on-hero);
 }
 .vouchers-designer .input::placeholder,
-.vouchers-designer .textarea::placeholder { color: rgb(255 255 242 / 52%); }
+.vouchers-designer .textarea::placeholder { color: rgb(var(--hero-line) / 52%); }
 .vouchers-designer .input:hover,
-.vouchers-designer .textarea:hover { border-color: rgb(255 255 242 / 40%); }
+.vouchers-designer .textarea:hover { border-color: rgb(var(--hero-line) / 40%); }
 .vouchers-designer .input:focus-visible,
-.vouchers-designer .textarea:focus-visible { border-color: var(--gold-bright); }
+.vouchers-designer .textarea:focus-visible { border-color: var(--gold-hero); }
 
 /* The leading icon inside a field. The input keeps the whole box — the icon is
    laid over its left padding — so the caret and the text still start clear of
@@ -1600,7 +1646,7 @@
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgb(255 255 242 / 60%);
+  color: rgb(var(--hero-line) / 60%);
   pointer-events: none;
 }
 .field-with-icon--top > svg { top: 16px; transform: none; }
@@ -1608,13 +1654,13 @@
 .field-with-icon .textarea { padding-left: 46px; width: 100%; }
 
 .vouchers-designer .notice {
-  background: rgb(255 255 242 / 8%);
+  background: rgb(var(--hero-line) / 8%);
   color: var(--on-hero);
-  border: 1px solid rgb(255 255 242 / 14%);
+  border: 1px solid rgb(var(--hero-line) / 14%);
 }
-.vouchers-designer .notice svg { color: var(--gold-bright); }
+.vouchers-designer .notice svg { color: var(--gold-hero); }
 
-.vouchers-designer .badge { background: rgb(255 255 242 / 12%); color: var(--on-hero); }
+.vouchers-designer .badge { background: rgb(var(--hero-line) / 12%); color: var(--on-hero); }
 
 .vouchers-designer .textarea { min-height: 62px; }
 /* A size down inside the pane: the field heights are what decide whether the
@@ -1641,17 +1687,17 @@
 
 .vouchers-designer .amount-option {
   min-height: 44px;
-  background: rgb(255 255 242 / 6%);
-  border-color: rgb(255 255 242 / 22%);
+  background: rgb(var(--hero-line) / 6%);
+  border-color: rgb(var(--hero-line) / 22%);
   color: var(--on-hero);
 }
-.vouchers-designer .amount-option:hover { border-color: rgb(255 255 242 / 46%); transform: translateY(-1px); }
+.vouchers-designer .amount-option:hover { border-color: rgb(var(--hero-line) / 46%); transform: translateY(-1px); }
 /* The chosen amount is marked in gold rather than filled in sage: on glass a
    filled pill reads as a second panel. */
 .vouchers-designer .amount-option[aria-pressed='true'] {
   background: rgb(215 179 124 / 16%);
-  border-color: var(--gold-bright);
-  color: var(--gold-bright);
+  border-color: var(--gold-hero);
+  color: var(--gold-hero);
 }
 
 .voucher-total {
@@ -1661,7 +1707,7 @@
   gap: var(--s2);
   padding-top: 10px;
   margin-top: 2px;
-  border-top: 1px solid rgb(255 255 242 / 18%);
+  border-top: 1px solid rgb(var(--hero-line) / 18%);
 }
 .voucher-total-label { display: block; font-family: var(--font-head); font-size: 21px; color: var(--on-hero); }
 .voucher-total-vat { display: block; font-size: 11px; color: var(--on-hero-muted); }
@@ -1676,8 +1722,8 @@
      of the room here, and "Verschenkt." in blush had nothing to sit on. */
   .vouchers-scrim {
     background:
-      linear-gradient(to bottom, rgb(10 14 9 / 88%) 0%, rgb(10 14 9 / 62%) 24%, rgb(10 14 9 / 26%) 48%, rgb(10 14 9 / 0%) 70%),
-      linear-gradient(to top, rgb(10 14 9 / 94%) 0%, rgb(10 14 9 / 58%) 34%, rgb(10 14 9 / 12%) 62%, rgb(10 14 9 / 0%) 100%);
+      linear-gradient(to bottom, rgb(var(--hero-veil) / 88%) 0%, rgb(var(--hero-veil) / 62%) 24%, rgb(var(--hero-veil) / 26%) 48%, rgb(var(--hero-veil) / 0%) 70%),
+      linear-gradient(to top, rgb(var(--hero-veil) / 94%) 0%, rgb(var(--hero-veil) / 58%) 34%, rgb(var(--hero-veil) / 12%) 62%, rgb(var(--hero-veil) / 0%) 100%);
   }
   .vouchers-grid {
     grid-template-columns: minmax(0, 1fr);

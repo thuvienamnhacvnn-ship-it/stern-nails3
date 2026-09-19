@@ -111,11 +111,12 @@ export async function HomePage({
             <ArrowRight size={18} />
           </Link>
 
-          <span className="banner-motto" aria-hidden="true">
-            {copy.brand.motto.map((word) => (
-              <span key={word}>{word}</span>
-            ))}
-          </span>
+          {/*
+            No stacked BEAUTY / CARE / GOOD VIBES here any more. It said exactly
+            what the eyebrow above already says, and it stood in the bottom left
+            of the column — which is where the written line sits now that it has
+            moved onto the picture beside the flowers. The two overlapped.
+          */}
         </section>
 
         {/* ------------------------------------------------- the lookbook */}
