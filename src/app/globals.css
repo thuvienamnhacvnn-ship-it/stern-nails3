@@ -111,13 +111,18 @@
  * they say gold measures about 2.
  */
 :root {
-  --canvas: #f0f3ea;
+  /*
+   * Green enough to be seen. The hue rotation put the palette in the mark's
+   * family but left it so pale that switching day themes looked like nothing
+   * had happened; the fills below carry a little more of the leaf's brass.
+   */
+  --canvas: #eef2e3;
   --panel: #fbfdf8;
-  --panel-soft: #e6ebdd;
+  --panel-soft: #e2e8d2;
   --blush: #e6beb2;
   --blush-soft: #f7e7e2;
-  --sage: #a6b18c;
-  --sage-soft: #e3e8d4;
+  --sage: #94a35e;
+  --sage-soft: #dfe7c9;
   --ink: #2a2e1d;
   --muted: #5a604f;
   --hairline: #d8decc;
