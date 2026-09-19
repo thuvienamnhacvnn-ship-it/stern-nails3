@@ -11,155 +11,307 @@
  * right edge off at 390px with no scrollbar to explain it.
  */
 
-/* ============================================================ 01 · start */
+/* =========================================================== 01 · banner */
 
-.home {
+/*
+ * The start page is one 16:9 photograph, edge to edge, with everything on it.
+ *
+ * The picture is a layer at the back and a grid of content floats above it in
+ * the three proportions the reference uses — roughly 22 / 52 / 26. The dark
+ * green behind it is only ever seen through the corners of the frame, where
+ * the photograph's own out-of-focus foliage is.
+ *
+ * Nothing tints the photograph. The only thing between it and the eye is a
+ * scrim anchored to the left and bottom edges, which is what makes cream type
+ * legible over a bright salon without touching the middle of the frame.
+ */
+.banner {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 22fr) minmax(0, 50fr) minmax(0, 28fr);
-  gap: var(--s4);
-  padding: 0 var(--shell-x) var(--s2);
-  height: 100%;
   min-height: 0;
-  /* Nothing may spill past the shell row on a one-screen layout; each column
-     below is given its own min-height: 0 so it shrinks rather than pushing. */
+  height: 100%;
   overflow: hidden;
+  isolation: isolate;
+  background: var(--hero-canvas);
 }
 
-.home-intro {
+/*
+ * The stage is the whole screen.
+ *
+ * The picture is 16:9 and it is shown at 16:9, edge to edge — not set into a
+ * panel. Where the window is wider than 16:9 the crop is taken off the top
+ * rather than the middle: the ceiling is the one part of the frame nothing
+ * depends on, while the foot of it carries "Nails feel like you" and the card
+ * on the table.
+ */
+.banner-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/*
+ * Both <picture> elements are stacked, not laid out in sequence.
+ *
+ * The desktop and phone crops are two <picture> elements with the hide class on
+ * the <img> inside each. Left in normal flow the first one takes the whole
+ * stage and the second is pushed out below it — so on a phone the banner showed
+ * nothing at all, and on a desktop it worked only because the visible one
+ * happened to come first.
+ */
+.banner-stage picture { position: absolute; inset: 0; display: block; }
+.banner-stage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/*
+ * The scrim.
+ *
+ * Four layers, and only the last one touches the whole frame. The three
+ * gradients are anchored to the left, the bottom and the right, where the type
+ * and the cards sit; the flat layer is a light overall deepening that brings a
+ * bright daylight photograph towards the evening mood of the reference without
+ * turning it grey.
+ *
+ * `--banner-veil` is the one dial worth having: set it to 0 and the photograph
+ * is untouched everywhere except directly under the text.
+ */
+.banner-scrim {
+  --banner-veil: 6%;
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(100deg, rgb(10 14 9 / 90%) 0%, rgb(10 14 9 / 70%) 14%, rgb(10 14 9 / 22%) 26%, rgb(10 14 9 / 0%) 38%),
+    linear-gradient(to top, rgb(10 14 9 / 76%) 0%, rgb(10 14 9 / 10%) 26%, rgb(10 14 9 / 0%) 46%),
+    linear-gradient(to left, rgb(10 14 9 / 72%) 0%, rgb(10 14 9 / 18%) 22%, rgb(10 14 9 / 0%) 38%),
+    radial-gradient(120% 100% at 50% 40%, rgb(10 14 9 / 0%) 34%, rgb(10 14 9 / 26%) 100%),
+    linear-gradient(rgb(10 14 9 / var(--banner-veil)), rgb(10 14 9 / var(--banner-veil)));
+}
+
+.banner-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 22fr) minmax(0, 52fr) minmax(0, 26fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: var(--s3);
+  height: 100%;
+  min-height: 0;
+  /*
+   * The header floats in this same cell, so the content has to start below it
+   * by hand. Without this the headline and the lookbook rail both begin at y=0
+   * and run straight through the logo.
+   */
+  padding: calc(var(--header-h) + 10px) var(--shell-x) var(--s2);
+}
+
+/* --------------------------------------------------------------- the word */
+
+.banner-copy {
+  grid-column: 1 / span 2;
+  grid-row: 1;
   display: grid;
   align-content: center;
   justify-items: start;
   gap: 12px;
-  padding-block: var(--s2);
   min-width: 0;
-  min-height: 0;
-  position: relative;
-  z-index: 1;
+  /*
+   * A width in px, not in `ch`: `ch` resolves against this element's own 16px
+   * font size, so 30ch is about 240px and the 78px headline inside it breaks
+   * after every second word.
+   */
+  /*
+   * About 21% of the frame, which is what the reference uses — and what keeps
+   * the headline clear of the model's face. Wider and the second line runs
+   * across her cheek; the scrim makes that readable but it is not the picture
+   * anybody composed.
+   */
+  /*
+   * Narrow on purpose. The reference breaks the headline as "Mehr als" /
+   * "Nägel." / "Ein Gefühl.", and that break comes from the column being about
+   * 18% of the frame rather than from a <br> — so the same three lines fall out
+   * in English, where the words are different lengths.
+   */
+  max-width: clamp(250px, 21vw, 380px);
+  color: var(--on-hero);
 }
 
-/*
- * The vertical budget on a one-screen page is real: at 1440x900 the shell row
- * is about 740px once the header, the demo strip and the footer are taken off,
- * and the introduction column has to hold a flower, a three-line title, a
- * paragraph, a button and the motto inside it. So these sizes are tuned to fit
- * rather than to look largest, and the column keeps `overflow-y: auto` as a
- * safety net for a language whose words run longer than German's.
- */
-.home-flower { width: clamp(96px, 8.5vw, 150px); height: auto; }
-
-.home-title { font-size: clamp(38px, 3.4vw, 58px); }
-.home-lede { max-width: 34ch; font-size: 15px; line-height: 1.6; }
-.home-cta { margin-top: 4px; }
-.home-motto { padding-top: var(--s2); }
-
-.home-hero { position: relative; display: grid; min-width: 0; padding-bottom: 46px; }
-
-.home-hero-media {
-  border-radius: 0;
-  height: 100%;
-  min-height: 0;
-}
-.home-hero-media img { height: 100%; }
-
-.home-hero-script {
-  position: absolute;
-  right: clamp(24px, 6%, 80px);
-  bottom: 132px;
-  font-size: clamp(26px, 2.6vw, 40px);
-  color: var(--on-photo);
-  opacity: 0.95;
-  text-shadow: 0 2px 14px rgb(40 48 37 / 35%);
-  transform: rotate(-6deg);
+.banner-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
 }
 
-/* The bar sits over the foot of the photograph, as in the screen, and the hero
-   reserves that space with its own bottom padding so nothing is covered. */
-.home-dock {
-  position: absolute;
-  left: var(--s2);
-  right: var(--s2);
-  bottom: 0;
-  z-index: 2;
+.banner-title {
+  font-size: clamp(34px, min(4.1vw, 8.6vh), 74px);
+  line-height: 1.0;
+  letter-spacing: -0.015em;
+  color: var(--on-hero);
+}
+/* The second line is the accent: gold and italic, as the reference sets it. */
+.banner-title-accent {
+  display: block;
+  font-style: italic;
+  color: var(--gold-bright);
 }
 
-.home-edit {
+.banner-intro {
+  font-size: clamp(13px, 1.7vh, 15px);
+  line-height: 1.65;
+  color: var(--on-hero-muted);
+  max-width: 34ch;
+}
+
+.banner-cta { margin-top: 6px; }
+
+.banner-script {
+  /*
+   * Two staggered lines with the heart under the tail, as the reference writes
+   * it. The stagger is a hanging indent on the second line rather than two
+   * elements, so it still reads as one phrase to a screen reader.
+   */
+  font-size: clamp(24px, min(2.6vw, 5.4vh), 44px);
+  color: var(--gold-bright);
+  opacity: 0.94;
+  display: block;
+  /* Wide enough that "like you" and the heart share the second line. */
+  max-width: 78%;
+  line-height: 0.92;
+  margin-top: 14px;
+  padding-left: 0.35em;
+  text-indent: -0.35em;
+  transform: rotate(-3deg);
+  transform-origin: left center;
+}
+.banner-script svg { display: inline-block; vertical-align: -0.1em; margin-left: 10px; }
+
+.banner-motto {
+  display: grid;
+  gap: 5px;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--on-hero-muted);
+  margin-top: var(--s2);
+}
+
+/* ----------------------------------------------------------- the lookbook */
+
+.banner-rail {
+  grid-column: 3;
+  grid-row: 1;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 12px;
-  padding-block: var(--s2);
   min-width: 0;
   min-height: 0;
+  color: var(--on-hero);
 }
-.home-edit-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-/* The page counter is one token; wrapping it into three lines is worse than
-   letting the heading beside it be a little narrower. */
-.home-edit-head .row { flex-wrap: nowrap; white-space: nowrap; }
-.home-edit-title { font-size: clamp(30px, 2.8vw, 46px); }
-.home-edit-sub { margin-top: 6px; }
+.banner-rail-head { display: flex; align-items: center; justify-content: flex-end; min-height: 40px; }
 
-.home-edit-list {
+.banner-rail-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  /* Three equal rows that divide whatever height is left, so the rail always
-     shows all three collections instead of cutting the third one off. */
   grid-template-rows: repeat(3, minmax(0, 1fr));
   gap: 12px;
   min-height: 0;
 }
 
-.edit-card {
+/*
+ * A card on the hero is a pane of smoked glass, not a cream panel: the
+ * photograph stays faintly visible through it, which is what holds the banner
+ * together as one picture rather than a picture with boxes on it.
+ */
+.rail-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
   align-items: stretch;
-  border-radius: var(--r-panel);
-  overflow: hidden;
-  background: var(--panel-soft);
   height: 100%;
-  min-height: 108px;
-  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  min-height: 104px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgb(23 28 19 / 72%);
+  border: 1px solid rgb(255 255 242 / 10%);
+  backdrop-filter: blur(6px);
+  transition: transform var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
 }
-.edit-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); }
-.home-edit-list li:nth-child(2) .edit-card { background: var(--blush-soft); }
-.home-edit-list li:nth-child(3) .edit-card { background: var(--sage-soft); }
+.rail-card:hover { transform: translateY(-2px); border-color: rgb(215 179 124 / 45%); }
 
-.edit-card-body { display: grid; align-content: center; gap: 4px; padding: 16px; min-width: 0; }
-.edit-card-title { font-size: clamp(22px, 1.6vw, 28px); }
-.edit-card-body .round-arrow { margin-top: 10px; background: transparent; }
-.edit-card-media { min-height: 100%; }
+.rail-card-body { display: grid; align-content: center; gap: 4px; padding: 16px; min-width: 0; }
+.rail-card-title { font-family: var(--font-head); font-size: clamp(22px, 1.6vw, 28px); color: var(--on-hero); }
+.rail-card-teaser { font-size: 12px; color: var(--on-hero-muted); }
+.rail-card-body .round-arrow { margin-top: 8px; }
+.rail-card-media { min-height: 100%; }
 
-.edit-teaser {
+.banner-rail-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+
+.rail-teaser {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: var(--r-panel);
-  background: var(--panel);
-  box-shadow: var(--shadow-soft);
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgb(23 28 19 / 72%);
+  border: 1px solid rgb(255 255 242 / 10%);
+  backdrop-filter: blur(6px);
+  color: var(--on-hero);
   min-width: 0;
-  transition: transform var(--t-fast) var(--ease);
+  transition: transform var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
 }
-.edit-teaser:hover { transform: translateY(-2px); }
-.home-edit-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.rail-teaser:hover { transform: translateY(-2px); border-color: rgb(215 179 124 / 45%); }
+.rail-teaser-title { display: block; font-size: 14px; font-weight: 500; }
+.rail-teaser-sub { display: block; font-size: 12px; color: var(--on-hero-muted); }
+
+/* An arrow button on the photograph rather than on a panel. */
+.round-arrow--onHero {
+  background: transparent;
+  border-color: rgb(255 255 242 / 32%);
+  color: var(--on-hero);
+}
+.round-arrow--onHero:hover { border-color: var(--gold); color: var(--gold-bright); }
+
+/* ---------------------------------------------------------------- the dock */
+
+.banner-dock {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  justify-self: center;
+  width: min(100%, 720px);
+}
+
+/* --------------------------------------------------------------- on a phone */
 
 @media (max-width: 1099px) {
-  .home {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--s4);
-    padding-bottom: var(--s5);
+  /*
+   * One column, and the picture stops being the whole page: it becomes the top
+   * of a page that scrolls. Cream type over a photograph works when the
+   * photograph is the size of the screen; it does not when the reader has to
+   * scroll six cards across it.
+   */
+  .banner { height: auto; overflow: visible; }
+  .banner-stage { bottom: auto; height: 78vh; }
+  .banner-scrim {
+    background:
+      linear-gradient(to top, rgb(10 14 9 / 92%) 0%, rgb(10 14 9 / 42%) 38%, rgb(10 14 9 / 12%) 66%, rgb(10 14 9 / 2%) 100%);
   }
-  .home-intro { padding-block: var(--s3) 0; }
-  .home-flower { display: none; }
-  .home-title { font-size: clamp(34px, 9vw, 46px); }
-  .home-lede { max-width: none; }
-  .home-hero { padding-bottom: 44px; }
-  .home-hero-media { border-radius: var(--r-panel); }
-  .home-dock { left: 0; right: 0; }
-  .home-hero-script { bottom: 92px; right: 24px; font-size: 30px; }
-  .home-edit-list { gap: var(--s2); }
-  .edit-card { min-height: 150px; }
+  .banner-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    gap: var(--s4);
+    padding: var(--s4) var(--shell-x) var(--s5);
+  }
+  .banner-copy { grid-column: 1; max-width: none; padding-top: 6vh; min-height: 56vh; align-content: end; }
+  .banner-title { font-size: clamp(38px, 10vw, 54px); }
+  .banner-script { font-size: 32px; }
+  .banner-dock { grid-column: 1; grid-row: auto; width: 100%; }
+  .banner-rail { grid-column: 1; grid-row: auto; }
+  .banner-rail-head { justify-content: space-between; }
+  .rail-card { min-height: 130px; }
+  /* Past the picture the cards sit on the page itself, so they take the page's
+     own surface rather than staying glass over nothing. */
+  .banner-rail-list li:nth-child(n + 3) .rail-card,
+  .banner-rail-foot .rail-teaser { background: var(--panel); }
 }
 
 /* ========================================================= 02 · services */
@@ -211,7 +363,7 @@
   min-width: 0;
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.category-tab[aria-current='true'] { background: var(--sage); color: var(--panel); }
+.category-tab[aria-current='true'] { background: var(--sage); color: var(--on-sage); }
 .category-tab span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .service-grid {
@@ -655,7 +807,7 @@
   cursor: pointer;
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.amount-option[aria-pressed='true'] { background: var(--sage); border-color: var(--sage); color: var(--panel); }
+.amount-option[aria-pressed='true'] { background: var(--sage); border-color: var(--sage); color: var(--on-sage); }
 
 @media (max-width: 1099px) {
   .vouchers { grid-template-columns: minmax(0, 1fr); padding-bottom: var(--s5); }

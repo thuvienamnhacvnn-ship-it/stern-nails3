@@ -119,6 +119,19 @@ by side the way the design screens do. That is done with ffmpeg and a small
 alpha computation rather than sharp, because this workstation blocks unsigned
 native node bindings.
 
+Every URL under `/media/` is served `immutable`, and the filenames only carry a
+width — so a rebuilt picture at the same size would never reach a browser that
+had seen the old one. The manifest therefore records a hash of each source and
+every URL carries it as `?v=`. Change a file in `assets/`, re-run
+`npm run assets`, and the URL changes with it. Nothing else has to be touched.
+
+`assets/interiors/hero-banner.png` is the start page, and it is used exactly as
+delivered: the brand sign, the written line and the card on the table are all
+painted into the photograph, so the page does not draw them a second time. It
+is 16:9 and the banner shows it at 16:9 edge to edge; where the window is wider
+than that the crop is taken off the ceiling, which is why the focal point in
+`home.tsx` sits below the middle.
+
 ### Time
 
 Everything stored is a UTC instant. Everything displayed is Europe/Berlin wall

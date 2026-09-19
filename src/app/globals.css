@@ -116,6 +116,45 @@
   --focus: #5b6b4e;
 
   /*
+   * Gold. Measured off the banner reference rather than guessed: the eyebrow
+   * and the script accent are #ffdfb3, the footer's small caps #d7b37c.
+   *
+   * The first design kit said not to use gold as a brand colour. The banner
+   * reference that replaced it uses gold throughout, and the later direction
+   * wins — but it stays an accent: eyebrows, the second half of a headline, the
+   * script, small caps. Never a button, never body copy.
+   */
+  /*
+   * On cream, gold has to be deep enough to read. #a9853f — the shade the
+   * reference uses on dark — measures 2.9:1 against the canvas, and the eyebrow
+   * and the footer claim are both 11-12px, so they need 4.5:1. This is 5.2:1
+   * and still unmistakably gold.
+   *
+   * `--gold-bright` is for type sitting on the banner photograph, never on the
+   * page.
+   */
+  --gold: #7d5f26;
+  --gold-soft: #9a7738;
+  --gold-bright: #ffdfb3;
+
+  /* Ink for text that sits directly on the hero photograph. */
+  --on-hero: #fffff2;
+  --on-hero-muted: rgb(255 255 242 / 82%);
+
+  /*
+   * The start page's surround, and the one colour that does not follow the
+   * theme.
+   *
+   * The banner photograph is bordered on all four sides with near-black
+   * foliage, and the design lets that foliage run out into the page rather
+   * than stopping it at an edge. Fade it into cream instead and the picture
+   * gets a hard rectangular border back, and the cream headline beside it has
+   * nothing to sit on. So the banner stays dark whichever theme is chosen —
+   * everything else on the site still turns over.
+   */
+  --hero-canvas: #11170e;
+
+  /*
    * Semantic tokens. Everything below names a job rather than a colour, which
    * is what lets the dark theme be a block of new values instead of a second
    * copy of every rule. A hex typed straight into a component is a thing that
@@ -123,8 +162,8 @@
    */
   --placeholder: #a8a596;
   --input-border-hover: #d3c9b5;
-  --disabled-ink: #bfb9a8;
-  --outside-ink: #c3bdad;
+  --disabled-ink: #8b8574;
+  --outside-ink: #767061;
 
   --notice-bg: #f5e3dd;
   --notice-ink: #7c4e42;
@@ -161,6 +200,16 @@
    * heart on a cream circle is an invisible button.
    */
   --on-chip-ink: #283025;
+
+  /*
+   * Ink for text on a sage fill — a selected tab, chip, time or calendar day.
+   *
+   * It cannot be `--panel`, which is what it used to be: on the light theme
+   * that is near-white on mid sage, which measures 2.9:1 and fails for anything
+   * under 24px. Sage is a mid tone in both themes, so dark ink is the answer in
+   * both: 5.1:1 on the light sage and 6.7:1 on the lighter one used on dark.
+   */
+  --on-sage: #1c2119;
 
   --font-head: 'Cormorant Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --font-body: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -223,28 +272,37 @@
   :root:not([data-theme='light']) {
     color-scheme: dark;
 
-    --canvas: #1e241c;
-    --panel: #262d23;
-    --panel-soft: #2e362a;
+    /*
+     * Sampled from the banner reference: canvas #11170e, panels #24261b, the
+     * header strip #24291b, the footer #161c15. Deeper and greener than the
+     * first pass, which is what makes the gold read as gold.
+     */
+    --canvas: #11170e;
+    --panel: #24261b;
+    --panel-soft: #2c2f22;
     --blush: #d9afa3;
-    --blush-soft: #3a2e2a;
+    --blush-soft: #29221d;
     --sage: #a3ae95;
-    --sage-soft: #2c3528;
-    --ink: #ede7da;
-    --muted: #a9aca0;
-    --hairline: #3c4437;
-    --hairline-soft: #323a2e;
+    --sage-soft: #242a1c;
+    --ink: #f4efe3;
+    --muted: #a7ab9b;
+    --hairline: #3a4030;
+    --hairline-soft: #2b3122;
+
+    --gold: #d7b37c;
+    --gold-soft: #c79f5c;
+    --gold-bright: #ffdfb3;
 
     /* The primary button inverts with everything else: light pill, dark label. */
-    --cta: #ede7da;
-    --cta-ink: #1e241c;
-    --cta-hover: #fffcf8;
+    --cta: #f6eee5;
+    --cta-ink: #11170e;
+    --cta-hover: #ffffff;
     --focus: #b6c0a8;
 
     --placeholder: #7d8177;
     --input-border-hover: #4d5647;
     --disabled-ink: #7b8472;
-    --outside-ink: #6c7564;
+    --outside-ink: #8e9886;
 
     --notice-bg: #3a2e2a;
     --notice-ink: #e8c6bb;
@@ -264,11 +322,11 @@
     --banner-ink: #c3ceb5;
 
     /* A toast is a notification, so it stays the opposite of the page. */
-    --toast-bg: #ede7da;
-    --toast-ink: #1e241c;
+    --toast-bg: #f6eee5;
+    --toast-ink: #11170e;
 
-    --skeleton-a: #2e362a;
-    --skeleton-b: #38412f;
+    --skeleton-a: #2c2f22;
+    --skeleton-b: #363a29;
 
     --overlay: rgb(8 10 8 / 62%);
 
@@ -291,27 +349,31 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --canvas: #1e241c;
-  --panel: #262d23;
-  --panel-soft: #2e362a;
+  --canvas: #11170e;
+  --panel: #24261b;
+  --panel-soft: #2c2f22;
   --blush: #d9afa3;
-  --blush-soft: #3a2e2a;
+  --blush-soft: #29221d;
   --sage: #a3ae95;
-  --sage-soft: #2c3528;
-  --ink: #ede7da;
-  --muted: #a9aca0;
-  --hairline: #3c4437;
-  --hairline-soft: #323a2e;
+  --sage-soft: #242a1c;
+  --ink: #f4efe3;
+  --muted: #a7ab9b;
+  --hairline: #3a4030;
+  --hairline-soft: #2b3122;
 
-  --cta: #ede7da;
-  --cta-ink: #1e241c;
-  --cta-hover: #fffcf8;
+  --gold: #d7b37c;
+  --gold-soft: #c79f5c;
+  --gold-bright: #ffdfb3;
+
+  --cta: #f6eee5;
+  --cta-ink: #11170e;
+  --cta-hover: #ffffff;
   --focus: #b6c0a8;
 
   --placeholder: #7d8177;
   --input-border-hover: #4d5647;
   --disabled-ink: #7b8472;
-  --outside-ink: #6c7564;
+  --outside-ink: #8e9886;
 
   --notice-bg: #3a2e2a;
   --notice-ink: #e8c6bb;
@@ -330,11 +392,11 @@
   --banner-bg: #2c3528;
   --banner-ink: #c3ceb5;
 
-  --toast-bg: #ede7da;
-  --toast-ink: #1e241c;
+  --toast-bg: #f6eee5;
+  --toast-ink: #11170e;
 
-  --skeleton-a: #2e362a;
-  --skeleton-b: #38412f;
+  --skeleton-a: #2c2f22;
+  --skeleton-b: #363a29;
 
   --overlay: rgb(8 10 8 / 62%);
 
@@ -548,6 +610,30 @@ button, input, select, textarea { font: inherit; color: inherit; }
   z-index: 40;
 }
 
+.header--onHero {
+  background: linear-gradient(to bottom, rgb(10 14 9 / 62%), rgb(10 14 9 / 0%));
+  color: var(--on-hero);
+}
+.header--onHero .nav a,
+.header--onHero .lang a,
+.header--onHero .icon-button { color: var(--on-hero); }
+.header--onHero .lang { color: rgb(255 255 242 / 68%); }
+/* The selected language is `--ink` by default, which is dark in the light
+   theme — invisible on a photograph. Over the hero it follows the hero. */
+.header--onHero .lang a[aria-current='true'] {
+  color: var(--on-hero);
+  border-bottom-color: var(--on-hero);
+}
+.header--onHero .nav a[aria-current='page'] { border-bottom-color: var(--gold-bright); }
+.header--onHero .icon-button:hover { background: rgb(255 255 242 / 12%); }
+.header--onHero .theme-toggle { background: rgb(255 255 242 / 12%); }
+.header--onHero .theme-toggle button { color: rgb(255 255 242 / 70%); }
+.header--onHero .theme-toggle button[aria-pressed='true'] {
+  background: rgb(255 255 242 / 20%);
+  color: var(--on-hero);
+  box-shadow: none;
+}
+
 .logo {
   display: inline-flex;
   align-items: center;
@@ -612,19 +698,55 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ----------------------------------------------------------------- footer */
 
+/*
+ * Three parts across: the legal links, the claim in gold small caps, and the
+ * studio's social accounts. The middle one is centred on the page rather than
+ * on what is left over, which is why this is a grid and not a flex row.
+ */
 .footer {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: var(--s2);
   min-height: var(--footer-h);
-  padding: 0 var(--shell-x) 10px;
+  padding: 10px var(--shell-x) 12px;
   font-size: 13px;
   color: var(--muted);
 }
-.footer nav { display: flex; gap: var(--s2); }
-.footer a:hover { color: var(--ink); }
-.footer-claim { display: inline-flex; align-items: center; gap: 8px; }
+.footer-legal { display: flex; gap: var(--s2); }
+.footer-legal a:hover { color: var(--ink); }
+
+.footer-claim {
+  justify-self: center;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+}
+
+.footer-social { display: flex; justify-content: flex-end; gap: 14px; }
+.footer-social a {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-pill);
+  color: var(--muted);
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.footer-social a:hover { color: var(--gold-bright); background: var(--panel-soft); }
+
+@media (max-width: 1099px) {
+  /* The claim carries the brand; the legal links carry the obligation. On a
+     phone those two stay and the icons drop below them rather than squeezing. */
+  .footer {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 8px;
+  }
+  .footer-claim { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+  .footer-social { grid-column: 2; grid-row: 1; }
+}
 
 /* ---------------------------------------------------------------- buttons */
 
@@ -715,7 +837,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font-size: 12px;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--gold);
 }
 
 .rule {
@@ -731,9 +853,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .script {
   font-family: var(--font-script);
-  color: var(--muted);
+  color: var(--gold);
   line-height: 1;
-  opacity: 0.75;
+  opacity: 0.9;
 }
 
 .motto {
@@ -816,7 +938,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .chip--sage[aria-pressed='true'], .chip--sage[data-active='true'] {
   background: var(--sage);
   border-color: var(--sage);
-  color: var(--panel);
+  color: var(--on-sage);
 }
 
 .badge {
@@ -1033,10 +1155,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
 .calendar-day:hover:not(:disabled) { background: var(--panel-soft); }
-.calendar-day[aria-pressed='true'] { background: var(--sage); color: var(--panel); }
+.calendar-day[aria-pressed='true'] { background: var(--sage); color: var(--on-sage); }
+/*
+ * A day from the neighbouring month is still a link, so it has to reach AA
+ * like any other — 4.8:1 on cream, 5.1:1 on dark. It is set apart by being
+ * cooler and quieter, not by being too faint to read.
+ *
+ * Unbookable wins over out-of-month, and in that order: a day nobody can book
+ * must look unbookable whichever month it belongs to. Written the other way
+ * round, the 31st of last month read exactly like a free day.
+ */
+.calendar-day[data-outside='true'] { color: var(--outside-ink); }
 .calendar-day:disabled,
 .calendar-day[aria-disabled='true'] { color: var(--disabled-ink); cursor: not-allowed; }
-.calendar-day[data-outside='true'] { color: var(--outside-ink); }
 
 .slot-grid {
   display: grid;
@@ -1054,7 +1185,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
     color var(--t-fast) var(--ease);
 }
 .slot:hover { border-color: #d3c9b5; }
-.slot[aria-pressed='true'] { background: var(--sage); border-color: var(--sage); color: var(--panel); }
+.slot[aria-pressed='true'] { background: var(--sage); border-color: var(--sage); color: var(--on-sage); }
 
 /* ------------------------------------------------------------- stepper */
 
@@ -1077,7 +1208,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font-size: 15px;
   color: var(--muted);
 }
-.step[data-state='current'] .step-dot { background: var(--sage); border-color: var(--sage); color: var(--panel); }
+.step[data-state='current'] .step-dot { background: var(--sage); border-color: var(--sage); color: var(--on-sage); }
 .step[data-state='done'] .step-dot { background: var(--panel); border-color: var(--sage); color: var(--sage); }
 .step-label { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.25; }
 .step[data-state='current'] .step-label { color: var(--ink); font-weight: 500; }
@@ -1344,3 +1475,77 @@ button, input, select, textarea { font: inherit; color: inherit; }
  */
 .giftcard { color: #283025; }
 .giftcard-note { color: #5b5f52; }
+
+/* ------------------------------------------------------- on the banner */
+
+/*
+ * A cream button, for use on the photograph. The primary button follows the
+ * theme — dark on cream, cream on dark — which is right everywhere except over
+ * a picture, where the surface underneath is neither.
+ */
+.btn--cream {
+  background: #f6eee5;
+  color: #11170e;
+  border-color: transparent;
+}
+.btn--cream:hover:not(:disabled) { background: #ffffff; }
+
+/* The booking bar as smoked glass rather than a cream pill. */
+.dock--onHero {
+  background: rgb(23 28 19 / 74%);
+  border: 1px solid rgb(255 255 242 / 12%);
+  backdrop-filter: blur(10px);
+  color: var(--on-hero);
+}
+.dock--onHero .dock-field + .dock-field { border-left-color: rgb(255 255 242 / 14%); }
+.dock--onHero .dock-field-label { color: rgb(255 255 242 / 62%); }
+.dock--onHero .dock-field select,
+.dock--onHero .dock-date,
+.dock--onHero .dock-field svg { color: var(--on-hero); }
+.dock--onHero .dock-field select option { color: #11170e; }
+
+/*
+ * A full-bleed page: the photograph starts at the very top and the header
+ * floats over it.
+ *
+ * Header and content are placed in the *same* grid cell rather than the header
+ * being positioned absolutely. Taking it out of the flow instead looks like it
+ * should work and does not: an absolutely positioned grid child occupies no
+ * track, so every remaining child slides up a row and the page collapses with
+ * the footer printed across the header.
+ */
+.shell--banner { grid-template-rows: minmax(0, 1fr) auto; }
+.shell--banner .header {
+  grid-row: 1;
+  grid-column: 1;
+  align-self: start;
+  z-index: 40;
+}
+.shell--banner .shell-main { grid-row: 1; grid-column: 1; }
+
+/* Over a photograph the wordmark is always the cream one, whatever the theme:
+   the surface under it is the picture, not the page. */
+.header--onHero .logo-word--light { display: none; }
+.header--onHero .logo-word--dark { display: block; }
+
+/*
+ * The decorative petals are lit for cream. On the deep green they read as a
+ * bright pink blob rather than as texture at the edge of the frame, so they
+ * are dimmed rather than removed — the reference frames its banner with dark
+ * foliage, and this is the nearest the delivered artwork gets to that.
+ */
+:root[data-theme='dark'] .petal { opacity: 0.16; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .petal { opacity: 0.16; }
+}
+
+/* A social mark the studio has not given an address for: present in the row so
+   the design holds, but not a link and not announced. */
+.footer-social .is-pending {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--muted);
+  opacity: 0.38;
+}

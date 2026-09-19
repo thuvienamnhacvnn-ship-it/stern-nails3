@@ -60,6 +60,13 @@ await db.insert(schema.businessSettings).values({
 
 const MEDIA = [
   {
+    slug: 'hero-banner', sourceType: 'ai_concept' as const, width: 1790, height: 879,
+    altDe: 'Blick in den Salon: begrünte Wand mit beleuchtetem Stern-Nails-3-Schriftzug, Kirschblütenbaum und helle Arbeitsplätze',
+    altEn: 'A view into the salon: a green plant wall with the illuminated Stern Nails 3 sign, a blossom tree and bright work stations',
+    focalPoint: '52% 42%',
+    disclosureDe: 'Konzeptvisualisierung', disclosureEn: 'Concept visualisation',
+  },
+  {
     slug: 'hero-salon-wide', sourceType: 'ai_concept' as const, width: 1672, height: 941,
     altDe: 'Salonraum mit begrünter Wand, Kirschblütenbaum und hellen Arbeitsplätzen',
     altEn: 'Salon room with a green plant wall, blossom tree and bright work stations',

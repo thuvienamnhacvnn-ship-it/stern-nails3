@@ -95,6 +95,8 @@ export const businessSettings = pgTable('business_settings', {
   website: text(),
   instagram: text(),
   facebook: text(),
+  tiktok: text(),
+  youtube: text(),
   /** IANA zone. Everything user-facing is rendered through this. */
   timezone: text().notNull().default('Europe/Berlin'),
   /** Minutes a slot stays reserved while somebody finishes checkout. */

@@ -2,20 +2,22 @@ import Link from 'next/link';
 import { asc, eq } from 'drizzle-orm';
 import { db, schema } from '@/db/client';
 import { path, t, type Locale } from '@/lib/i18n';
-import { brand, hasPhoto, type PhotoId } from '@/lib/media';
+import { hasPhoto, type PhotoId } from '@/lib/media';
 import { Photo } from '@/components/image';
 import { BookingDock } from '@/components/booking-dock';
-import { Motto, Petal } from '@/components/shell';
 import { ArrowRight, ChevronLeft, ChevronRight, Heart, Sparkle } from '@/components/icons';
 
 /**
- * The start page, following 01-home and 11-mobile-home.
+ * The start page.
  *
- * Desktop is three columns at roughly 22 / 50 / 28: the introduction and the
- * flower, the wide salon photograph with the booking bar floating over its
- * foot, and the Nail Edit rail. On a phone the same three become one column in
- * the same reading order, the photograph turns portrait, and the bar collapses
- * to service plus date — which is what the mobile screen shows.
+ * The banner is the page: one photograph edge to edge, with everything else
+ * sitting on it — the headline at the left, the lookbook rail at the right, the
+ * booking bar floating at the foot. There is no cream panel behind anything,
+ * which is what the reference asks for and what makes the gold read as gold.
+ *
+ * The photograph is never tinted. What the text sits on is a gradient scrim
+ * anchored to the left and the bottom edges, so the middle and right of the
+ * picture — the part somebody is actually looking at — arrive untouched.
  */
 export async function HomePage({
   locale,
@@ -39,11 +41,10 @@ export async function HomePage({
     .orderBy(asc(schema.staff.sortOrder));
 
   /*
-   * The Nail Edit rail. The design shows three cards and a "01 / 03" counter
-   * with arrows, so the rail pages through the whole lookbook three at a time
-   * rather than showing a counter that counts nothing. The page number lives in
-   * the URL, which keeps the whole page a server component and makes the arrows
-   * plain links that work before hydration.
+   * The lookbook rail. Three at a time with a counter and arrows, as the
+   * reference shows; the page number lives in the URL so the arrows are plain
+   * links that work before hydration and the whole page stays a server
+   * component.
    */
   const lookbook = await db
     .select()
@@ -57,186 +58,168 @@ export async function HomePage({
   const page = Number.isFinite(requested) ? Math.min(pages, Math.max(1, Math.trunc(requested))) : 1;
   const edit = lookbook.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
-  // Wrapping rather than stopping: with two pages, "next" from the last one is
-  // the first, which is what a three-item carousel should do.
-  const pageHref = (target: number) =>
-    `${path(locale, 'start')}${target === 1 ? '' : `?edit=${((target - 1 + pages) % pages) + 1}`}`;
-  const previousPage = ((page - 2 + pages) % pages) + 1;
-  const nextPage = (page % pages) + 1;
-
-  const flower = brand('flower');
+  // Wrapping rather than stopping: with two pages, "next" from the last is the
+  // first, which is what a three-item carousel should do.
+  const pageHref = (target: number) => {
+    const wrapped = ((target - 1 + pages) % pages) + 1;
+    return `${path(locale, 'start')}${wrapped === 1 ? '' : `?edit=${wrapped}`}`;
+  };
 
   return (
-    <div className="home">
-      {/* ------------------------------------------------------ left rail */}
-      <section className="home-intro">
-        <img className="home-flower" src={flower.src} width={flower.width} height={flower.height} alt="" />
+    <div className="banner">
+      {/* ------------------------------------------------- the photograph */}
+      <div className="banner-stage" aria-hidden="true">
+        {/* A window wider than 16:9 has to lose something. Holding the frame
+            below its middle loses the ceiling, which carries nothing, rather
+            than the foot of it, which carries the written line and the card on
+            the table. */}
+        <Photo
+          id="hero-banner"
+          alt=""
+          sizes="100vw"
+          priority
+          focalPoint="50% 60%"
+          className="desktop-only"
+        />
+        {/*
+          The same photograph on a phone, cropped to the model rather than to
+          the middle of the room: a 16:9 frame cut to portrait on its centre
+          point keeps the plant wall and loses the person the picture is of.
+        */}
+        <Photo id="hero-banner" alt="" sizes="100vw" priority focalPoint="17% 44%" className="mobile-only" />
+        <span className="banner-scrim" />
+      </div>
 
-        <h1 className="home-title">
-          Dein Stil.
-          <br />
-          Dein Moment.
-        </h1>
-        <hr className="rule" />
-        <p className="lede home-lede">{copy.home.intro}</p>
+      {/* The photograph is decorative above; this carries its description for
+          anybody who cannot see it. */}
+      <p className="sr-only">{copy.home.heroAlt}</p>
 
-        <Link className="btn btn--secondary home-cta" href={path(locale, 'studio')}>
-          {copy.home.discoverStudio}
-          <ArrowRight size={18} />
-        </Link>
+      <div className="banner-grid">
+        {/* ------------------------------------------------------- the word */}
+        <section className="banner-copy">
+          <span className="banner-eyebrow">{copy.home.eyebrow}</span>
 
-        <div className="home-motto desktop-only">
-          <Motto locale={locale} />
-        </div>
-      </section>
+          <h1 className="banner-title">
+            {copy.home.titleLead}
+            <span className="banner-title-accent">{copy.home.titleAccent}</span>
+          </h1>
 
-      {/* -------------------------------------------------------- centre */}
-      <section className="home-hero">
-        <div className="media home-hero-media">
-          <Photo
-            id="hero-salon-wide"
-            alt={copy.home.heroAlt}
-            sizes="(max-width: 1099px) 100vw, 50vw"
-            priority
-            focalPoint="55% 45%"
-            className="desktop-only"
-          />
-          {/* Portrait on a phone, as the mobile screen does — a 16:9 salon
-              photograph scaled to phone width is a strip nobody can read. */}
-          <Photo
-            id="studio-portrait"
-            alt={copy.home.heroAlt}
-            sizes="100vw"
-            priority
-            className="mobile-only"
-          />
-          <span className="home-hero-script script" aria-hidden="true">
+          <p className="banner-intro">{copy.home.bannerIntro}</p>
+
+          <Link className="btn btn--cream banner-cta" href={path(locale, 'studio')}>
+            {copy.home.discoverStudio}
+            <ArrowRight size={18} />
+          </Link>
+
+          <span className="banner-script script" aria-hidden="true">
             {copy.brand.script}
+            <Heart size={20} />
           </span>
-        </div>
 
-        <div className="home-dock desktop-only">
+          <span className="banner-motto" aria-hidden="true">
+            {copy.brand.motto.map((word) => (
+              <span key={word}>{word}</span>
+            ))}
+          </span>
+        </section>
+
+        {/* ------------------------------------------------- the lookbook */}
+        <section className="banner-rail" aria-label={copy.home.editTitle}>
+          <div className="banner-rail-head">
+            <h2 className="sr-only">{copy.home.editTitle}</h2>
+            {pages > 1 ? (
+              <div className="row row--tight" style={{ flexWrap: 'nowrap' }}>
+                <span className="tiny" aria-live="polite">
+                  {String(page).padStart(2, '0')} / {String(pages).padStart(2, '0')}
+                </span>
+                <Link
+                  className="round-arrow round-arrow--sm round-arrow--onHero"
+                  href={pageHref(page - 1)}
+                  aria-label={copy.booking.back}
+                  scroll={false}
+                >
+                  <ChevronLeft size={18} />
+                </Link>
+                <Link
+                  className="round-arrow round-arrow--sm round-arrow--onHero"
+                  href={pageHref(page + 1)}
+                  aria-label={copy.booking.next}
+                  scroll={false}
+                >
+                  <ChevronRight size={18} />
+                </Link>
+              </div>
+            ) : null}
+          </div>
+
+          <ul className="banner-rail-list">
+            {edit.map((look) => (
+              <li key={look.id}>
+                <Link className="rail-card" href={`${path(locale, 'looks')}?look=${look.slug}`}>
+                  <span className="rail-card-body">
+                    <span className="rail-card-title">{locale === 'de' ? look.nameDe : look.nameEn}</span>
+                    <span className="rail-card-teaser">{locale === 'de' ? look.teaserDe : look.teaserEn}</span>
+                    <span className="round-arrow round-arrow--sm round-arrow--onHero" aria-hidden="true">
+                      <ArrowRight size={18} />
+                    </span>
+                  </span>
+                  <span className="rail-card-media media">
+                    {hasPhoto(look.mediaSlug) ? (
+                      <Photo
+                        id={look.mediaSlug as PhotoId}
+                        alt=""
+                        sizes="(max-width: 1099px) 60vw, 240px"
+                        focalPoint="60% 50%"
+                      />
+                    ) : null}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div className="banner-rail-foot">
+            <Link className="rail-teaser" href={path(locale, 'stylist')}>
+              <Sparkle size={20} />
+              <span className="grow">
+                <span className="rail-teaser-title">{copy.nav.stylist}</span>
+                <span className="rail-teaser-sub">{copy.home.stylistTeaser}</span>
+              </span>
+              <ArrowRight size={18} />
+            </Link>
+            <Link className="rail-teaser" href={`${path(locale, 'looks')}?favorites=1`}>
+              <Heart size={20} />
+              <span className="grow">
+                <span className="rail-teaser-title">{copy.nav.favorites}</span>
+                <span className="rail-teaser-sub">{copy.home.favoritesTeaser}</span>
+              </span>
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+        </section>
+
+        {/* ----------------------------------------------------- the dock */}
+        <div className="banner-dock desktop-only">
           <BookingDock
             locale={locale}
+            onHero
             services={services.map((s) => ({ slug: s.slug, name: locale === 'de' ? s.nameDe : s.nameEn }))}
             staff={staff.map((s) => ({ slug: s.slug, name: s.displayName }))}
           />
         </div>
-        <div className="home-dock mobile-only">
+        <div className="banner-dock mobile-only">
           <BookingDock
             locale={locale}
             compact
+            onHero
             services={services.map((s) => ({ slug: s.slug, name: locale === 'de' ? s.nameDe : s.nameEn }))}
             staff={[]}
           />
         </div>
-      </section>
 
-      {/* --------------------------------------------------- Nail Edit rail */}
-      <section className="home-edit" aria-labelledby="nail-edit">
-        <div className="home-edit-head">
-          <div>
-            <h2 id="nail-edit" className="home-edit-title">
-              {copy.home.editTitle}
-            </h2>
-            <p className="small muted home-edit-sub">
-              {copy.home.editSubtitle}
-              <br className="desktop-only" />
-              <span className="desktop-only">{copy.home.editSubtitleTwo}</span>
-            </p>
-          </div>
-          <Link className="btn btn--text mobile-only" href={path(locale, 'looks')}>
-            {copy.home.allLooks}
-            <ArrowRight size={18} />
-          </Link>
-
-          {pages > 1 ? (
-            <div className="row row--tight desktop-only" style={{ flexWrap: 'nowrap' }}>
-              <span className="tiny muted" aria-live="polite">
-                {String(page).padStart(2, '0')} / {String(pages).padStart(2, '0')}
-              </span>
-              <Link
-                className="round-arrow round-arrow--sm"
-                href={pageHref(previousPage)}
-                aria-label={copy.booking.back}
-                scroll={false}
-              >
-                <ChevronLeft size={18} />
-              </Link>
-              <Link
-                className="round-arrow round-arrow--sm"
-                href={pageHref(nextPage)}
-                aria-label={copy.booking.next}
-                scroll={false}
-              >
-                <ChevronRight size={18} />
-              </Link>
-            </div>
-          ) : null}
-        </div>
-
-        <ul className="home-edit-list">
-          {edit.map((look) => (
-            <li key={look.id}>
-              <Link className="edit-card" href={`${path(locale, 'looks')}?look=${look.slug}`}>
-                <div className="edit-card-body">
-                  <h3 className="edit-card-title">{locale === 'de' ? look.nameDe : look.nameEn}</h3>
-                  <p className="tiny muted">{locale === 'de' ? look.teaserDe : look.teaserEn}</p>
-                  <span className="round-arrow round-arrow--sm" aria-hidden="true">
-                    <ArrowRight size={18} />
-                  </span>
-                </div>
-                <div className="edit-card-media media">
-                  {hasPhoto(look.mediaSlug) ? (
-                    <Photo
-                      id={look.mediaSlug as PhotoId}
-                      alt=""
-                      sizes="(max-width: 1099px) 60vw, 240px"
-                      focalPoint="60% 50%"
-                    />
-                  ) : null}
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        <div className="home-edit-foot desktop-only">
-          <Link className="edit-teaser" href={path(locale, 'stylist')}>
-            <Sparkle size={22} />
-            <span className="grow">
-              <span className="strong small">{copy.nav.stylist}</span>
-              <span className="tiny muted" style={{ display: 'block' }}>
-                {copy.home.stylistTeaser}
-              </span>
-            </span>
-            <ArrowRight size={18} />
-          </Link>
-          <Link className="edit-teaser" href={`${path(locale, 'looks')}?favorites=1`}>
-            <Heart size={22} />
-            <span className="grow">
-              <span className="strong small">{copy.nav.favorites}</span>
-              <span className="tiny muted" style={{ display: 'block' }}>
-                {copy.home.favoritesTeaser}
-              </span>
-            </span>
-            <ArrowRight size={18} />
-          </Link>
-        </div>
-
-        <Link className="edit-teaser mobile-only" href={path(locale, 'stylist')}>
-          <Sparkle size={22} />
-          <span className="grow">
-            <span className="strong small">{copy.nav.stylist}</span>
-            <span className="tiny muted" style={{ display: 'block' }}>
-              {copy.home.stylistTeaser}
-            </span>
-          </span>
-          <ArrowRight size={18} />
-        </Link>
-      </section>
-
-      <Petal position="bl" />
+        {/* No script overlay here: the photograph already has "Nails feel like
+            you" written across it, and a second one would be a duplicate. */}
+      </div>
     </div>
   );
 }

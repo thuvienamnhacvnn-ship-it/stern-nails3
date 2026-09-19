@@ -31,6 +31,10 @@ const Body = z.object({
   registerCourt: optionalText,
   registerNumber: optionalText,
   vatId: optionalText,
+  instagram: optionalText,
+  facebook: optionalText,
+  tiktok: optionalText,
+  youtube: optionalText,
   cancellationPolicy: z.string().max(4000).transform((v) => (v.trim() === '' ? null : v.trim())),
   // Bounded here as well as in the form: the form is a convenience, this is the
   // rule. A zero-minute hold or a 10-year horizon would break availability.

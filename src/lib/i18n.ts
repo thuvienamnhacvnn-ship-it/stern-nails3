@@ -99,7 +99,14 @@ const de = {
     find: 'Termin finden',
   },
   home: {
-    title: 'Dein Stil. Dein Moment.',
+    title: 'Mehr als Nägel. Ein Gefühl.',
+    /* The banner headline is set in two inks — the first line cream, the second
+       gold and italic — so it is stored as two strings rather than one. */
+    titleLead: 'Mehr als Nägel.',
+    titleAccent: 'Ein Gefühl.',
+    eyebrow: 'Beauty · Care · Good Vibes',
+    bannerIntro:
+      'Stern Nails 3 – dein Nagelstudio in Deutschland. Zeit für dich. Perfekte Nägel. Entspannung für Körper und Seele.',
     intro:
       'Mehr als Nägel – ein Ort zum Abschalten, Auftanken und Strahlen. Stern Nails 3 ist dein Nagelstudio in Deutschland, geführt mit vietnamesischer Herzlichkeit und Liebe zum Detail.',
     introShort: 'Mehr als Nägel – ein Ort zum Abschalten, Auftanken und Strahlen. Stern Nails 3 – Nails feel like you.',
@@ -386,6 +393,13 @@ const de = {
     dark: 'Dunkles Design',
     system: 'Wie auf dem Gerät',
   },
+  social: {
+    label: 'Social Media',
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    tiktok: 'TikTok',
+    youtube: 'YouTube',
+  },
   common: {
     demo: 'DEMO',
     demoBanner: 'Demoversion – Preise, Termine und Team sind Beispieldaten. Es werden keine echten Zahlungen ausgelöst.',
@@ -448,7 +462,12 @@ const en: Dictionary = {
     find: 'Find a time',
   },
   home: {
-    title: 'Your style. Your moment.',
+    title: 'More than nails. A feeling.',
+    titleLead: 'More than nails.',
+    titleAccent: 'A feeling.',
+    eyebrow: 'Beauty · Care · Good Vibes',
+    bannerIntro:
+      'Stern Nails 3 – your nail studio in Germany. Time for yourself. Perfect nails. Calm for body and mind.',
     intro:
       'More than nails – a place to switch off, recharge and shine. Stern Nails 3 is your nail studio in Germany, run with Vietnamese warmth and an eye for detail.',
     introShort: 'More than nails – a place to switch off, recharge and shine. Stern Nails 3 – nails feel like you.',
@@ -733,6 +752,13 @@ const en: Dictionary = {
     light: 'Light',
     dark: 'Dark',
     system: 'Match my device',
+  },
+  social: {
+    label: 'Social media',
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    tiktok: 'TikTok',
+    youtube: 'YouTube',
   },
   common: {
     demo: 'DEMO',

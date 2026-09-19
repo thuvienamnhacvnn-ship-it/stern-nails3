@@ -290,6 +290,39 @@ export const Card = (p: IconProps) => (
   </Icon>
 );
 
+/*
+ * The social marks. Drawn as simple glyphs rather than the platforms' official
+ * logos: the official ones are trademarks with their own usage rules, and this
+ * set has to sit at 18px in a footer next to a cream serif without shouting.
+ */
+export const Instagram = (p: IconProps) => (
+  <Icon {...p}>
+    <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5" />
+    <circle cx="12" cy="12" r="4.1" />
+    <circle cx="16.9" cy="7.1" r="1" fill="currentColor" stroke="none" />
+  </Icon>
+);
+
+export const Facebook = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M14.8 4.4h-2a3.4 3.4 0 0 0-3.4 3.4V10H7.4v3h2v7h3v-7h2.2l.6-3h-2.8V8a.9.9 0 0 1 .9-.9h1.9Z" />
+  </Icon>
+);
+
+export const TikTok = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M14.2 3.6v10.6a3.5 3.5 0 1 1-2.8-3.4" />
+    <path d="M14.2 3.6a4.6 4.6 0 0 0 4.4 4.3" />
+  </Icon>
+);
+
+export const YouTube = (p: IconProps) => (
+  <Icon {...p}>
+    <rect x="2.8" y="5.8" width="18.4" height="12.4" rx="4" />
+    <path d="M10.4 9.4l4.6 2.6-4.6 2.6Z" />
+  </Icon>
+);
+
 export const PayPal = (p: IconProps) => (
   <Icon {...p} strokeWidth={1.2}>
     <path d="M7.6 19.4L9.8 5h5.1c2.5 0 3.9 1.3 3.5 3.6-.4 2.5-2.3 3.9-5 3.9h-2l-.9 6.9Z" />

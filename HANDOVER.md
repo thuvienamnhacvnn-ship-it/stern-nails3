@@ -73,6 +73,13 @@ Everything the customer can see a number or a name for:
   whether it may be used as an introduction to the premises at all.
 - The logo is used as delivered. The `05` in the original file is the design
   option number and appears nowhere on the site.
+- **The start page banner is a concept render and the woman in it is not real.**
+  `assets/interiors/hero-banner.png` is a generated image of a generated person
+  in a generated room. It may not be captioned or described as a photograph of
+  this studio, of its team or of a customer. It carries the
+  **Konzeptvisualisierung** label like every other render. If the studio would
+  rather show its own premises, replace that one file and re-run
+  `npm run assets`; the page needs no change.
 - **People appear in two of the studio's own photographs.** `real-salon` and
   `real-manicure` show somebody at a work station. Publishing a recognisable
   person needs that person's agreement, and it is not ours to assume — before

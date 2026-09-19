@@ -65,6 +65,13 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
  */
 const FIXED_HEIGHT: PageKey[] = ['start', 'services', 'looks', 'booking', 'studio', 'vouchers', 'stylist', 'account'];
 
+/**
+ * Pages whose photograph runs edge to edge behind the header. The header then
+ * has no surface of its own and floats over the picture, so the shell gives up
+ * its header row and lets the content start at the very top.
+ */
+const FULL_BLEED: PageKey[] = ['start'];
+
 export default async function Page({
   params,
   searchParams,
@@ -88,9 +95,13 @@ export default async function Page({
 
   const body = await renderPage(key, locale, query);
 
+  const onHero = FULL_BLEED.includes(key);
+
   return (
-    <div className={`shell${FIXED_HEIGHT.includes(key) ? ' shell--fixed' : ''}`}>
-      <Header locale={locale} current={key} switchTo={switchTo} />
+    <div
+      className={`shell${FIXED_HEIGHT.includes(key) ? ' shell--fixed' : ''}${onHero ? ' shell--banner' : ''}`}
+    >
+      <Header locale={locale} current={key} switchTo={switchTo} onHero={onHero} />
       <main className="shell-main" id="main">
         {body}
       </main>

@@ -138,10 +138,24 @@ socket.addEventListener('message', (event) => {
   else waiter.resolve(message.result);
 });
 
+/*
+ * Every call is bounded. A wedged renderer answers nothing ever again, and
+ * without this the run simply hangs — no output, no exit, no clue which page
+ * did it. Thirty seconds is far longer than the slowest cold compile here.
+ */
+const CALL_TIMEOUT_MS = 30_000;
+
 function send(method, params = {}, sessionId) {
   const id = (nextId += 1);
   return new Promise((resolve_, reject) => {
-    pending.set(id, { resolve: resolve_, reject });
+    const timer = setTimeout(() => {
+      pending.delete(id);
+      reject(new Error(`${method} did not answer within ${CALL_TIMEOUT_MS / 1000}s`));
+    }, CALL_TIMEOUT_MS);
+    pending.set(id, {
+      resolve: (value) => { clearTimeout(timer); resolve_(value); },
+      reject: (error) => { clearTimeout(timer); reject(error); },
+    });
     socket.send(JSON.stringify({ id, method, params, sessionId }));
   });
 }
@@ -165,9 +179,21 @@ for (const theme of THEMES) {
         await send('Emulation.setDeviceMetricsOverride', {
           width: viewport.width,
           height: viewport.height,
-          // A retina-sharp picture either way; the viewport above is in CSS
-          // pixels and is what the media queries see.
-          deviceScaleFactor: 2,
+          /*
+           * One device pixel per CSS pixel, and not because retina would not be
+           * nicer.
+           *
+           * There is no GPU here — `--disable-gpu` above — so every frame is
+           * rastered in software, and at 2x the start page asks the software
+           * rasteriser for a 2880x1800 frame with a photograph scaled across
+           * all of it. On this machine that wedges the renderer: the capture
+           * never returns, and the browser stops answering on every tab, not
+           * just the one. It is the raster size and not the codec — the same
+           * picture as WebP wedges exactly like the AVIF, and both are fine at
+           * 1x. The pages are reviewed for layout and colour, which a 1x frame
+           * shows perfectly well.
+           */
+          deviceScaleFactor: 1,
           mobile: viewport.mobile,
         }, sessionId);
 
@@ -196,7 +222,9 @@ for (const theme of THEMES) {
       } catch (error) {
         console.warn(`  skipped ${name}: ${error instanceof Error ? error.message : error}`);
       } finally {
-        await send('Target.closeTarget', { targetId });
+        // A wedged browser will not close the target either; that must not turn
+        // one bad page into a failed run.
+        await send('Target.closeTarget', { targetId }).catch(() => {});
       }
     }
   }

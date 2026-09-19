@@ -20,6 +20,7 @@ export function BookingDock({
   services,
   staff,
   compact = false,
+  onHero = false,
   defaultService,
 }: {
   locale: Locale;
@@ -27,6 +28,9 @@ export function BookingDock({
   staff: { slug: string; name: string }[];
   /** The mobile variant drops the team field, as the mobile screen does. */
   compact?: boolean;
+  /** On the banner the bar is smoked glass over the photograph, not a cream
+   *  pill on a cream page. */
+  onHero?: boolean;
   defaultService?: string;
 }) {
   const router = useRouter();
@@ -60,7 +64,7 @@ export function BookingDock({
   }
 
   return (
-    <form className="dock" onSubmit={submit}>
+    <form className={`dock${onHero ? ' dock--onHero' : ''}`} onSubmit={submit}>
       <div className="dock-fields">
         <div className="dock-field">
           <Leaf size={22} />
@@ -128,7 +132,7 @@ export function BookingDock({
         </div>
       </div>
 
-      <button type="submit" className="btn btn--primary">
+      <button type="submit" className={`btn ${onHero ? 'btn--cream' : 'btn--primary'}`}>
         {compact ? copy.nav.book : copy.dock.find}
         <ArrowRight size={18} />
       </button>

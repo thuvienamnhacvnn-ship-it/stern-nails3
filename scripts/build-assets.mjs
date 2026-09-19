@@ -20,8 +20,9 @@
  * Re-run with `npm run assets` after changing anything in assets/.
  */
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync, rmSync, copyFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -63,6 +64,8 @@ const LADDER = [360, 540, 720, 960, 1280, 1600, 1920];
  * documentary evidence of the salon.
  */
 const PHOTOS = [
+  // The start page's banner: the delivered picture, used as delivered.
+  { id: 'hero-banner', file: 'interiors/hero-banner.png', kind: 'ai_concept' },
   { id: 'hero-salon-wide', file: 'interiors/hero-salon-wide.png', kind: 'ai_concept' },
   { id: 'studio-portrait', file: 'interiors/studio-portrait.png', kind: 'ai_concept' },
   { id: 'pedicure-wide', file: 'interiors/pedicure-wide.png', kind: 'ai_concept' },
@@ -83,7 +86,8 @@ const PHOTOS = [
 const manifest = { photo: {}, brand: {} };
 
 for (const photo of PHOTOS) {
-  const src = join(SRC, photo.file);
+  // A composed asset hands over an absolute path; the rest name a file in assets/.
+  const src = isAbsolute(photo.file) ? photo.file : join(SRC, photo.file);
   const { w, h } = size(src);
   const widths = [...new Set(LADDER.filter((x) => x < w).concat(w))].sort((a, b) => a - b);
 
@@ -100,7 +104,18 @@ for (const photo of PHOTOS) {
   // the file an <img src> can point at without a <picture> wrapper.
   ff(['-i', src, '-c:v', 'mjpeg', '-q:v', '4', '-pix_fmt', 'yuvj420p', join(OUT, 'photo', `${photo.id}.jpg`)]);
 
-  manifest.photo[photo.id] = { width: w, height: h, widths, kind: photo.kind };
+  /*
+   * A content fingerprint, carried into the URL as `?v=`.
+   *
+   * These files are served with `Cache-Control: immutable`, which tells a
+   * browser it never has to ask again — correct, and a trap, because the
+   * filenames do not change when the picture does. Rebuilding the banner and
+   * seeing the old one come back is not a stale dev server; it is the cache
+   * doing exactly what it was told. The fingerprint makes a changed picture a
+   * different URL, which is the only thing `immutable` accepts as news.
+   */
+  const version = createHash('sha256').update(readFileSync(src)).digest('hex').slice(0, 8);
+  manifest.photo[photo.id] = { width: w, height: h, widths, kind: photo.kind, v: version };
   console.log(`photo ${photo.id} ${w}x${h} -> ${widths.length} widths`);
 }
 
@@ -385,7 +400,11 @@ function writeCrop(part, box, name) {
   ff(['-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', `${w}x${h}`, '-i', raw, '-frames:v', '1', png]);
   // WebP keeps the alpha and is roughly a third of the PNG.
   ff(['-i', png, '-c:v', 'libwebp', '-lossless', '1', join(OUT, 'brand', `${name}.webp`)]);
-  manifest.brand[name] = { width: w, height: h };
+  manifest.brand[name] = {
+    width: w,
+    height: h,
+    v: createHash('sha256').update(crop).digest('hex').slice(0, 8),
+  };
   console.log(`brand ${name} ${w}x${h}`);
   return { w, h };
 }

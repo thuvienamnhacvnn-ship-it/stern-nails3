@@ -29,6 +29,10 @@ type Values = {
   registerNumber: string;
   vatId: string;
   cancellationPolicy: string;
+  instagram: string;
+  facebook: string;
+  tiktok: string;
+  youtube: string;
   holdMinutes: number;
   bufferMinutes: number;
   minNoticeMinutes: number;
@@ -46,6 +50,12 @@ const TEXT_FIELDS: { key: keyof Values; label: string; type?: string; wide?: boo
   { key: 'registerCourt', label: 'Registergericht' },
   { key: 'registerNumber', label: 'Registernummer' },
   { key: 'vatId', label: 'Umsatzsteuer-ID' },
+  // Each of these makes one icon appear in the footer. Leave one empty and
+  // that network simply is not shown — no dead link.
+  { key: 'instagram', label: 'Instagram-Adresse', type: 'url' },
+  { key: 'facebook', label: 'Facebook-Adresse', type: 'url' },
+  { key: 'tiktok', label: 'TikTok-Adresse', type: 'url' },
+  { key: 'youtube', label: 'YouTube-Adresse', type: 'url' },
 ];
 
 const NUMBER_FIELDS: { key: keyof Values; label: string; hint: string; min: number; max: number }[] = [

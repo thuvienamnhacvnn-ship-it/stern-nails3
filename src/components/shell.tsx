@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { brand } from '@/lib/media';
+import { settings } from '@/lib/settings';
 import { path, t, otherLocale, type Locale, type PageKey } from '@/lib/i18n';
-import { ArrowRight, CalendarIcon, Grid, Heart, Home, User } from './icons';
+import { ArrowRight, CalendarIcon, Facebook, Grid, Heart, Home, Instagram, TikTok, User, YouTube } from './icons';
 import { MobileMenu } from './mobile-menu';
 import { ThemeToggle } from './theme-toggle';
 
@@ -74,16 +75,20 @@ export function Header({
   current,
   /** The same page in the other language, so switching does not lose your place. */
   switchTo,
+  /** On the banner the header floats over the photograph with no surface of
+   *  its own, so its type has to be cream regardless of the theme. */
+  onHero = false,
 }: {
   locale: Locale;
   current?: PageKey;
   switchTo?: string;
+  onHero?: boolean;
 }) {
   const copy = t(locale);
   const other = otherLocale(locale);
 
   return (
-    <header className="header">
+    <header className={`header${onHero ? ' header--onHero' : ''}`}>
       <Logo locale={locale} />
 
       <nav className="nav" aria-label={copy.nav.menu}>
@@ -121,7 +126,7 @@ export function Header({
           <Heart size={22} />
         </Link>
 
-        <Link className="btn btn--primary desktop-only" href={path(locale, 'booking')}>
+        <Link className={`btn desktop-only ${onHero ? 'btn--cream' : 'btn--primary'}`} href={path(locale, 'booking')}>
           {copy.nav.book}
           <ArrowRight size={18} />
         </Link>
@@ -132,18 +137,57 @@ export function Header({
   );
 }
 
-export function Footer({ locale }: { locale: Locale }) {
+export async function Footer({ locale }: { locale: Locale }) {
   const copy = t(locale);
+  const config = await settings();
+
+  /*
+   * Only the networks the studio has actually given us. The reference shows
+   * four icons; an icon linking nowhere is worse than a gap, and these columns
+   * are null until somebody types a URL into the admin.
+   */
+  const socials: { key: keyof typeof copy.social; href: string | null; icon: React.ReactNode }[] = [
+    { key: 'instagram', href: config?.instagram ?? null, icon: <Instagram size={18} /> },
+    { key: 'facebook', href: config?.facebook ?? null, icon: <Facebook size={18} /> },
+    { key: 'tiktok', href: config?.tiktok ?? null, icon: <TikTok size={18} /> },
+    { key: 'youtube', href: config?.youtube ?? null, icon: <YouTube size={18} /> },
+  ];
+
   return (
     <footer className="footer">
-      <nav aria-label={copy.common.imprint}>
+      <nav className="footer-legal" aria-label={copy.common.imprint}>
         <Link href={path(locale, 'imprint')}>{copy.common.imprint}</Link>
         <Link href={path(locale, 'privacy')}>{copy.common.privacy}</Link>
       </nav>
-      <span className="footer-claim">
-        {copy.brand.claim}
-        <Heart size={14} />
-      </span>
+
+      <span className="footer-claim">{copy.brand.claim}</span>
+
+      {/*
+        All four marks are always drawn, because the row is part of the design.
+        Only the ones the studio has given a URL are links; the rest are inert
+        and dimmed, and say so to a screen reader. A live-looking icon that goes
+        nowhere would be worse than either.
+      */}
+      <nav className="footer-social" aria-label={copy.social.label}>
+        {socials.map((item) =>
+          item.href ? (
+            <a
+              key={item.key}
+              href={item.href}
+              // Both, or the opened page gets a handle on this one via opener.
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label={copy.social[item.key]}
+            >
+              {item.icon}
+            </a>
+          ) : (
+            <span key={item.key} className="is-pending" aria-hidden="true">
+              {item.icon}
+            </span>
+          ),
+        )}
+      </nav>
     </footer>
   );
 }
