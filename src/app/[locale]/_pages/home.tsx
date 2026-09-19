@@ -69,14 +69,15 @@ export async function HomePage({
     <div className="banner">
       {/* ------------------------------------------------- the photograph */}
       <div className="banner-stage" aria-hidden="true">
-        {/* The banner is cut to this picture's shape, so in the ordinary case
-            the focal point never comes into play and the frame arrives whole. */}
+        {/* Held below the middle: the picture fills a frame wider than it is,
+            and what that costs has to be the ceiling rather than the foot of
+            it, where the written line and the card on the table are. */}
         <Photo
           id="hero-banner"
           alt=""
           sizes="100vw"
           priority
-          focalPoint="50% 50%"
+          focalPoint="50% 62%"
           className="desktop-only"
         />
         {/*
@@ -93,9 +94,6 @@ export async function HomePage({
       {/* The photograph is decorative above; this carries its description for
           anybody who cannot see it. */}
       <p className="sr-only">{copy.home.heroAlt}</p>
-
-      {/* The pane the words sit on by day. Decoration only. */}
-      <span className="banner-plate" aria-hidden="true" />
 
       <div className="banner-grid">
         {/* ------------------------------------------------------- the word */}

@@ -13,7 +13,7 @@
         1672
       ],
       "kind": "ai_concept",
-      "v": "b4a5d049"
+      "v": "63ffa79d"
     },
     "hero-salon-wide": {
       "width": 1672,
@@ -218,18 +218,18 @@
   "brand": {
     "flower": {
       "width": 671,
-      "height": 649,
-      "v": "65afd33c"
+      "height": 650,
+      "v": "e049915d"
     },
     "wordmark": {
       "width": 685,
-      "height": 314,
-      "v": "0e7ed6ee"
+      "height": 322,
+      "v": "30ba5ea8"
     },
     "wordmark-dark": {
       "width": 685,
-      "height": 314,
-      "v": "97edaf0f"
+      "height": 322,
+      "v": "488225c1"
     },
     "logo-card": {
       "width": 1254,

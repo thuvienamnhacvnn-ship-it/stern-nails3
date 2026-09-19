@@ -25,6 +25,41 @@
  * scrim anchored to the left and bottom edges, which is what makes cream type
  * legible over a bright salon without touching the middle of the frame.
  */
+/*
+ * The two pages whose type sits on a photograph keep one set of inks, whichever
+ * theme is chosen: cream and bright gold on a dark wash.
+ *
+ * They are not being excused from the theme. It is that a photograph is not a
+ * surface the theme controls — this one is a warm, brightly lit room in both
+ * themes — and dark type on it needs the picture washed pale enough to stop
+ * being the picture. Cream type needs a dark wash, and a dark wash over a lit
+ * room is the look the design references use anyway.
+ *
+ * The studio page is not in this list: nothing there sits on a photograph, so
+ * it follows the theme like the rest of the site.
+ */
+.banner,
+.vouchers {
+  --hero-canvas: #181b11;
+  --hero-veil: 11 13 9;
+  --hero-line: 255 255 242;
+  --hero-glass: 34 37 24;
+  --hero-lift: 51 57 34;
+  --on-hero: #fffff2;
+  --on-hero-muted: rgb(255 255 242 / 82%);
+  --gold-hero: #ffdfb3;
+  --blush-hero: #d9afa3;
+  --gold-sheen: #fffaf0;
+  --scrim-edge: 74%;
+  --scrim-main: linear-gradient(
+    100deg,
+    rgb(11 13 9 / 92%) 0%,
+    rgb(11 13 9 / 85%) 24%,
+    rgb(11 13 9 / 37%) 37%,
+    rgb(11 13 9 / 0%) 46%
+  );
+}
+
 .banner {
   position: relative;
   /*
@@ -55,16 +90,14 @@
 }
 
 /*
- * The stage is the whole banner, and the picture is fitted inside it — held,
- * not cropped.
+ * The stage is the whole banner and the picture fills it.
  *
- * `contain` rather than `cover`, and that is the whole point: the window is
- * wider than 16:9, and `cover` pays for filling it by cutting the top and the
- * bottom off the frame — the written line, the card on the table, the flowers.
- * Fitted instead, the frame arrives whole and what is left at the sides is the
- * banner's own dark. The picture's edges are near-black foliage, so it reads as
- * a framed picture rather than as a letterbox, which is what the reference
- * draws anyway.
+ * `cover`, not `contain`. Fitted, the frame arrived whole — but a window is
+ * wider than 16:9, so the fit left a band of page down each side, and a band of
+ * page beside a photograph reads as something missing rather than as a frame.
+ * Filling it costs the top and the bottom of the frame, which is why the focal
+ * point below sits under the middle: what goes is the ceiling, not the written
+ * line and the card on the table.
  */
 .banner-stage {
   position: absolute;
@@ -82,7 +115,7 @@
  * happened to come first.
  */
 .banner-stage picture { position: absolute; inset: 0; display: block; }
-.banner-stage img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.banner-stage img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /*
  * The scrim.
@@ -99,19 +132,12 @@
   position: absolute;
   inset: 0;
   /*
-   * Measured, not guessed. The headline runs from 3% to 24% of the frame, and
-   * at the old stops the wash was down to about a third of its strength by the
-   * time it got there — so "Mehr als Nägel." was sitting on the lit ceiling at
-   * 2.5:1 on the dark theme and on the model's hair at 1.5:1 on the light one.
-   * The band now holds most of its strength out to a third of the way across
-   * and fades out at `--scrim-reach`.
+   * `--scrim-main` is the one that carries the text, and it is a different
+   * shape in each theme — an ellipse on the words by day, a band down the side
+   * at night. See the token in globals.css for why.
    */
   background:
-    linear-gradient(100deg,
-      rgb(var(--hero-veil) / var(--scrim-peak)) 0%,
-      rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.95)) 24%,
-      rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.45)) 38%,
-      rgb(var(--hero-veil) / 0%) var(--scrim-reach)),
+    var(--scrim-main),
     linear-gradient(to top,
       rgb(var(--hero-veil) / var(--scrim-edge)) 0%,
       rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.11)) 22%,
@@ -120,44 +146,6 @@
       rgb(var(--hero-veil) / calc(var(--scrim-edge) * 1.08)) 0%,
       rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.32)) 20%,
       rgb(var(--hero-veil) / 0%) 36%);
-}
-
-/*
- * The plate.
- *
- * By day the words do not sit on a fog, they sit on this: a pane of frosted
- * glass bled off the left of the picture, cut with one long curved edge and a
- * gold hairline down it, with a breath of gold rising from its foot. Everything
- * to the right of that edge is the photograph exactly as taken.
- *
- * By night it paints nothing at all — the dark scrim is part of that look — so
- * the element is here in both themes and only the day theme gives it a surface.
- */
-.banner-plate,
-.vouchers-plate {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: clamp(300px, 32%, 580px);
-  z-index: 1;
-  pointer-events: none;
-  background-image: var(--plate-glow), var(--plate-fill);
-  border-right: 1.5px solid var(--plate-line);
-  /*
-   * The curve: a tall, narrow ellipse on the right-hand corners, so the edge
-   * bows gently over the full height instead of closing into a circle. At a
-   * radius near the plate's own width it stops being an edge and becomes a
-   * disc cut out of the picture.
-   */
-  border-radius: 0 clamp(70px, 8vw, 150px) clamp(70px, 8vw, 150px) 0 / 0 50% 50% 0;
-  backdrop-filter: var(--plate-blur);
-  box-shadow: var(--plate-shadow);
-}
-
-@media (max-width: 1099px) {
-  /* On a phone the copy is the top of a scrolling page, not a column beside a
-     picture, so the plate would be a curve around nothing. */
-  .banner-plate,
-  .vouchers-plate { display: none; }
 }
 
 .banner-grid {
@@ -169,7 +157,9 @@
   gap: var(--s3);
   height: 100%;
   min-height: 0;
-  padding: var(--s3) var(--shell-x) var(--s2);
+  /* The header floats in this same cell, so the content starts below it by
+     hand. */
+  padding: calc(var(--header-h) + var(--s1)) var(--shell-x) var(--s2);
 }
 
 /* --------------------------------------------------------------- the word */
@@ -178,7 +168,14 @@
   grid-column: 1 / span 2;
   grid-row: 1;
   display: grid;
-  align-content: center;
+  /*
+   * Held near the top rather than centred. Centred, the eyebrow and the two
+   * lines of the headline sat halfway down the picture with the whole ceiling
+   * empty above them; up here they lead, and the room is what fills the space
+   * underneath.
+   */
+  align-content: start;
+  padding-top: clamp(20px, 7vh, 76px);
   justify-items: start;
   gap: 12px;
   min-width: 0;
@@ -625,7 +622,7 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
     gap: var(--s4);
-    padding: var(--s4) var(--shell-x) var(--s5);
+    padding: calc(var(--header-h) + var(--s3)) var(--shell-x) var(--s5);
   }
   /* The bottom padding is the lane the written line sits in: the block is
      bottom-aligned, so it lifts the motto clear rather than adding a gap. */
@@ -1015,7 +1012,7 @@
   background: linear-gradient(100deg, rgb(255 252 248 / 92%) 40%, rgb(255 252 248 / 10%));
   color: var(--on-chip-ink);
 }
-.checkout-summary-media .overlay .muted { color: #5e6258; }
+.checkout-summary-media .overlay .muted { color: #5f6157; }
 .checkout-summary-body { display: grid; gap: var(--s2); padding: var(--s3); }
 .summary-line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2); }
 .summary-total { font-size: 20px; font-weight: 600; }
@@ -1057,7 +1054,7 @@
   gap: var(--s3);
   height: 100%;
   min-height: 0;
-  padding: var(--s3) var(--shell-x) var(--s3);
+  padding: calc(var(--header-h) + var(--s1)) var(--shell-x) var(--s3);
 }
 
 /* ---------------------------------------------------------------- the word */
@@ -1300,7 +1297,7 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
     gap: var(--s4);
-    padding: var(--s4) var(--shell-x) var(--s5);
+    padding: calc(var(--header-h) + var(--s3)) var(--shell-x) var(--s5);
   }
   .studio-copy { max-width: none; }
   .studio-title { font-size: clamp(34px, 9vw, 48px); }
@@ -1350,11 +1347,7 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(100deg,
-      rgb(var(--hero-veil) / var(--scrim-peak)) 0%,
-      rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.95)) 24%,
-      rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.45)) 38%,
-      rgb(var(--hero-veil) / 0%) var(--scrim-reach)),
+    var(--scrim-main),
     linear-gradient(to top,
       rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.97)) 0%,
       rgb(var(--hero-veil) / calc(var(--scrim-edge) * 0.14)) 26%,
@@ -1374,7 +1367,7 @@
   gap: var(--s3);
   height: 100%;
   min-height: 0;
-  padding: var(--s3) var(--shell-x) var(--s2);
+  padding: calc(var(--header-h) + var(--s1)) var(--shell-x) var(--s2);
 }
 
 /* ---------------------------------------------------------------- the word */
@@ -1539,7 +1532,7 @@
   top: 2%;
   right: -3%;
   width: 68%;
-  background: linear-gradient(150deg, #33402c, #1d2618 62%, #26311f);
+  background: linear-gradient(150deg, #3a3f2b, #212617 62%, #2b2f1e);
   box-shadow: 0 30px 60px rgb(0 0 0 / 46%);
   transform: rotate(6deg);
 }
@@ -1549,7 +1542,7 @@
   position: absolute;
   inset: 0;
   border-radius: 16px;
-  background: radial-gradient(90% 70% at 18% 8%, rgb(163 174 149 / 40%), rgb(163 174 149 / 0%) 62%);
+  background: radial-gradient(90% 70% at 18% 8%, rgb(168 174 148 / 40%), rgb(168 174 148 / 0%) 62%);
 }
 .giftcard-motto {
   position: absolute;
@@ -1795,7 +1788,7 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
     gap: var(--s4);
-    padding: var(--s4) var(--shell-x) var(--s5);
+    padding: calc(var(--header-h) + var(--s3)) var(--shell-x) var(--s5);
   }
   .vouchers-copy { max-width: none; }
   .vouchers-title { font-size: clamp(34px, 9vw, 48px); }

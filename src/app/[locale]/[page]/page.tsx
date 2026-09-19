@@ -73,6 +73,14 @@ const FIXED_HEIGHT: PageKey[] = ['start', 'services', 'looks', 'booking', 'studi
  */
 const FULL_BLEED: PageKey[] = ['start', 'studio', 'vouchers'];
 
+/**
+ * And of those, the ones with a photograph directly behind the header, which is
+ * what decides the colour of its type. The studio page is full bleed but its
+ * surface up there is the page's own — cream by day — so a cream header would
+ * be a row of invisible words.
+ */
+const PHOTO_UNDER_HEADER: PageKey[] = ['start', 'vouchers'];
+
 export default async function Page({
   params,
   searchParams,
@@ -96,11 +104,12 @@ export default async function Page({
 
   const body = await renderPage(key, locale, query);
 
-  const onHero = FULL_BLEED.includes(key);
+  const fullBleed = FULL_BLEED.includes(key);
+  const onHero = PHOTO_UNDER_HEADER.includes(key);
 
   return (
     <div
-      className={`shell${FIXED_HEIGHT.includes(key) ? ' shell--fixed' : ''}${onHero ? ' shell--banner' : ''}`}
+      className={`shell${FIXED_HEIGHT.includes(key) ? ' shell--fixed' : ''}${fullBleed ? ' shell--banner' : ''}`}
     >
       <Header locale={locale} current={key} switchTo={switchTo} onHero={onHero} />
       <main className="shell-main" id="main">

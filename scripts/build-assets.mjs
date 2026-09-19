@@ -506,13 +506,39 @@ function writeCrop(part, box, name) {
 
 const card = liftOffCard(join(SRC, 'brand', 'logo-clean.png'));
 const rows = bands(card.opaqueRows, card.h);
-if (rows.length < 2) throw new Error(`expected a flower band and a wordmark band, found ${rows.length}`);
+if (rows.length === 0) throw new Error('found no artwork on the card at all');
 
-// The first band is the flower. Everything below it is the wordmark: "stern"
-// and "NAILS 3" are separate bands of ink but one typographic unit, so they
-// are cropped together and keep their original spacing.
-const flowerBand = rows[0];
-const wordBand = [rows[1][0], rows[rows.length - 1][1]];
+const inkTop = rows[0][0];
+const inkBottom = rows[rows.length - 1][1];
+
+/*
+ * Where the flower ends and the word begins.
+ *
+ * The delivered mark is one connected drawing: the stem runs down out of the
+ * blossom, past the leaf, and into the "S" of Stern. So there is no gap to
+ * split on, and looking for two bands of ink found one — which is what this
+ * used to do, and what stopped working the day the mark changed.
+ *
+ * The waist is the split instead: between a third and two thirds of the way
+ * down, the narrowest row of ink in the whole mark is the stem, and that is
+ * exactly the line between the blossom above and the lettering below. If the
+ * mark ever goes back to two separate bands this still finds the gap, because
+ * a gap is the narrowest row there is.
+ */
+const waist = (() => {
+  const from = Math.round(inkTop + (inkBottom - inkTop) * 0.34);
+  const to = Math.round(inkTop + (inkBottom - inkTop) * 0.68);
+  let best = from;
+  for (let y = from; y <= to; y += 1) if (card.opaqueRows[y] < card.opaqueRows[best]) best = y;
+  return best;
+})();
+
+// The blossom, the stem and the leaf; then the lettering. They are cropped so
+// that each is a whole picture on its own, because the header sets them side by
+// side rather than as the stacked lockup they are delivered as.
+const flowerBand = [inkTop, waist];
+const wordBand = [waist + 1, inkBottom];
+console.log(`mark: ink ${inkTop}-${inkBottom}, waist at ${waist} (${card.opaqueRows[waist]} px of ink)`);
 
 const xOf = (band) => {
   let x0 = card.w;
