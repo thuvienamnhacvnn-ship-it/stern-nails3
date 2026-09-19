@@ -69,16 +69,14 @@ export async function HomePage({
     <div className="banner">
       {/* ------------------------------------------------- the photograph */}
       <div className="banner-stage" aria-hidden="true">
-        {/* A window wider than 16:9 has to lose something. Holding the frame
-            below its middle loses the ceiling, which carries nothing, rather
-            than the foot of it, which carries the written line and the card on
-            the table. */}
+        {/* The banner is cut to this picture's shape, so in the ordinary case
+            the focal point never comes into play and the frame arrives whole. */}
         <Photo
           id="hero-banner"
           alt=""
           sizes="100vw"
           priority
-          focalPoint="50% 60%"
+          focalPoint="50% 50%"
           className="desktop-only"
         />
         {/*

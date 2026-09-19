@@ -27,21 +27,33 @@
  */
 .banner {
   position: relative;
-  min-height: 0;
+  /*
+   * The banner is the screen: one screenful, never a scroll. Giving it the
+   * picture's own 16:9 instead makes it 1080px tall in a 1920px window, and
+   * the page then hangs over the bottom of the screen.
+   *
+   * The whole frame still arrives, because it is the picture that is fitted
+   * into the banner rather than the banner that is cut to the picture — see
+   * `object-fit` below.
+   */
   height: 100%;
+  min-height: 0;
   overflow: hidden;
   isolation: isolate;
   background: var(--hero-canvas);
 }
 
 /*
- * The stage is the whole screen.
+ * The stage is the whole banner, and the picture is fitted inside it — held,
+ * not cropped.
  *
- * The picture is 16:9 and it is shown at 16:9, edge to edge — not set into a
- * panel. Where the window is wider than 16:9 the crop is taken off the top
- * rather than the middle: the ceiling is the one part of the frame nothing
- * depends on, while the foot of it carries "Nails feel like you" and the card
- * on the table.
+ * `contain` rather than `cover`, and that is the whole point: the window is
+ * wider than 16:9, and `cover` pays for filling it by cutting the top and the
+ * bottom off the frame — the written line, the card on the table, the flowers.
+ * Fitted instead, the frame arrives whole and what is left at the sides is the
+ * banner's own dark. The picture's edges are near-black foliage, so it reads as
+ * a framed picture rather than as a letterbox, which is what the reference
+ * draws anyway.
  */
 .banner-stage {
   position: absolute;
@@ -59,7 +71,7 @@
  * happened to come first.
  */
 .banner-stage picture { position: absolute; inset: 0; display: block; }
-.banner-stage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.banner-stage img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 /*
  * The scrim.
@@ -289,7 +301,8 @@
    * photograph is the size of the screen; it does not when the reader has to
    * scroll six cards across it.
    */
-  .banner { height: auto; overflow: visible; }
+  .banner { height: auto; min-height: 0; overflow: visible; }
+  .banner-stage img { object-fit: cover; }
   .banner-stage { bottom: auto; height: 78vh; }
   .banner-scrim {
     background:

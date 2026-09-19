@@ -568,6 +568,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
  */
 .shell {
   display: grid;
+  /*
+   * `minmax(0, 1fr)` across as well as down. An auto column takes its widest
+   * child, so one element with an intrinsic width — an aspect-ratio box, a wide
+   * table — silently makes the whole document wider than the window.
+   */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: var(--header-h) minmax(0, 1fr) auto;
   min-height: 100dvh;
 }
@@ -1521,7 +1527,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   align-self: start;
   z-index: 40;
 }
-.shell--banner .shell-main { grid-row: 1; grid-column: 1; }
+/* What shows beside the fitted picture is the banner's own dark, not the
+   page's, whichever theme is on. */
+.shell--banner .shell-main { grid-row: 1; grid-column: 1; background: var(--hero-canvas); }
 
 /* Over a photograph the wordmark is always the cream one, whatever the theme:
    the surface under it is the picture, not the page. */
