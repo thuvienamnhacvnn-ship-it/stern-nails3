@@ -40,7 +40,18 @@
   min-height: 0;
   overflow: hidden;
   isolation: isolate;
-  background: var(--hero-canvas);
+  /*
+   * Not one flat green. The surround is deepest at the corners and lifts a
+   * little behind the picture, which keeps the dark from reading as a hole and
+   * gives the photograph something to sit in.
+   */
+  background:
+    radial-gradient(120% 90% at 50% 46%, rgb(45 58 36 / 85%) 0%, rgb(21 28 17 / 0%) 62%),
+    var(--hero-canvas);
+  /* So `.banner-frame` below can be told the banner's height as well as its
+     width, which is the only way to rebuild the fitted picture's rectangle in
+     CSS. Safe here: this box is sized by its parent, never by its contents. */
+  container-type: size;
 }
 
 /*
@@ -174,26 +185,92 @@
 
 .banner-cta { margin-top: 6px; }
 
+/*
+ * The photograph's own rectangle, laid back over the top of it.
+ *
+ * The picture is fitted into a wider banner, so it is centred with dark either
+ * side, and where it actually falls depends on the window. `min()` of the two
+ * container axes reproduces exactly what `object-fit: contain` worked out, so
+ * a percentage in here means a point on the photograph rather than a point on
+ * the screen — which is what keeps the written line by the flowers on the
+ * table at every size.
+ */
+.banner-frame {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(100cqw, calc(100cqh * 1672 / 941));
+  aspect-ratio: 1672 / 941;
+  z-index: 2;
+  pointer-events: none;
+  /* A container in its own right, so type inside can be sized against the
+     picture rather than against the window. */
+  container-type: size;
+}
+
+/*
+ * "Nails feel like you", written once, on one line, beside her on the table.
+ *
+ * 3% / 80% is the vase on the table; `nowrap` is the whole point, so it
+ * reads as one written phrase rather than as a stacked logo. The size is a
+ * share of the picture's width — at 2.3% the line runs from the flowers to
+ * about a quarter across, which reaches her arm and no further — so it keeps
+ * its proportion to the vase whatever the window does.
+ */
 .banner-script {
-  /*
-   * Two staggered lines with the heart under the tail, as the reference writes
-   * it. The stagger is a hanging indent on the second line rather than two
-   * elements, so it still reads as one phrase to a screen reader.
-   */
-  font-size: clamp(24px, min(2.6vw, 5.4vh), 44px);
+  position: absolute;
+  left: 3%;
+  top: 80%;
+  white-space: nowrap;
+  pointer-events: auto;
+  cursor: pointer;
+  font-size: min(2.3cqw, 32px);
+  line-height: 1;
   color: var(--gold-bright);
-  opacity: 0.94;
-  display: block;
-  /* Wide enough that "like you" and the heart share the second line. */
-  max-width: 78%;
-  line-height: 0.92;
-  margin-top: 14px;
-  padding-left: 0.35em;
-  text-indent: -0.35em;
   transform: rotate(-3deg);
   transform-origin: left center;
+  /* A shadow through `filter`, not `text-shadow`: the hover state paints the
+     letters with a clipped background, and a text-shadow would then show
+     through the transparent glyphs as a grey ghost of the words. */
+  filter: drop-shadow(0 2px 12px rgb(10 14 9 / 65%));
+  transition: color var(--t-fast) var(--ease);
 }
-.banner-script svg { display: inline-block; vertical-align: -0.1em; margin-left: 10px; }
+.banner-script svg {
+  display: inline-block;
+  vertical-align: -0.08em;
+  margin-left: 0.45em;
+  color: var(--gold-bright);
+}
+
+/*
+ * Hover: the gold catches the light and the highlight travels along the
+ * phrase. The gradient is painted on the element and clipped to the letters,
+ * and it is three times the width of the box so there is something to move.
+ */
+.banner-script:hover {
+  background-image: linear-gradient(
+    100deg,
+    var(--gold) 0%,
+    var(--gold-bright) 18%,
+    #fffaf0 26%,
+    var(--gold-bright) 34%,
+    var(--gold) 52%,
+    var(--gold) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: script-shimmer 1.5s linear infinite;
+}
+@keyframes script-shimmer {
+  from { background-position: 150% 0; }
+  to { background-position: -150% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Still lights up, just does not travel. */
+  .banner-script:hover { animation: none; background-image: none; color: var(--gold-bright); }
+}
 
 .banner-motto {
   display: grid;
@@ -224,7 +301,14 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-rows: repeat(3, minmax(0, 1fr));
+  /*
+   * Rows as tall as they need to be, and the group held in the middle of the
+   * column. Three equal rows filling the height is what made the cards a wall
+   * down the side of the photograph; folded shut they take a third of that and
+   * the picture is allowed to breathe again.
+   */
+  grid-auto-rows: auto;
+  align-content: center;
   gap: 12px;
   min-height: 0;
 }
@@ -233,27 +317,80 @@
  * A card on the hero is a pane of smoked glass, not a cream panel: the
  * photograph stays faintly visible through it, which is what holds the banner
  * together as one picture rather than a picture with boxes on it.
+ *
+ * Shut, it is a name and a sliver of the look. Pointed at — or tabbed to, which
+ * is why `:focus-within` is here too — it opens: the sliver widens into a
+ * proper thumbnail, the line of description unfolds under the name, and the
+ * arrow appears. The width transition is between two lengths rather than
+ * between a length and a fraction, because those do not interpolate.
  */
 .rail-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+  grid-template-columns: minmax(0, 1fr) clamp(64px, 6.2vw, 104px);
   align-items: stretch;
-  height: 100%;
-  min-height: 104px;
   border-radius: 14px;
   overflow: hidden;
-  background: rgb(23 28 19 / 72%);
-  border: 1px solid rgb(255 255 242 / 10%);
-  backdrop-filter: blur(6px);
-  transition: transform var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  background:
+    linear-gradient(135deg, rgb(70 84 56 / 34%), rgb(34 42 27 / 10%)),
+    rgb(30 38 25 / 68%);
+  border: 1px solid rgb(255 255 242 / 14%);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 26%);
+  backdrop-filter: blur(8px);
+  transition:
+    grid-template-columns var(--t-slow) var(--ease),
+    transform var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
 }
-.rail-card:hover { transform: translateY(-2px); border-color: rgb(215 179 124 / 45%); }
+.rail-card:hover,
+.rail-card:focus-within {
+  grid-template-columns: minmax(0, 1fr) clamp(120px, 12vw, 210px);
+  transform: translateY(-3px);
+  border-color: rgb(215 179 124 / 62%);
+  box-shadow: 0 14px 40px rgb(0 0 0 / 38%), 0 0 0 1px rgb(215 179 124 / 22%);
+}
 
-.rail-card-body { display: grid; align-content: center; gap: 4px; padding: 16px; min-width: 0; }
-.rail-card-title { font-family: var(--font-head); font-size: clamp(22px, 1.6vw, 28px); color: var(--on-hero); }
+.rail-card-body { display: grid; align-content: center; gap: 4px; padding: 12px 16px; min-width: 0; }
+.rail-card-title {
+  font-family: var(--font-head);
+  font-size: clamp(20px, 1.5vw, 26px);
+  line-height: 1.12;
+  color: var(--on-hero);
+  transition: color var(--t-fast) var(--ease);
+}
+.rail-card:hover .rail-card-title,
+.rail-card:focus-within .rail-card-title { color: var(--gold-bright); }
+
+/*
+ * The folded part. `max-height` rather than `height: auto`, because auto does
+ * not animate; the value only has to be larger than two lines of 12px type.
+ */
+.rail-card-reveal {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
+  transition:
+    max-height var(--t-slow) var(--ease),
+    opacity var(--t-fast) var(--ease),
+    transform var(--t-slow) var(--ease);
+}
+.rail-card:hover .rail-card-reveal,
+.rail-card:focus-within .rail-card-reveal {
+  max-height: 96px;
+  opacity: 1;
+  transform: none;
+  margin-top: 6px;
+}
 .rail-card-teaser { font-size: 12px; color: var(--on-hero-muted); }
-.rail-card-body .round-arrow { margin-top: 8px; }
 .rail-card-media { min-height: 100%; }
+.rail-card-media img { transition: transform var(--t-slow) var(--ease); }
+.rail-card:hover .rail-card-media img,
+.rail-card:focus-within .rail-card-media img { transform: scale(1.06); }
 
 .banner-rail-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 
@@ -263,14 +400,28 @@
   gap: 10px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: rgb(23 28 19 / 72%);
-  border: 1px solid rgb(255 255 242 / 10%);
-  backdrop-filter: blur(6px);
+  background:
+    linear-gradient(135deg, rgb(70 84 56 / 34%), rgb(34 42 27 / 10%)),
+    rgb(30 38 25 / 68%);
+  border: 1px solid rgb(255 255 242 / 14%);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 26%);
+  backdrop-filter: blur(8px);
   color: var(--on-hero);
   min-width: 0;
-  transition: transform var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  transition:
+    transform var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
 }
-.rail-teaser:hover { transform: translateY(-2px); border-color: rgb(215 179 124 / 45%); }
+.rail-teaser:hover {
+  transform: translateY(-3px);
+  border-color: rgb(215 179 124 / 62%);
+  box-shadow: 0 14px 40px rgb(0 0 0 / 38%), 0 0 0 1px rgb(215 179 124 / 22%);
+}
+.rail-teaser svg:first-child { color: var(--gold-bright); transition: transform var(--t-fast) var(--ease); }
+.rail-teaser:hover svg:first-child { transform: scale(1.12); }
+.rail-teaser:hover .rail-teaser-title { color: var(--gold-bright); }
+.rail-teaser-title { transition: color var(--t-fast) var(--ease); }
 .rail-teaser-title { display: block; font-size: 14px; font-weight: 500; }
 .rail-teaser-sub { display: block; font-size: 12px; color: var(--on-hero-muted); }
 
@@ -301,8 +452,26 @@
    * photograph is the size of the screen; it does not when the reader has to
    * scroll six cards across it.
    */
-  .banner { height: auto; min-height: 0; overflow: visible; }
+  /*
+   * `container-type: normal` again, and it matters: size containment makes a
+   * box ignore its own contents when it is measured, and this one is `height:
+   * auto` here — left as a container it would measure zero and the whole page
+   * would collapse behind the picture.
+   */
+  .banner { height: auto; min-height: 0; overflow: visible; container-type: normal; }
   .banner-stage img { object-fit: cover; }
+  /* The picture is the header strip here, not a fitted rectangle, so the frame
+     is simply laid over it. */
+  .banner-frame {
+    inset: 0 0 auto;
+    margin: 0;
+    width: auto;
+    height: 78vh;
+    aspect-ratio: auto;
+    container-type: normal;
+  }
+  /* Clear of the headline block, which fills the top of the strip here. */
+  .banner-script { left: 6%; top: 77%; font-size: 23px; }
   .banner-stage { bottom: auto; height: 78vh; }
   .banner-scrim {
     background:
@@ -314,13 +483,21 @@
     gap: var(--s4);
     padding: var(--s4) var(--shell-x) var(--s5);
   }
-  .banner-copy { grid-column: 1; max-width: none; padding-top: 6vh; min-height: 56vh; align-content: end; }
+  /* The bottom padding is the lane the written line sits in: the block is
+     bottom-aligned, so it lifts the motto clear rather than adding a gap. */
+  .banner-copy {
+    grid-column: 1;
+    max-width: none;
+    padding-top: 6vh;
+    padding-bottom: 46px;
+    min-height: 56vh;
+    align-content: end;
+  }
   .banner-title { font-size: clamp(38px, 10vw, 54px); }
-  .banner-script { font-size: 32px; }
   .banner-dock { grid-column: 1; grid-row: auto; width: 100%; }
   .banner-rail { grid-column: 1; grid-row: auto; }
   .banner-rail-head { justify-content: space-between; }
-  .rail-card { min-height: 130px; }
+  .rail-card { grid-template-columns: minmax(0, 1fr) 110px; }
   /* Past the picture the cards sit on the page itself, so they take the page's
      own surface rather than staying glass over nothing. */
   .banner-rail-list li:nth-child(n + 3) .rail-card,
@@ -376,7 +553,19 @@
   min-width: 0;
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.category-tab[aria-current='true'] { background: var(--sage); color: var(--on-sage); }
+.category-tab[aria-current='true'] {
+  background: var(--sage);
+  color: var(--on-sage);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);
+}
+/* Something has to happen under the pointer on a tab that is not the current
+   one, or the row reads as a picture of tabs. */
+.category-tab:not([aria-current='true']):hover {
+  background: var(--panel-raised);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.category-tab { transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease); }
 .category-tab span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .service-grid {
@@ -386,7 +575,11 @@
   align-content: start;
   min-width: 0;
 }
-.service-card-media { aspect-ratio: 4 / 3; }
+.service-card-media { aspect-ratio: 4 / 3; overflow: hidden; }
+.service-card-media img { transition: transform var(--t-slow) var(--ease); }
+.service-grid .card:hover .service-card-media img { transform: scale(1.04); }
+.service-grid .card:hover .service-card-title { color: var(--gold); }
+.service-card-title { transition: color var(--t-fast) var(--ease); }
 .service-card-body { display: grid; gap: 8px; padding: var(--s2) var(--s2) 0; align-content: start; }
 .service-card-title { font-size: 26px; }
 .service-card-foot {
@@ -492,8 +685,24 @@
   background: var(--panel-soft);
   transition: transform var(--t-fast) var(--ease);
 }
-.look-card:hover { transform: translateY(-2px); }
-.look-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.look-card:hover,
+.look-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+.look-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--t-slow) var(--ease);
+}
+/* The picture moves under its own frame rather than the frame growing, so the
+   caption and the favourite button stay exactly where they were. */
+.look-card:hover img { transform: scale(1.05); }
+.look-card-caption { transition: padding-bottom var(--t-slow) var(--ease); }
+.look-card:hover .look-card-caption { padding-bottom: 20px; }
 .look-card-caption {
   position: absolute;
   left: 0; right: 0; bottom: 0;

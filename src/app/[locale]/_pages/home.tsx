@@ -109,11 +109,6 @@ export async function HomePage({
             <ArrowRight size={18} />
           </Link>
 
-          <span className="banner-script script" aria-hidden="true">
-            {copy.brand.script}
-            <Heart size={20} />
-          </span>
-
           <span className="banner-motto" aria-hidden="true">
             {copy.brand.motto.map((word) => (
               <span key={word}>{word}</span>
@@ -156,9 +151,14 @@ export async function HomePage({
                 <Link className="rail-card" href={`${path(locale, 'looks')}?look=${look.slug}`}>
                   <span className="rail-card-body">
                     <span className="rail-card-title">{locale === 'de' ? look.nameDe : look.nameEn}</span>
-                    <span className="rail-card-teaser">{locale === 'de' ? look.teaserDe : look.teaserEn}</span>
-                    <span className="round-arrow round-arrow--sm round-arrow--onHero" aria-hidden="true">
-                      <ArrowRight size={18} />
+                    {/* Folded away until the card is pointed at or tabbed to.
+                        The name alone is enough to choose by, and three open
+                        cards fill the whole side of the picture. */}
+                    <span className="rail-card-reveal">
+                      <span className="rail-card-teaser">{locale === 'de' ? look.teaserDe : look.teaserEn}</span>
+                      <span className="round-arrow round-arrow--sm round-arrow--onHero" aria-hidden="true">
+                        <ArrowRight size={18} />
+                      </span>
                     </span>
                   </span>
                   <span className="rail-card-media media">
@@ -215,8 +215,22 @@ export async function HomePage({
           />
         </div>
 
-        {/* No script overlay here: the photograph already has "Nails feel like
-            you" written across it, and a second one would be a duplicate. */}
+      </div>
+
+      {/*
+        The written line, on the picture rather than beside it.
+
+        `.banner-frame` is the photograph's own rectangle — the banner is wider
+        than 16:9, so the picture is fitted into it and does not reach the
+        sides. Anything placed in here in per cent lands on the same part of the
+        photograph at every window size, which is what lets this sit by the
+        flowers on the table next to her and stay there.
+      */}
+      <div className="banner-frame" aria-hidden="true">
+        <span className="banner-script script">
+          {copy.brand.script}
+          <Heart size={18} />
+        </span>
       </div>
     </div>
   );

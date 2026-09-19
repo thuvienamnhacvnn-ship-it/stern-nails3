@@ -154,6 +154,16 @@ function liftOffCard(pngPath) {
    * background for the flood. Generous on purpose: it has to be able to travel
    * the whole length of the shadow ramp. It is safe to be generous precisely
    * because connectivity, not the threshold, is what protects the artwork.
+   *
+   * It does not reach the very bottom of the ramp, and the mark keeps a soft
+   * cream edge where the relief casts its shadow — faint on cream, a thin glow
+   * on the dark theme. Two attempts at closing that gap are recorded here as
+   * things not to try again: walking on while the pixel is the card's colour
+   * scaled to its own brightness stops less than halfway down, because the
+   * shadow turns warmer as it deepens rather than simply darker; adding "and
+   * only downhill" carries it to the bottom and then straight on into the sage
+   * petals, whose shaded flanks are downhill and warm as well, and chews holes
+   * in them. The glow is the cheaper of the two.
    */
   const WALKABLE = 26;
 
@@ -185,14 +195,6 @@ function liftOffCard(pngPath) {
     isBackground[index] = 1;
     stack.push(index);
   };
-  for (let x = 0; x < w; x += 1) {
-    visit(x, 0);
-    visit(x, h - 1);
-  }
-  for (let y = 0; y < h; y += 1) {
-    visit(0, y);
-    visit(w - 1, y);
-  }
   const flood = () => {
     while (stack.length > 0) {
       const index = stack.pop();
@@ -204,6 +206,14 @@ function liftOffCard(pngPath) {
       visit(x, y + 1);
     }
   };
+  for (let x = 0; x < w; x += 1) {
+    visit(x, 0);
+    visit(x, h - 1);
+  }
+  for (let y = 0; y < h; y += 1) {
+    visit(0, y);
+    visit(w - 1, y);
+  }
   flood();
 
   /*
@@ -283,6 +293,91 @@ function liftOffCard(pngPath) {
     visitSealed(x + 1, y);
     visitSealed(x, y - 1);
     visitSealed(x, y + 1);
+  }
+
+  /*
+   * The counters.
+   *
+   * Everything above finds the background by walking in from the border, and a
+   * counter is by definition where the border cannot reach: the hole in the
+   * `e`, the aperture of the `s`, and the S-shaped channel the five petals
+   * leave between them — which is the mark's whole idea, the S of "stern"
+   * drawn by the flower. Left filled they are cream shapes floating on a dark
+   * page and the S never appears at all.
+   *
+   * They cannot be picked out by brightness. The palest petal is lit almost to
+   * the card's own value, and keying on that punches a hole through the flower,
+   * which is the failure this function exists to avoid.
+   *
+   * They can be picked out by colour. A counter is the card, so once the card's
+   * colour is scaled to the region's own brightness the two agree within a
+   * couple of levels; the sheen on a petal stays pink, twenty-odd levels of red
+   * over green where the card has seven. Measured on the delivered art every
+   * counter lands under 3 and every highlight over 8, so the line sits at 5.
+   */
+  const cardColour = (() => {
+    const at = (x, y) => {
+      const i = (y * w + x) * 3;
+      return [rgb[i], rgb[i + 1], rgb[i + 2]];
+    };
+    const corners = [at(4, 4), at(w - 5, 4), at(4, h - 5), at(w - 5, h - 5)];
+    return [0, 1, 2].map((channel) => corners.reduce((sum, c) => sum + c[channel], 0) / 4);
+  })();
+  const cardSum = cardColour[0] + cardColour[1] + cardColour[2];
+  const IS_CARD = 5;
+  // Below this a region is a speck of sheen or a single stray pixel, and
+  // punching it would nibble the artwork rather than open a counter.
+  const MIN_COUNTER = 24;
+
+  const seenRegion = new Uint8Array(w * h);
+  for (let start = 0; start < w * h; start += 1) {
+    if (seenRegion[start] || isBackground[start] || distance[start] >= WALKABLE) continue;
+    const region = [];
+    const queue = [start];
+    seenRegion[start] = 1;
+    let sumR = 0;
+    let sumG = 0;
+    let sumB = 0;
+    while (queue.length > 0) {
+      const index = queue.pop();
+      region.push(index);
+      const o = index * 3;
+      sumR += rgb[o];
+      sumG += rgb[o + 1];
+      sumB += rgb[o + 2];
+      const x = index % w;
+      const y = (index - x) / w;
+      for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const next = ny * w + nx;
+        if (seenRegion[next] || isBackground[next] || distance[next] >= WALKABLE) continue;
+        seenRegion[next] = 1;
+        queue.push(next);
+      }
+    }
+    if (region.length < MIN_COUNTER) continue;
+    const n = region.length;
+    const mean = [sumR / n, sumG / n, sumB / n];
+    const scale = (mean[0] + mean[1] + mean[2]) / cardSum;
+    const offCard = Math.hypot(
+      mean[0] - cardColour[0] * scale,
+      mean[1] - cardColour[1] * scale,
+      mean[2] - cardColour[2] * scale,
+    );
+    if (offCard > IS_CARD) continue;
+    /*
+     * The counter has a shadow of its own, cast by the wall of the letter or
+     * the petal around it. Marking the flat middle and stopping would leave
+     * that as a cream ring inside the hole, so the same downhill walk is run
+     * again from what was just opened.
+     */
+    for (const index of region) {
+      isBackground[index] = 1;
+      stack.push(index);
+    }
+    flood();
   }
 
   /*
