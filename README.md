@@ -128,9 +128,14 @@ every URL carries it as `?v=`. Change a file in `assets/`, re-run
 `assets/interiors/hero-banner.png` is the start page, and it is used exactly as
 delivered: the brand sign, the written line and the card on the table are all
 painted into the photograph, so the page does not draw them a second time. It
-is 16:9 and the banner shows it at 16:9 edge to edge; where the window is wider
-than that the crop is taken off the ceiling, which is why the focal point in
-`home.tsx` sits below the middle.
+is 16:9 and it is shown whole: the banner is one screen, and the picture is
+fitted into it (`object-fit: contain`) rather than made to fill it. A window is
+wider than 16:9, so filling it would mean cutting the top and the bottom off the
+frame — and the bottom is where the written line, the card on the table and the
+flowers are. What is left at the sides is the banner's own dark, which the
+picture's near-black foliage edges run straight into, and which the headline and
+the lookbook rail sit on. On a phone the picture is a header strip instead and
+is cropped to the model.
 
 ### Time
 
