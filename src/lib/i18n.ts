@@ -239,6 +239,14 @@ const de = {
   studio: {
     eyebrow: 'Studio',
     title: 'Ein Ort zum Wohlfühlen.',
+    /* The headline is set in two inks, the second line gold and italic, so it
+       is stored as two pieces rather than broken with a <br>. */
+    titleLead: 'Ein Ort zum ',
+    titleAccent: 'Wohlfühlen.',
+    /* One word per line beside the pictures. Which words, and how many, is a
+       question about the language, so each one keeps its own break. */
+    storyLabel: ['Unsere', 'Studio-', 'Geschichte'],
+    claimScript: ['Schönere Nägel.', 'Schönerer Alltag.'],
     intro:
       'Mehr als Nägel – ein Raum zum Ankommen, Abschalten und Genießen. Stilvolles Design, warme Atmosphäre und Liebe zum Detail machen unser Studio zu etwas Besonderem.',
     rooms: { manikuere: 'Maniküre', pedikuere: 'Pediküre', ambiente: 'Ambiente' },
@@ -599,6 +607,10 @@ const en: Dictionary = {
   studio: {
     eyebrow: 'Studio',
     title: 'A place to feel good.',
+    titleLead: 'A place to ',
+    titleAccent: 'feel good.',
+    storyLabel: ['Our', 'Studio', 'Story'],
+    claimScript: ['Beautiful nails.', 'Better days.'],
     intro:
       'More than nails – a room to arrive, unwind and enjoy. Considered design, a warm atmosphere and an eye for detail make our studio something of its own.',
     rooms: { manikuere: 'Manicure', pedikuere: 'Pedicure', ambiente: 'Ambience' },

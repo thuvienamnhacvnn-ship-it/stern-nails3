@@ -118,6 +118,14 @@ export const Sparkle = (p: IconProps) => (
   </Icon>
 );
 
+export const Gem = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M7.4 4h9.2l3.4 5-8 11-8-11Z" />
+    <path d="M4 9h16" />
+    <path d="M9.6 9L12 20M14.4 9L12 20" />
+  </Icon>
+);
+
 export const Search = (p: IconProps) => (
   <Icon {...p}>
     <circle cx="11" cy="11" r="6.4" />

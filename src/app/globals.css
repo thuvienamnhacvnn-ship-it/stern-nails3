@@ -1604,6 +1604,19 @@ a.card:hover,
 }
 .btn--cream:hover:not(:disabled) { background: #ffffff; }
 
+/* Its quieter partner: an outline in the hero's own ink, for the second of two
+   actions where a second filled pill would fight the first. */
+.btn--onHero {
+  background: transparent;
+  color: var(--on-hero);
+  border-color: rgb(255 255 242 / 46%);
+}
+.btn--onHero:hover:not(:disabled) {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+  background: rgb(255 255 242 / 8%);
+}
+
 /* The booking bar as smoked glass rather than a cream pill. */
 .dock--onHero {
   background: rgb(23 28 19 / 74%);

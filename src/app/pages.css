@@ -927,39 +927,310 @@
 
 /* =========================================================== 06 · studio */
 
+/*
+ * One screen on the banner's dark green: the word at the left, two pictures in
+ * the middle, four notes down the right.
+ *
+ * The pictures are not a row. The large one is cut to an arch and the second
+ * leans over its bottom corner, which is why they are placed on a small grid of
+ * their own with one overlapping the other rather than sitting side by side.
+ */
 .studio {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 22fr) minmax(0, 54fr) minmax(0, 24fr);
-  gap: var(--s4);
-  padding: var(--s2) var(--shell-x) var(--s2);
   height: 100%;
   min-height: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(110% 80% at 52% 44%, rgb(45 58 36 / 62%) 0%, rgb(21 28 17 / 0%) 64%),
+    var(--hero-canvas);
+  color: var(--on-hero);
 }
-.studio-intro { display: grid; align-content: center; justify-items: start; gap: var(--s2); position: relative; z-index: 1; }
-.studio-title { font-size: clamp(34px, 3.4vw, 56px); }
 
-.studio-gallery { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: var(--s2); min-width: 0; }
-.studio-tabs { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); flex-wrap: wrap; }
-.studio-photos { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 2px; min-height: 0; }
-.studio-photo { position: relative; min-height: 0; }
-.studio-photo img { height: 100%; }
+/*
+ * The decorative petals are lit for cream, and this page is dark whichever
+ * theme is on — at full strength the one in the corner sits over the logo like
+ * a sticker. Dimmed, it is the out-of-focus foliage the design frames with.
+ */
+.studio .petal { opacity: 0.14; }
 
-.studio-facts { display: grid; align-content: center; gap: var(--s4); min-width: 0; position: relative; }
-.studio-fact { display: grid; gap: 8px; }
-.studio-fact-icon {
-  display: grid; place-items: center;
-  width: 40px; height: 40px;
+.studio-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 22fr) minmax(0, 55fr) minmax(0, 23fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: var(--s3);
+  height: 100%;
+  min-height: 0;
+  /* The header floats over this same cell, so the content starts below it by
+     hand — the same arrangement the start page uses. */
+  padding: calc(var(--header-h) + 10px) var(--shell-x) var(--s3);
+}
+
+/* ---------------------------------------------------------------- the word */
+
+.studio-copy {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 14px;
+  min-width: 0;
+  max-width: clamp(240px, 21vw, 360px);
+  color: var(--on-hero);
+}
+
+.studio-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+.studio-title {
+  font-size: clamp(32px, min(3.4vw, 7.4vh), 58px);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  color: var(--on-hero);
+}
+.studio-title-accent { display: block; font-style: italic; color: var(--gold-bright); }
+
+.studio-intro {
+  font-size: clamp(13px, 1.7vh, 15px);
+  line-height: 1.65;
+  color: var(--on-hero-muted);
+}
+
+/*
+ * Two actions on one line. They are set a size down from the page default,
+ * because "Kontakt anfragen" beside "Termin buchen" is wider than this column
+ * at the default padding and the pair drops onto two lines — which reads as two
+ * separate offers rather than as a choice between them.
+ */
+.studio-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  /* Sized to the pair, not to the column: "Kontakt anfragen" beside "Termin
+     buchen" is a few pixels wider than the column at some widths, and a few
+     pixels into the gutter is far better than the two dropping onto separate
+     lines, where they stop reading as a choice between two things. */
+  width: max-content;
+  gap: 10px;
+  margin-top: 4px;
+}
+.studio-actions .btn {
+  min-height: 44px;
+  padding: 0 clamp(12px, 1vw, 18px);
+  font-size: clamp(13px, 0.95vw, 14.5px);
+  gap: 8px;
+}
+
+.studio-motto {
+  display: grid;
+  gap: 5px;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--on-hero-muted);
+  margin-top: var(--s2);
+}
+
+.studio-script {
+  font-size: clamp(22px, min(2.2vw, 4.6vh), 36px);
+  color: var(--gold-bright);
+  line-height: 0.98;
+  max-width: 76%;
+  margin-top: 6px;
+  padding-left: 0.35em;
+  text-indent: -0.35em;
+  transform: rotate(-4deg);
+  transform-origin: left center;
+}
+.studio-script svg { display: inline-block; vertical-align: -0.08em; margin-left: 10px; }
+
+/* ------------------------------------------------------------ the pictures */
+
+.studio-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 61fr) minmax(0, 39fr);
+  grid-template-rows: minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+}
+
+.studio-photo {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 42%);
+}
+.studio-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/*
+ * The arch. A single radius cannot do it: the top has to be an ellipse half as
+ * tall as it is wide, so the two axes are given separately, and the foot of it
+ * keeps an ordinary small radius.
+ */
+.studio-photo--arch {
+  grid-column: 1;
+  border-radius: 50% 50% 22px 22px / 34% 34% 22px 22px;
+}
+
+/*
+ * The second picture leans over the arch's bottom right. `align-self: end` and
+ * the negative margin are the lean; the height is what leaves the arch's
+ * shoulder visible behind it.
+ */
+.studio-photo--inset {
+  grid-column: 2;
+  align-self: end;
+  height: 82%;
+  margin-left: -8%;
+  margin-bottom: 2%;
+  z-index: 1;
+  border-radius: 64px 22px 22px 22px;
+}
+
+/* One word per line above the second picture, with a rule running on towards
+   the stamp. */
+.studio-story {
+  position: absolute;
+  left: 62%;
+  top: 0;
+  display: grid;
+  gap: 6px;
+  font-size: clamp(10px, 0.78vw, 13px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--on-hero);
+  z-index: 2;
+}
+.studio-story-rule {
+  width: clamp(40px, 5vw, 86px);
+  height: 1px;
+  margin-top: 2px;
+  background: rgb(255 255 242 / 55%);
+}
+
+/* The stamp: a ring of type around the mark, set on a real circle. */
+.studio-stamp {
+  position: absolute;
+  right: 0;
+  top: 4%;
+  width: clamp(88px, 8.4vw, 134px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+.studio-stamp-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: studio-stamp-turn 34s linear infinite;
+}
+.studio-stamp-ring circle { fill: none; stroke: rgb(255 255 242 / 30%); stroke-width: 1; }
+.studio-stamp-ring text {
+  fill: var(--gold-bright);
+  font-family: var(--font-body);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.studio-stamp-flower { position: relative; width: 44%; height: auto; }
+@keyframes studio-stamp-turn {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .studio-stamp-ring { animation: none; }
+}
+
+/* --------------------------------------------------------------- the notes */
+
+.studio-notes {
+  display: grid;
+  align-content: center;
+  gap: var(--s3);
+  min-width: 0;
+  min-height: 0;
+  color: var(--on-hero);
+}
+
+.studio-note-list { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(14px, 2.2vh, 26px); }
+
+.studio-note { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: start; }
+
+.studio-note-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
   border-radius: var(--r-pill);
-  background: var(--panel-soft);
-  color: var(--ink);
+  border: 1px solid rgb(255 255 242 / 30%);
+  color: var(--gold-bright);
+  flex: none;
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
 }
-.studio-fact h3 { font-size: 28px; }
+.studio-note:hover .studio-note-icon { border-color: var(--gold-bright); transform: translateY(-2px); }
+
+.studio-note-body { display: grid; gap: 4px; min-width: 0; }
+.studio-note-title { font-family: var(--font-head); font-size: clamp(18px, 1.3vw, 23px); color: var(--on-hero); }
+.studio-note-text { font-size: 12.5px; line-height: 1.55; color: var(--on-hero-muted); }
+
+.studio-claim {
+  display: grid;
+  gap: 2px;
+  justify-items: end;
+  text-align: right;
+  /*
+   * Capped at 28px, which is what fits. Larger and the longer of the two lines
+   * runs past the right edge of the column and the page clips it — the tail of
+   * "Alltag." simply disappears.
+   */
+  font-size: clamp(19px, min(1.7vw, 3.6vh), 28px);
+  line-height: 1.06;
+  color: var(--gold-bright);
+  transform: rotate(-4deg);
+  transform-origin: right center;
+}
+
+.studio-pager { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
+/* ------------------------------------------------------------- on a phone */
 
 @media (max-width: 1099px) {
-  .studio { grid-template-columns: minmax(0, 1fr); padding-bottom: var(--s5); }
-  .studio-photos { grid-template-columns: minmax(0, 1fr); }
-  .studio-photo { aspect-ratio: 4 / 3; }
+  .studio { height: auto; overflow: visible; }
+  .studio-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    gap: var(--s4);
+    /* The header floats over this cell here too, so the eyebrow has to start
+       below it — at a flat 32px it sat behind the wordmark. */
+    padding: calc(var(--header-h) + var(--s3)) var(--shell-x) var(--s5);
+  }
+  .studio-copy { max-width: none; }
+  .studio-title { font-size: clamp(34px, 9vw, 48px); }
+  .studio-script { font-size: 30px; max-width: none; }
+  /* The arch and the lean are a desktop composition. On one narrow column they
+     would leave the second picture the size of a stamp. */
+  .studio-stage { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+  .studio-photo--arch { border-radius: 40% 40% 18px 18px / 16% 16% 18px 18px; aspect-ratio: 4 / 3; }
+  .studio-photo--inset {
+    grid-column: 1;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    margin: 0;
+    border-radius: 40px 18px 18px 18px;
+  }
+  .studio-story { position: static; grid-auto-flow: column; justify-content: start; gap: 10px; }
+  .studio-story-rule { display: none; }
+  .studio-stamp { display: none; }
+  .studio-claim { justify-items: start; text-align: left; transform-origin: left center; }
+  .studio-pager { justify-content: flex-start; }
 }
 
 /* ========================================================= 07 · vouchers */
@@ -1413,7 +1684,7 @@
   .home-intro,
   .home-edit-list,
   .services-intro,
-  .studio-intro,
+  .studio-copy,
   .vouchers-intro,
   .booking-rail,
   .account-side {
@@ -1425,7 +1696,7 @@
   .services-main,
   .looks-main,
   .booking-main,
-  .studio-gallery,
+  .studio-stage,
   .stylist-chat,
   .account-main {
     min-height: 0;
@@ -1437,7 +1708,7 @@
   .vouchers-form,
   .services-detail,
   .looks-detail,
-  .studio-facts {
+  .studio-notes {
     min-height: 0;
     overflow-y: auto;
     scrollbar-width: thin;
