@@ -226,50 +226,93 @@
   cursor: pointer;
   font-size: min(2.3cqw, 32px);
   line-height: 1;
-  color: var(--gold-bright);
   transform: rotate(-3deg);
   transform-origin: left center;
-  /* A shadow through `filter`, not `text-shadow`: the hover state paints the
-     letters with a clipped background, and a text-shadow would then show
-     through the transparent glyphs as a grey ghost of the words. */
+  /* A shadow through `filter`, not `text-shadow`: the letters are painted with
+     a background clipped to their shapes, and a text-shadow would show through
+     the transparent glyphs as a grey ghost of the words. */
   filter: drop-shadow(0 2px 12px rgb(10 14 9 / 65%));
-  transition: color var(--t-fast) var(--ease);
+
+  /*
+   * The line is not a flat gold. It is painted with a gradient that is three
+   * times the width of the box — gold nearly all the way across, with one
+   * narrow band of near-white in it — and clipped to the letters, so moving
+   * the background moves a highlight along the phrase.
+   *
+   * At rest the highlight crosses once and then waits, which is what the
+   * timing below is: about two and a half seconds of travel, three of
+   * stillness. A light that never stops moving is a distraction, not a sign of
+   * life.
+   */
+  background-image: linear-gradient(
+    100deg,
+    var(--gold-bright) 0%,
+    var(--gold-bright) 16%,
+    #fffaf0 25%,
+    var(--gold-bright) 34%,
+    var(--gold-bright) 100%
+  );
+  background-size: 300% 100%;
+  background-position: -60% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation:
+    script-arrive 900ms var(--ease) both,
+    script-sheen 5500ms 900ms linear infinite;
 }
+
+/* Written on once, when the page arrives: up from under its own line, the way
+   a hand finishes a word. */
+@keyframes script-arrive {
+  from { opacity: 0; transform: rotate(-3deg) translate(-8px, 10px); }
+  to { opacity: 1; transform: rotate(-3deg) translate(0, 0); }
+}
+
+@keyframes script-sheen {
+  0% { background-position: 160% 0; }
+  45% { background-position: -60% 0; }
+  100% { background-position: -60% 0; }
+}
+
 .banner-script svg {
   display: inline-block;
   vertical-align: -0.08em;
   margin-left: 0.45em;
+  /* Its own colour, because the parent's is transparent — `currentColor`
+     inside the mark would otherwise resolve to nothing at all. */
   color: var(--gold-bright);
+  animation: script-heart 3400ms 1200ms var(--ease) infinite;
+  transform-origin: center;
 }
 
-/*
- * Hover: the gold catches the light and the highlight travels along the
- * phrase. The gradient is painted on the element and clipped to the letters,
- * and it is three times the width of the box so there is something to move.
- */
+/* A beat, not a throb: it happens, then it is quiet for three seconds. */
+@keyframes script-heart {
+  0%, 82%, 100% { transform: scale(1); }
+  87% { transform: scale(1.18); }
+  92% { transform: scale(1.04); }
+  96% { transform: scale(1.1); }
+}
+
+/* Under the pointer the same highlight simply runs, without the wait. */
 .banner-script:hover {
-  background-image: linear-gradient(
-    100deg,
-    var(--gold) 0%,
-    var(--gold-bright) 18%,
-    #fffaf0 26%,
-    var(--gold-bright) 34%,
-    var(--gold) 52%,
-    var(--gold) 100%
-  );
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: script-shimmer 1.5s linear infinite;
+  animation:
+    script-arrive 900ms var(--ease) both,
+    script-shimmer 1500ms linear infinite;
 }
 @keyframes script-shimmer {
   from { background-position: 150% 0; }
   to { background-position: -150% 0; }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  /* Still lights up, just does not travel. */
-  .banner-script:hover { animation: none; background-image: none; color: var(--gold-bright); }
+  /* Still gold, still lit, but nothing travels and nothing beats. */
+  .banner-script,
+  .banner-script:hover,
+  .banner-script svg {
+    animation: none;
+  }
+  .banner-script { background-position: -60% 0; }
 }
 
 .banner-motto {

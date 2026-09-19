@@ -628,6 +628,33 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .page { padding-inline: var(--shell-x); }
 
+/* --------------------------------------------------------------- pointer */
+
+/*
+ * The canvas the brush and its petals are drawn on. Above everything, catching
+ * nothing: it must never be the thing a click lands on.
+ */
+.polish-cursor {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms linear;
+}
+
+/*
+ * The class is put on by script, only after a mouse has moved, and taken off
+ * again over anything you type into. Without a real pointer it is never there
+ * at all, so nothing here can leave a visitor with no cursor.
+ */
+html.has-polish-cursor,
+html.has-polish-cursor * {
+  cursor: none !important;
+}
+
 /* ----------------------------------------------------------------- header */
 
 .header {

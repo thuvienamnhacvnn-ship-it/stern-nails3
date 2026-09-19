@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { isLocale, LOCALES, t, type Locale } from '@/lib/i18n';
 import { env } from '@/lib/env';
+import { PolishCursor } from '@/components/polish-cursor';
 
 /**
  * The language layer.
@@ -77,6 +78,9 @@ export default async function LocaleLayout({
           {copy.nav.skipToContent}
         </a>
         {children}
+        {/* Draws nothing until a mouse moves, so a touch screen, a keyboard and
+            a screenshot run are all untouched by it. */}
+        <PolishCursor />
       </body>
     </html>
   );

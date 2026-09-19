@@ -137,6 +137,20 @@ picture's near-black foliage edges run straight into, and which the headline and
 the lookbook rail sit on. On a phone the picture is a header strip instead and
 is cropped to the model.
 
+### The pointer
+
+On a desktop the cursor is a polish brush with petals trailing it, drawn on a
+canvas in `src/components/polish-cursor.tsx`. It replaces the native cursor, so
+it is fenced in: it does nothing until a mouse has actually moved, it is off
+entirely under `prefers-reduced-motion` and on anything that is not a fine
+pointer, and it hands the real I-beam and caret straight back over any field you
+type into. A keyboard user, a phone and a screenshot run never see it and never
+lose their cursor to it.
+
+The brush is drawn with its point at the origin. That is not a detail: drawn the
+other way up, the painted tip sits twenty pixels from the real pointer, and
+every click lands somewhere other than where it was aimed.
+
 ### Time
 
 Everything stored is a UTC instant. Everything displayed is Europe/Berlin wall
