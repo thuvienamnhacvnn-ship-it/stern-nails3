@@ -166,6 +166,10 @@
   --gold-bright: #ffdfb3;
   /* The soft gold itself — a fill, never an ink. */
   --gold-fill: #c9a961;
+  /* The green band at the foot of the page, and the gold that washes down over
+     it from the rule above. */
+  --footer-green: #dde9d5;
+  --gold-wash: 201 169 97;
 
   /*
    * The photograph pages — the start page, the studio and the gift cards.
@@ -370,6 +374,8 @@
 
     /* The primary button inverts with everything else: light pill, dark label. */
     --gold-fill: #d7b37c;
+    --footer-green: #232c1c;
+    --gold-wash: 215 179 124;
     --cta: #f6eee5;
     --cta-ink: #11170e;
     --cta-hover: #ffffff;
@@ -461,6 +467,8 @@
   --gold-bright: #ffdfb3;
 
   --gold-fill: #d7b37c;
+  --footer-green: #232c1c;
+  --gold-wash: 215 179 124;
   --cta: #f6eee5;
   --cta-ink: #11170e;
   --cta-hover: #ffffff;
@@ -739,6 +747,15 @@ html.has-polish-cursor * {
 
 /* ----------------------------------------------------------------- header */
 
+/*
+ * A solid bar, on every page.
+ *
+ * On the photograph pages it used to float over the picture with no surface of
+ * its own, which meant the navigation was read against whatever happened to be
+ * behind it and the top of the picture was dimmed to make that work. It has its
+ * own row and its own surface now: white on the day theme, the panel green at
+ * night, with a hairline under it.
+ */
 .header {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -746,35 +763,10 @@ html.has-polish-cursor * {
   gap: var(--s3);
   padding-inline: var(--shell-x);
   height: var(--header-h);
-  background: var(--canvas);
+  background: var(--panel);
+  border-bottom: 1px solid var(--hairline-soft);
   position: relative;
   z-index: 40;
-}
-
-.header--onHero {
-  background: linear-gradient(to bottom, rgb(var(--hero-veil) / 78%) 0%, rgb(var(--hero-veil) / 34%) 62%, rgb(var(--hero-veil) / 0%) 100%);
-  color: var(--on-hero);
-}
-.header--onHero .lang a,
-.header--onHero .icon-button { color: var(--on-hero); }
-.header--onHero .nav a { color: rgb(var(--hero-line) / 88%); }
-.header--onHero .lang { color: rgb(var(--hero-line) / 68%); }
-/* The selected language is `--ink` by default, which is dark in the light
-   theme — invisible on a photograph. Over the hero it follows the hero. */
-.header--onHero .lang a[aria-current='true'] {
-  color: var(--on-hero);
-  border-bottom-color: var(--on-hero);
-}
-.header--onHero .nav a:hover { background: rgb(var(--hero-line) / 14%); color: var(--on-hero); }
-.header--onHero .nav a[aria-current='page'] { color: var(--gold-hero); }
-.header--onHero .nav a::after { background: var(--gold-hero); }
-.header--onHero .icon-button:hover { background: rgb(var(--hero-line) / 12%); }
-.header--onHero .theme-toggle { background: rgb(var(--hero-line) / 12%); }
-.header--onHero .theme-toggle button { color: rgb(var(--hero-line) / 70%); }
-.header--onHero .theme-toggle button[aria-pressed='true'] {
-  background: rgb(var(--hero-line) / 20%);
-  color: var(--on-hero);
-  box-shadow: none;
 }
 
 .logo {
@@ -877,6 +869,10 @@ html.has-polish-cursor * {
  * studio's social accounts. The middle one is centred on the page rather than
  * on what is left over, which is why this is a grid and not a flex row.
  */
+/*
+ * Green and gold: a band of the mark's own green, a gold rule along the top of
+ * it and the claim set in gold small caps between them.
+ */
 .footer {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -884,6 +880,10 @@ html.has-polish-cursor * {
   gap: var(--s2);
   min-height: var(--footer-h);
   padding: 10px var(--shell-x) 12px;
+  background:
+    linear-gradient(to bottom, rgb(var(--gold-wash) / 22%), rgb(var(--gold-wash) / 0%) 62%),
+    var(--footer-green);
+  border-top: 2px solid var(--gold-fill);
   font-size: 13px;
   color: var(--muted);
 }
@@ -1795,16 +1795,9 @@ a.card:hover,
  * track, so every remaining child slides up a row and the page collapses with
  * the footer printed across the header.
  */
-.shell--banner { grid-template-rows: minmax(0, 1fr) auto; }
-.shell--banner .header {
-  grid-row: 1;
-  grid-column: 1;
-  align-self: start;
-  z-index: 40;
-}
-/* What shows beside the fitted picture is the banner's own dark, not the
+/* What shows beside the fitted picture is the hero's own surface, not the
    page's, whichever theme is on. */
-.shell--banner .shell-main { grid-row: 1; grid-column: 1; background: var(--hero-canvas); }
+.shell--banner .shell-main { background: var(--hero-canvas); }
 
 /*
  * The wordmark on a hero page follows the theme, like everywhere else. It was

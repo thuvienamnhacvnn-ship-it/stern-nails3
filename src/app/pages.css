@@ -87,17 +87,15 @@
 /*
  * The scrim.
  *
- * Four layers, and only the last one touches the whole frame. The three
- * gradients are anchored to the left, the bottom and the right, where the type
- * and the cards sit; the flat layer is a light overall deepening that brings a
- * bright daylight photograph towards the evening mood of the reference without
- * turning it grey.
+ * Three bands, each anchored to an edge where type or cards sit, and nothing at
+ * all across the middle.
  *
- * `--banner-veil` is the one dial worth having: set it to 0 and the photograph
- * is untouched everywhere except directly under the text.
+ * There used to be a flat wash over the whole frame and a second one lightening
+ * the corners. Together they put a haze over the entire photograph — the room,
+ * which is the thing the page is showing, arrived looking like weather. The
+ * picture is now untouched everywhere except directly under the words.
  */
 .banner-scrim {
-  --banner-veil: 6%;
   position: absolute;
   inset: 0;
   /*
@@ -114,10 +112,8 @@
       rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.95)) 24%,
       rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.45)) 38%,
       rgb(var(--hero-veil) / 0%) var(--scrim-reach)),
-    linear-gradient(to top, rgb(var(--hero-veil) / 76%) 0%, rgb(var(--hero-veil) / 10%) 26%, rgb(var(--hero-veil) / 0%) 46%),
-    linear-gradient(to left, rgb(var(--hero-veil) / 72%) 0%, rgb(var(--hero-veil) / 18%) 22%, rgb(var(--hero-veil) / 0%) 38%),
-    radial-gradient(120% 100% at 50% 40%, rgb(var(--hero-veil) / 0%) 34%, rgb(var(--hero-veil) / 26%) 100%),
-    linear-gradient(rgb(var(--hero-veil) / var(--banner-veil)), rgb(var(--hero-veil) / var(--banner-veil)));
+    linear-gradient(to top, rgb(var(--hero-veil) / 70%) 0%, rgb(var(--hero-veil) / 8%) 22%, rgb(var(--hero-veil) / 0%) 38%),
+    linear-gradient(to left, rgb(var(--hero-veil) / 80%) 0%, rgb(var(--hero-veil) / 24%) 20%, rgb(var(--hero-veil) / 0%) 36%);
 }
 
 .banner-grid {
@@ -129,12 +125,7 @@
   gap: var(--s3);
   height: 100%;
   min-height: 0;
-  /*
-   * The header floats in this same cell, so the content has to start below it
-   * by hand. Without this the headline and the lookbook rail both begin at y=0
-   * and run straight through the logo.
-   */
-  padding: calc(var(--header-h) + 10px) var(--shell-x) var(--s2);
+  padding: var(--s3) var(--shell-x) var(--s2);
 }
 
 /* --------------------------------------------------------------- the word */
@@ -1005,9 +996,7 @@
   gap: var(--s3);
   height: 100%;
   min-height: 0;
-  /* The header floats over this same cell, so the content starts below it by
-     hand — the same arrangement the start page uses. */
-  padding: calc(var(--header-h) + 10px) var(--shell-x) var(--s3);
+  padding: var(--s3) var(--shell-x) var(--s3);
 }
 
 /* ---------------------------------------------------------------- the word */
@@ -1250,9 +1239,7 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
     gap: var(--s4);
-    /* The header floats over this cell here too, so the eyebrow has to start
-       below it — at a flat 32px it sat behind the wordmark. */
-    padding: calc(var(--header-h) + var(--s3)) var(--shell-x) var(--s5);
+    padding: var(--s4) var(--shell-x) var(--s5);
   }
   .studio-copy { max-width: none; }
   .studio-title { font-size: clamp(34px, 9vw, 48px); }
@@ -1308,8 +1295,7 @@
       rgb(var(--hero-veil) / calc(var(--scrim-peak) * 0.45)) 38%,
       rgb(var(--hero-veil) / 0%) var(--scrim-reach)),
     linear-gradient(to top, rgb(var(--hero-veil) / 72%) 0%, rgb(var(--hero-veil) / 10%) 26%, rgb(var(--hero-veil) / 0%) 44%),
-    linear-gradient(to left, rgb(var(--hero-veil) / 62%) 0%, rgb(var(--hero-veil) / 10%) 34%, rgb(var(--hero-veil) / 0%) 48%),
-    linear-gradient(rgb(var(--hero-veil) / 12%), rgb(var(--hero-veil) / 12%));
+    linear-gradient(to left, rgb(var(--hero-veil) / 58%) 0%, rgb(var(--hero-veil) / 8%) 30%, rgb(var(--hero-veil) / 0%) 44%);
 }
 
 .vouchers-grid {
@@ -1321,8 +1307,7 @@
   gap: var(--s3);
   height: 100%;
   min-height: 0;
-  /* The header floats over this same cell, as on the other full-bleed pages. */
-  padding: calc(var(--header-h) + 10px) var(--shell-x) var(--s2);
+  padding: var(--s3) var(--shell-x) var(--s2);
 }
 
 /* ---------------------------------------------------------------- the word */
@@ -1729,7 +1714,7 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
     gap: var(--s4);
-    padding: calc(var(--header-h) + var(--s3)) var(--shell-x) var(--s5);
+    padding: var(--s4) var(--shell-x) var(--s5);
   }
   .vouchers-copy { max-width: none; }
   .vouchers-title { font-size: clamp(34px, 9vw, 48px); }

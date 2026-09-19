@@ -66,9 +66,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
 const FIXED_HEIGHT: PageKey[] = ['start', 'services', 'looks', 'booking', 'studio', 'vouchers', 'stylist', 'account'];
 
 /**
- * Pages whose photograph runs edge to edge behind the header. The header then
- * has no surface of its own and floats over the picture, so the shell gives up
- * its header row and lets the content start at the very top.
+ * Pages whose photograph runs edge to edge. They still get their own class,
+ * because what shows beside a fitted picture has to be the hero's surface
+ * rather than the page's — but the header is an ordinary bar above them now,
+ * not something floating on the picture.
  */
 const FULL_BLEED: PageKey[] = ['start', 'studio', 'vouchers'];
 
