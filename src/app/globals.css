@@ -116,37 +116,37 @@
    * family but left it so pale that switching day themes looked like nothing
    * had happened; the fills below carry a little more of the leaf's brass.
    */
-  --canvas: #141d15;
-  --panel: #1e2a1d;
-  --panel-soft: #2a3826;
-  --blush: #d9afa3;
-  --blush-soft: #332923;
-  --sage: #9fbd8e;
-  --sage-soft: #24311f;
+  --canvas: #3d6c44;
+  --panel: #2f5839;
+  --panel-soft: #3a6845;
+  --blush: #f2cec3;
+  --blush-soft: #4a3630;
+  --sage: #d8f5c4;
+  --sage-soft: #3a6845;
   --ink: #f4efe3;
-  --muted: #adbba4;
-  --hairline: #41563c;
-  --hairline-soft: #2f3f2b;
+  --muted: #e0ecd8;
+  --hairline: #7fae79;
+  --hairline-soft: #598f5d;
   /*
    * A third surface above `--panel-soft`, so a page is not two tones and a
    * photograph. What lifts off the page is meant to look lifted.
    */
-  --panel-raised: #354630;
+  --panel-raised: #457550;
   /* A light across the top-left of a panel. On the day theme it carries a trace
      of gold, which is what keeps a white panel on a green page from reading as
      a cut-out; on the dark theme it does the harder job of stopping a flat fill
      reading as a hole. */
-  --sheen: linear-gradient(158deg, rgb(230 235 205 / 7%), rgb(230 235 205 / 0%) 58%);
+  --sheen: linear-gradient(158deg, rgb(246 226 216 / 11%), rgb(214 236 198 / 5%) 42%, rgb(230 235 205 / 0%) 72%);
 
   /* The menu. Quieter than body ink at rest, full ink under the pointer. */
-  --nav-ink: #c2d1b8;
+  --nav-ink: #eaf5e3;
   --nav-ink-strong: #f4efe3;
-  --nav-hover: #2b3a26;
+  --nav-hover: #4a8252;
 
   --cta: #f6eee5;
   --cta-ink: #14160e;
   --cta-hover: #ffffff;
-  --focus: #babfa7;
+  --focus: #f2cec3;
 
   /*
    * Gold. Measured off the banner reference rather than guessed: the eyebrow
@@ -166,14 +166,14 @@
    * `--gold-bright` is for type sitting on the banner photograph, never on the
    * page.
    */
-  --gold: #d7b37c;
+  --gold: #ffdfb3;
   --gold-soft: #c79f5c;
-  --gold-bright: #ffdfb3;
+  --gold-bright: #ffecd0;
   /* The soft gold itself — a fill, never an ink. */
   --gold-fill: #d7b37c;
   /* The green band at the foot of the page, and the gold that washes down over
      it from the rule above. */
-  --footer-green: #1a2618;
+  --footer-green: #2b4a31;
   --gold-wash: 215 179 124;
 
   /*
@@ -189,11 +189,11 @@
    * here, near-black on dark — and the rest are the surfaces and hairlines that
    * sit on top of it, given as channels so each rule can pick its own opacity.
    */
-  --hero-canvas: #141d15;
+  --hero-canvas: #3d6c44;
   --hero-veil: 8 18 10;
   --hero-line: 255 255 242;
-  --hero-glass: 26 40 26;
-  --hero-lift: 52 84 48;
+  --hero-glass: 42 74 44;
+  --hero-lift: 74 112 70;
   /* Gold on a hero follows the same rule as gold anywhere: pale on dark, deep
      enough to read on cream. */
   --gold-hero: #ffdfb3;
@@ -202,7 +202,7 @@
    * gold. The page blush is a pale rose made for filling a chip; as type on a
    * cream hero it measures 1.5:1 and simply is not there.
    */
-  --blush-hero: #d9afa3;
+  --blush-hero: #f7d8cd;
   /*
    * A short wash by day, and nothing else on the picture.
    *
@@ -256,38 +256,38 @@
    * copy of every rule. A hex typed straight into a component is a thing that
    * will not follow the theme, so there are none.
    */
-  --placeholder: #7d8177;
-  --input-border-hover: #505446;
-  --disabled-ink: #7f8371;
-  --outside-ink: #929685;
+  --placeholder: #c6dabe;
+  --input-border-hover: #a3ce9a;
+  --disabled-ink: #bcd2b4;
+  --outside-ink: #c6dabe;
 
-  --notice-bg: #3a2e2a;
-  --notice-ink: #e8c6bb;
-  --notice-sage-bg: #383d2b;
-  --notice-sage-ink: #c8ceb3;
+  --notice-bg: #4a3630;
+  --notice-ink: #f6dcd2;
+  --notice-sage-bg: #2f5839;
+  --notice-sage-ink: #e2f0d8;
   --error-bg: #3d2725;
   --error-ink: #eeb3ad;
   --error-line: #e79a94;
   --error-border: #6a403c;
 
-  --badge-bg: #3a2e2a;
-  --badge-ink: #e8c6bb;
-  --badge-sage-bg: #383d2b;
-  --badge-sage-ink: #c8ceb3;
+  --badge-bg: #4a3630;
+  --badge-ink: #f6dcd2;
+  --badge-sage-bg: #2f5839;
+  --badge-sage-ink: #e2f0d8;
 
-  --banner-bg: #383d2b;
-  --banner-ink: #c8ceb3;
+  --banner-bg: #2f5839;
+  --banner-ink: #e2f0d8;
 
   --toast-bg: #f6eee5;
   --toast-ink: #14160e;
 
-  --skeleton-a: #363a26;
-  --skeleton-b: #43482f;
+  --skeleton-a: #3a6845;
+  --skeleton-b: #4a8252;
 
   --overlay: rgb(8 9 8 / 62%);
   /* The wash under a caption sitting on a photograph. Dark in both themes,
      because it has to work over an image, not over the page. */
-  --scrim: rgb(44 48 37 / 55%);
+  --scrim: rgb(88 124 78 / 48%);
   --on-photo: #fffcf8;
   --chip-on-photo: rgb(255 252 248 / 88%);
   /*
@@ -295,7 +295,7 @@
    * because the chip itself is fixed: in dark mode `--ink` is cream, and a cream
    * heart on a cream circle is an invisible button.
    */
-  --on-chip-ink: #2c3025;
+  --on-chip-ink: #24331f;
 
   /*
    * Ink for text on a sage fill — a selected tab, chip, time or calendar day.
@@ -305,7 +305,7 @@
    * under 24px. Sage is a mid tone in both themes, so dark ink is the answer in
    * both: 5.1:1 on the light sage and 6.7:1 on the lighter one used on dark.
    */
-  --on-sage: #202119;
+  --on-sage: #1b2a18;
 
   --font-head: 'Cormorant Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --font-body: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -610,6 +610,30 @@ html.has-polish-cursor * {
  * shadow makes that look better without making it readable, and a contrast
  * ratio is not a matter of looking better.
  */
+/*
+ * A deeper green under the bar on the pages without a photograph.
+ *
+ * The mark is gold on a dark ground, as delivered. On the old near-black
+ * canvas it read across the room; on a canvas twelve times brighter the gold
+ * and the page meet in the middle and the wordmark goes soft. The banner
+ * pages never had this, because they already darken the strip over the
+ * picture — this is the same idea in the page's own colour.
+ */
+.header:not(.header--onHero)::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(100% + 28px);
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    #274a2e 0%,
+    rgb(44 81 51 / 72%) 46%,
+    rgb(44 81 51 / 0%) 100%
+  );
+  pointer-events: none;
+}
+
 .header--onHero::before {
   content: '';
   position: absolute;
@@ -636,6 +660,12 @@ html.has-polish-cursor * {
 .header--onHero .lang,
 .header--onHero .lang a { text-shadow: 0 1px 8px rgb(var(--hero-veil) / 62%); }
 .header--onHero .logo img { filter: drop-shadow(0 1px 8px rgb(var(--hero-veil) / 52%)); }
+/* The same on the pages without a picture: the mark is gold artwork with a
+   dark-green sub-line, and on a bright green page that sub-line has nothing to
+   stand against. A soft shadow gives it an edge without putting a plate
+   behind it. */
+.header:not(.header--onHero) .logo img { filter: drop-shadow(0 1px 10px rgb(18 38 22 / 62%)); }
+
 .header--onHero .nav a { color: rgb(var(--hero-line) / 88%); }
 .header--onHero .nav a:hover { background: rgb(var(--hero-line) / 14%); color: var(--on-hero); }
 .header--onHero .nav a[aria-current='page'] { color: var(--gold-hero); }

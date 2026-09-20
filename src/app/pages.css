@@ -776,10 +776,19 @@
   min-width: 0;
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
+/*
+ * The chosen one is blush, not another green.
+ *
+ * Sage on a row of green tabs standing on a green page is the lightest of
+ * five greens, which has to be compared before it can be read. Blush is the
+ * only other colour in the identity, so "this one is on" arrives at a
+ * glance. The ink is the same deep rose-brown as the button, at 8.4:1.
+ */
 .category-tab[aria-current='true'] {
-  background: var(--sage);
-  color: var(--on-sage);
-  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);
+  background: linear-gradient(160deg, #f9e2dc 0%, #f1d0c8 100%);
+  color: #4a2a24;
+  border-color: rgb(196 142 124 / 55%);
+  box-shadow: 0 6px 18px rgb(58 28 20 / 26%);
 }
 /* Something has to happen under the pointer on a tab that is not the current
    one, or the row reads as a picture of tabs. */
