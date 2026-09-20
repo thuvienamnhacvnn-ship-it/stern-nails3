@@ -89,6 +89,10 @@ Everything the customer can see a number or a name for:
 
 ## 5. Deploying
 
+Live: <https://stern-nails3.vercel.app> — all eighteen routes in both
+languages answer 200, with the service list and its prices coming from the
+baked database.
+
 `npm run build` bakes the demo database into the build before it compiles the
 site: it applies the migrations, runs the seed, and writes the result as a
 gzipped tarball next to the migrations. On a host with a writable disk nothing
