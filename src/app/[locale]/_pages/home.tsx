@@ -83,13 +83,13 @@ export async function HomePage({
           className="desktop-only"
         />
         {/*
-          The same photograph on a phone, held on the room rather than on the
-          model: a 16:9 frame cut to portrait shows about a third of its width,
-          and at 58% that third is the planted wall, the sign and the work
-          stations — the studio itself, which is what somebody arriving on a
-          phone is trying to see.
+          A phone gets a different picture, not a crop of this one. Cutting a
+          16:9 frame to a portrait window leaves about a third of its width,
+          and no third of the wide shot holds the whole room. This one is drawn
+          at 9:16 with the planted wall on the centre line, so the sign, the
+          shelves and the work stations all survive the frame.
         */}
-        <Photo id="hero-banner" alt="" sizes="100vw" priority focalPoint="58% 46%" className="mobile-only" />
+        <Photo id="hero-mobile" alt="" sizes="100vw" priority focalPoint="50% 44%" className="mobile-only" />
         <span className="banner-scrim" />
       </div>
 
@@ -120,7 +120,7 @@ export async function HomePage({
 
           <p className="banner-intro">{copy.home.bannerIntro}</p>
 
-          <Link className="btn btn--cream banner-cta" href={path(locale, 'studio')}>
+          <Link className="btn btn--blush banner-cta" href={path(locale, 'studio')}>
             {copy.home.discoverStudio}
             <ArrowRight size={18} />
           </Link>

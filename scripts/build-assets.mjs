@@ -67,6 +67,13 @@ const PHOTOS = [
   // The start page's banner: the delivered picture, used as delivered.
   { id: 'hero-banner', file: 'interiors/hero-banner.png', kind: 'ai_concept' },
   { id: 'hero-salon-wide', file: 'interiors/hero-salon-wide.png', kind: 'ai_concept' },
+  /*
+   * The same banner on a phone, but a picture of its own rather than a crop.
+   * A 16:9 frame cut to a portrait window shows about a third of its width,
+   * and no third of the wide shot contains the whole room; this one is drawn
+   * at 9:16 with the planted wall centred, so nothing has to be thrown away.
+   */
+  { id: 'hero-mobile', file: 'interiors/hero-mobile.png', kind: 'ai_concept' },
   { id: 'studio-portrait', file: 'interiors/studio-portrait.png', kind: 'ai_concept' },
   { id: 'pedicure-wide', file: 'interiors/pedicure-wide.png', kind: 'ai_concept' },
   { id: 'care-still-life', file: 'interiors/care-still-life.png', kind: 'ai_concept' },

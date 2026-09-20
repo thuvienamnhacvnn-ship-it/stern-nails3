@@ -30,6 +30,18 @@
       "kind": "ai_concept",
       "v": "1b969a5b"
     },
+    "hero-mobile": {
+      "width": 941,
+      "height": 1672,
+      "widths": [
+        360,
+        540,
+        720,
+        941
+      ],
+      "kind": "ai_concept",
+      "v": "b8171fa9"
+    },
     "studio-portrait": {
       "width": 1086,
       "height": 1448,

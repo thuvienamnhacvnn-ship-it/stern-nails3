@@ -1683,6 +1683,43 @@ a.card:hover,
 }
 .btn--cream:hover:not(:disabled) { background: var(--cta-hover); }
 
+/*
+ * The blush pill: the one button on the banner.
+ *
+ * A cream pill on a cream-lit photograph is a button you have to look for.
+ * This one is powder pink, which is the only colour in the room that nothing
+ * else uses — the walls are cream, the wall is green, the gold is trim — so it
+ * is the first thing the eye lands on without having to shout.
+ *
+ * The ink is a deep rose-brown rather than black: 8.6:1 on the middle of the
+ * fill, so it passes on the light end and the dark end of the gradient both,
+ * and it belongs to the same family as the fill instead of sitting on it.
+ */
+.btn--blush {
+  background-image: linear-gradient(160deg, #f9e2dc 0%, #f0cdc5 52%, #e3b3a8 100%);
+  color: #4a2a24;
+  /* Rose-gold rather than pink: the trim in the room is brass, and a pink line
+     on a pink fill is just a soft edge. */
+  border-color: rgb(196 142 124 / 62%);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  /* A light along the top edge and a pink glow under it. The glow is what
+     lifts the pill off a photograph; the highlight is what stops it reading
+     as a flat sticker. */
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 68%),
+    0 10px 28px rgb(190 128 112 / 36%);
+  transition: background var(--t-fast) var(--ease), box-shadow var(--t-med) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+.btn--blush:hover:not(:disabled) {
+  background-image: linear-gradient(160deg, #fdeee9 0%, #f6d9d1 52%, #e9bcb1 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 78%),
+    0 14px 34px rgb(190 128 112 / 46%);
+}
+.btn--blush:focus-visible { outline-color: #4a2a24; }
+
 /* Its quieter partner: an outline in the hero's own ink, for the second of two
    actions where a second filled pill would fight the first. */
 .btn--onHero {

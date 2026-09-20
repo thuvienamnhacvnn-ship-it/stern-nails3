@@ -610,7 +610,7 @@
     inset: 0 0 auto;
     margin: 0;
     width: auto;
-    height: 78vh;
+    height: 86vh;
     aspect-ratio: auto;
     container-type: normal;
   }
@@ -621,14 +621,24 @@
    * header strip the copy scrolls over, so it landed across the paragraph.
    */
   .banner-script { display: none; }
-  /* Room for the mark without it crowding the eyebrow under it. */
-  .banner-mark {
-    position: static;
-    height: clamp(96px, 18vh, 150px);
-    margin-bottom: 10px;
-  }
+  /*
+   * The mark is in the photograph.
+   *
+   * The phone picture is the salon with its own sign lit on the planted
+   * wall, dead centre and half the width of the frame. Laying our copy of
+   * the same mark over it put two Sterns on top of each other, the flower of
+   * one across the wordmark of the other. Only one of them can be the mark,
+   * and the one in the room is larger, lit, and the reason this picture was
+   * chosen.
+   *
+   * So the overlay goes and the photograph carries it. The desktop banner is
+   * unaffected: there the picture is a 16:9 room with no sign in it.
+   */
+  .banner-mark { display: none; }
   .banner-copy { padding-top: 0; }
-  .banner-stage { bottom: auto; height: 78vh; }
+  /* Taller than it was: the picture is now the whole banner rather than a
+     strip with a paragraph under it, and it is drawn at 9:16 to suit. */
+  .banner-stage { bottom: auto; height: 86vh; }
   /*
    * A heavy wash across the whole strip, not a band at each end.
    *
@@ -640,12 +650,27 @@
    * when the words are the page.
    */
   .banner-scrim {
+    /*
+     * No green over the picture any more.
+     *
+     * The hero veil is the dark green the desktop scrim is made of, and a
+     * ninety per cent wash of it top to bottom turned a cream room with a
+     * planted wall into a green rectangle. The phone picture is its own
+     * composition — the wall, the sign and the lights are the point of it —
+     * so it is left alone from the top down to where the words begin.
+     *
+     * What remains is a warm brown-black rising out of the floor, which is
+     * the shadow the room already has under the table. It carries the title
+     * and the button and nothing else: at 55% it is not there at all, which
+     * is where the shelves and the sign still are.
+     */
     background: linear-gradient(
-      to bottom,
-      rgb(var(--hero-veil) / 90%) 0%,
-      rgb(var(--hero-veil) / 84%) 38%,
-      rgb(var(--hero-veil) / 90%) 76%,
-      rgb(var(--hero-veil) / 97%) 100%
+      to top,
+      rgb(34 24 20 / 90%) 0%,
+      rgb(34 24 20 / 82%) 20%,
+      rgb(34 24 20 / 52%) 36%,
+      rgb(34 24 20 / 16%) 50%,
+      rgb(34 24 20 / 0%) 62%
     );
   }
   .banner-grid {
@@ -654,17 +679,44 @@
     gap: var(--s4);
     padding: calc(var(--header-h) + var(--s3)) var(--shell-x) var(--s5);
   }
-  /* The bottom padding is the lane the written line sits in: the block is
-     bottom-aligned, so it lifts the motto clear rather than adding a gap. */
+  /*
+   * Everything on the centre line.
+   *
+   * The block is bottom-aligned inside the picture so the words sit on the
+   * floor and the sofa — the calmest part of the frame — and leave the
+   * planted wall and the sign above them alone.
+   */
   .banner-copy {
     grid-column: 1;
     max-width: none;
+    /* The desktop column is held off the left edge; a centred stack is not. */
+    padding-left: 0;
+    justify-items: center;
+    text-align: center;
     padding-top: 6vh;
-    padding-bottom: 46px;
-    min-height: 56vh;
+    padding-bottom: 34px;
+    /* Measured at 360px, where the picture is cropped least and the sign
+       therefore sits lowest: at 62vh the headline came up under "NAILS 3"
+       with nothing between them. */
+    min-height: 67vh;
     align-content: end;
   }
-  .banner-title { font-size: clamp(38px, 10vw, 54px); }
+  /*
+   * The small print goes.
+   *
+   * "Beauty · Care · Good Vibes" is painted on the wall in the photograph
+   * and the paragraph under the headline says at length what the headline
+   * says in four words. On a phone they were three grey lines between the
+   * mark and the button, which is exactly the crowding the centre line was
+   * meant to fix. Both stay on the desktop, where there is a column for
+   * them.
+   */
+  .banner-eyebrow,
+  .banner-intro { display: none; }
+  .banner-title { font-size: clamp(36px, 9.4vw, 50px); }
+  /* Wide enough to be the one thing to press, not a pill lost on a
+     photograph — but never the full width, which reads as a form field. */
+  .banner-cta { margin-top: 18px; min-width: min(78%, 300px); }
   .banner-dock { grid-column: 1; grid-row: auto; width: 100%; }
   .banner-rail { grid-column: 1; grid-row: auto; }
   .banner-rail-head { justify-content: space-between; }
