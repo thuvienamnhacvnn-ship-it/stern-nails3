@@ -87,7 +87,34 @@ Everything the customer can see a number or a name for:
   in `media_asset` so the crop excludes them. The crop is a field in the
   database, so this needs no code change.
 
-## 5. Before go-live
+## 5. Deploying
+
+`npm run build` bakes the demo database into the build before it compiles the
+site: it applies the migrations, runs the seed, and writes the result as a
+gzipped tarball next to the migrations. On a host with a writable disk nothing
+uses it — the site opens `.data/pg` as it always has.
+
+On a serverless host it is the whole reason the site appears at all. There the
+application directory is read only and there is no chance to run a command, so
+the first version of this died on `mkdir .data/pg` and every page answered
+"A server error occurred". The site now opens its database in `/tmp` and fills
+it from the baked tarball. Measured: a cold request went from failing, to 11.4
+seconds when the database was built on the spot, to 3.3 seconds loading the
+baked one — which matters, because a serverless function is allowed ten.
+
+**What that costs, plainly.** `/tmp` belongs to one instance. An appointment or
+a gift card created on a serverless deployment is visible only to the instance
+that took it and is gone when that instance is recycled; two visitors may not
+see the same data at all. It is a demo you can show, not a booking system you
+can run.
+
+For a real deployment, give it a database that outlives a request: a Postgres
+server, with `DATABASE_URL` in place of `DATABASE_DIR`. The schema does not
+change — PGlite is a directory rather than a dialect — and section 6 below
+covers the rest. A small VPS running `npm start` behind nginx also works, and
+keeps the data, because there the disk is real.
+
+## 6. Before go-live
 
 1. Fill in every field in section 2.
 2. Approve or replace the catalogue, the prices and the opening hours.
@@ -113,7 +140,7 @@ Everything the customer can see a number or a name for:
 Checkout stays refused for any service whose price has not been confirmed, in
 demo mode and out of it. That is not a demo restriction.
 
-## 6. Things worth knowing before changing anything
+## 7. Things worth knowing before changing anything
 
 - **One process on the database.** PGlite allows a single handle on `.data/pg`.
   `npm run db:migrate` and `npm run db:seed` refuse to run while the dev server

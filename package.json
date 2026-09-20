@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev -p 3110",
-    "build": "next build",
+    "build": "tsx --tsconfig tsconfig.scripts.json scripts/build-db.ts && next build",
     "start": "next start -p 3110",
     "typecheck": "tsc --noEmit",
     "assets": "node scripts/build-assets.mjs",

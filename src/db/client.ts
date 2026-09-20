@@ -1,7 +1,10 @@
 import 'server-only';
 
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { PGlite } from '@electric-sql/pglite';
 import { drizzle, type PgliteDatabase } from 'drizzle-orm/pglite';
+import { migrate } from 'drizzle-orm/pglite/migrator';
 import * as schema from './schema';
 
 /**
@@ -27,6 +30,8 @@ declare global {
   var __sternPglite: PGlite | undefined;
   // eslint-disable-next-line no-var
   var __sternDb: PgliteDatabase<typeof schema> | undefined;
+  // eslint-disable-next-line no-var
+  var __sternReady: Promise<void> | undefined;
 }
 
 /**
@@ -39,14 +44,93 @@ declare global {
  * silently pinned the test suite to the demo database — which it then wrote to.
  */
 export function dataDir(): string {
-  return process.env.DATABASE_DIR ?? '.data/pg';
+  if (process.env.DATABASE_DIR) return process.env.DATABASE_DIR;
+  /*
+   * On a serverless host the application directory is read only. PGlite's first
+   * act is to create its data directory, so with the default below the very
+   * first query died on `mkdir` and every page answered 500 — a deployment that
+   * built cleanly and then showed nothing at all.
+   *
+   * `/tmp` is the one writable place there, and it is per instance: see the
+   * bootstrap below for what that costs.
+   */
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) return '/tmp/stern-nails-pg';
+  return '.data/pg';
+}
+
+/**
+ * Brings an empty directory up to a working database: the schema, then the demo
+ * rows if there are none.
+ *
+ * A checkout has a database because somebody ran `db:migrate` and `db:seed`
+ * against it. A serverless instance has an empty `/tmp` and no chance to run a
+ * command, and `.data/` is not in the repository, so without this there is
+ * nothing to read and nothing that could have put anything there.
+ *
+ * What it costs is worth saying plainly: each instance builds its own copy, so
+ * an appointment or a gift card created on one is not visible on another and is
+ * gone when that instance is recycled. That is a demo, not a booking system. A
+ * real deployment points `DATABASE_URL` at a Postgres server — the schema is
+ * unchanged, PGlite is a directory rather than a dialect.
+ */
+async function bootstrap(client: PGlite, dir: string, loadedFromBake: boolean): Promise<void> {
+  await client.waitReady;
+  // A baked database arrives migrated and seeded; there is nothing left to do.
+  if (loadedFromBake) return;
+
+  const db = drizzle(client, { schema, casing: 'snake_case' });
+  await migrate(db, { migrationsFolder: join(process.cwd(), 'drizzle') });
+
+  const [row] = await db.select({ id: schema.businessSettings.id }).from(schema.businessSettings).limit(1);
+  if (!row) {
+    const { seed } = await import('./seed');
+    await seed(db);
+    console.log(`[db] built a fresh database in ${dir}`);
+  }
 }
 
 function open(): PgliteDatabase<typeof schema> {
   if (!globalThis.__sternDb) {
+    const dir = dataDir();
+    // PGlite makes its own directory but not the one above it.
+    mkdirSync(dir, { recursive: true });
+
+    /*
+     * An empty directory is filled from the database baked at build time, if
+     * there is one. Building it here instead takes eleven seconds, which is
+     * longer than a serverless function is allowed to live.
+     */
+    const baked = join(process.cwd(), 'drizzle', 'seed-db.tgz');
+    const useBake = !existsSync(join(dir, 'PG_VERSION')) && existsSync(baked);
+
     // Assigned before anything can await, so two callers cannot both construct.
-    globalThis.__sternPglite ??= new PGlite(dataDir());
-    globalThis.__sternDb = drizzle(globalThis.__sternPglite, { schema, casing: 'snake_case' });
+    const client = (globalThis.__sternPglite ??= useBake
+      ? new PGlite({ dataDir: dir, loadDataDir: new Blob([readFileSync(baked)]) })
+      : new PGlite(dir));
+    const ready = (globalThis.__sternReady ??= bootstrap(client, dir, useBake));
+
+    /*
+     * Every query waits for the bootstrap, and nothing above has to know.
+     *
+     * The gate is on the PGlite handle rather than on the Drizzle instance
+     * because Drizzle's builders are chained and only run when awaited — there
+     * is no single call to wrap. Underneath, all of them arrive here.
+     */
+    const gated = new Proxy(client, {
+      get(target, property, receiver) {
+        const value = Reflect.get(target, property, receiver);
+        if (typeof value !== 'function') return value;
+        if (property === 'query' || property === 'exec' || property === 'transaction') {
+          return async (...args: unknown[]) => {
+            await ready;
+            return (value as (...a: unknown[]) => unknown).apply(target, args);
+          };
+        }
+        return (value as (...a: unknown[]) => unknown).bind(target);
+      },
+    });
+
+    globalThis.__sternDb = drizzle(gated, { schema, casing: 'snake_case' });
   }
   return globalThis.__sternDb;
 }

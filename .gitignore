@@ -1,6 +1,8 @@
 node_modules/
 .next/
 .data/
+# Baked at build time by scripts/build-db.ts, never edited by hand.
+drizzle/seed-db.tgz
 .tmp/
 *.tsbuildinfo
 .env

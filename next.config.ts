@@ -7,6 +7,15 @@ const config: NextConfig = {
   agentRules: false,
   // PGlite ships a WebAssembly build that must not be bundled.
   serverExternalPackages: ['@electric-sql/pglite'],
+  /*
+   * The migrations travel with the deployment.
+   *
+   * On a host with no disk of its own the database is built on first use from
+   * these files, and a file nothing imports is not traced into the bundle — so
+   * without this the bootstrap found an empty folder and every page answered
+   * 500.
+   */
+  outputFileTracingIncludes: { '/**': ['./drizzle/**'] },
   // Every width is pre-rendered by scripts/build-assets.mjs, so the server
   // needs no native image binding at runtime — which is just as well, since
   // this machine blocks unsigned native bindings.
