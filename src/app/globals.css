@@ -116,22 +116,22 @@
    * family but left it so pale that switching day themes looked like nothing
    * had happened; the fills below carry a little more of the leaf's brass.
    */
-  --canvas: #3d6c44;
-  --panel: #2f5839;
-  --panel-soft: #3a6845;
-  --blush: #f2cec3;
+  --canvas: #2d6d39;
+  --panel: #245a2c;
+  --panel-soft: #2b6734;
+  --blush: #f0c0b3;
   --blush-soft: #4a3630;
-  --sage: #d8f5c4;
-  --sage-soft: #3a6845;
+  --sage: #d2f7b8;
+  --sage-soft: #2b6734;
   --ink: #f4efe3;
   --muted: #e0ecd8;
-  --hairline: #7fae79;
-  --hairline-soft: #598f5d;
+  --hairline: #6cb168;
+  --hairline-soft: #4a8c4e;
   /*
    * A third surface above `--panel-soft`, so a page is not two tones and a
    * photograph. What lifts off the page is meant to look lifted.
    */
-  --panel-raised: #457550;
+  --panel-raised: #327638;
   /* A light across the top-left of a panel. On the day theme it carries a trace
      of gold, which is what keeps a white panel on a green page from reading as
      a cut-out; on the dark theme it does the harder job of stopping a flat fill
@@ -141,7 +141,7 @@
   /* The menu. Quieter than body ink at rest, full ink under the pointer. */
   --nav-ink: #eaf5e3;
   --nav-ink-strong: #f4efe3;
-  --nav-hover: #4a8252;
+  --nav-hover: #3d8347;
 
   --cta: #f6eee5;
   --cta-ink: #14160e;
@@ -173,7 +173,7 @@
   --gold-fill: #d7b37c;
   /* The green band at the foot of the page, and the gold that washes down over
      it from the rule above. */
-  --footer-green: #2b4a31;
+  --footer-green: #234a28;
   --gold-wash: 215 179 124;
 
   /*
@@ -189,11 +189,11 @@
    * here, near-black on dark — and the rest are the surfaces and hairlines that
    * sit on top of it, given as channels so each rule can pick its own opacity.
    */
-  --hero-canvas: #3d6c44;
+  --hero-canvas: #2d6d39;
   --hero-veil: 8 18 10;
   --hero-line: 255 255 242;
-  --hero-glass: 42 74 44;
-  --hero-lift: 74 112 70;
+  --hero-glass: 32 78 40;
+  --hero-lift: 62 122 66;
   /* Gold on a hero follows the same rule as gold anywhere: pale on dark, deep
      enough to read on cream. */
   --gold-hero: #ffdfb3;
@@ -202,7 +202,7 @@
    * gold. The page blush is a pale rose made for filling a chip; as type on a
    * cream hero it measures 1.5:1 and simply is not there.
    */
-  --blush-hero: #f7d8cd;
+  --blush-hero: #f5cbbe;
   /*
    * A short wash by day, and nothing else on the picture.
    *
@@ -263,7 +263,7 @@
 
   --notice-bg: #4a3630;
   --notice-ink: #f6dcd2;
-  --notice-sage-bg: #2f5839;
+  --notice-sage-bg: #245a2c;
   --notice-sage-ink: #e2f0d8;
   --error-bg: #3d2725;
   --error-ink: #eeb3ad;
@@ -272,22 +272,22 @@
 
   --badge-bg: #4a3630;
   --badge-ink: #f6dcd2;
-  --badge-sage-bg: #2f5839;
+  --badge-sage-bg: #245a2c;
   --badge-sage-ink: #e2f0d8;
 
-  --banner-bg: #2f5839;
+  --banner-bg: #245a2c;
   --banner-ink: #e2f0d8;
 
   --toast-bg: #f6eee5;
   --toast-ink: #14160e;
 
-  --skeleton-a: #3a6845;
-  --skeleton-b: #4a8252;
+  --skeleton-a: #2b6734;
+  --skeleton-b: #3d8347;
 
   --overlay: rgb(8 9 8 / 62%);
   /* The wash under a caption sitting on a photograph. Dark in both themes,
      because it has to work over an image, not over the page. */
-  --scrim: rgb(88 124 78 / 48%);
+  --scrim: rgb(64 118 58 / 48%);
   --on-photo: #fffcf8;
   --chip-on-photo: rgb(255 252 248 / 88%);
   /*
@@ -1726,7 +1726,7 @@ a.card:hover,
  * and it belongs to the same family as the fill instead of sitting on it.
  */
 .btn--blush {
-  background-image: linear-gradient(160deg, #f9e2dc 0%, #f0cdc5 52%, #e3b3a8 100%);
+  background-image: linear-gradient(160deg, #fbdfd7 0%, #f2c4b9 52%, #e0a294 100%);
   color: #4a2a24;
   /* Rose-gold rather than pink: the trim in the room is brass, and a pink line
      on a pink fill is just a soft edge. */
@@ -1743,7 +1743,7 @@ a.card:hover,
     transform var(--t-fast) var(--ease);
 }
 .btn--blush:hover:not(:disabled) {
-  background-image: linear-gradient(160deg, #fdeee9 0%, #f6d9d1 52%, #e9bcb1 100%);
+  background-image: linear-gradient(160deg, #feeae3 0%, #f8d2c8 52%, #e7ac9e 100%);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 78%),
     0 14px 34px rgb(190 128 112 / 46%);

@@ -6,6 +6,7 @@ import { hasPhoto, type PhotoId } from '@/lib/media';
 import { Photo } from '@/components/image';
 import { brand } from '@/lib/media';
 import { BookingDock } from '@/components/booking-dock';
+import { BannerSparkle } from '@/components/banner-sparkle';
 import { ArrowRight, ChevronLeft, ChevronRight, Heart, Sparkle } from '@/components/icons';
 
 /**
@@ -91,6 +92,9 @@ export async function HomePage({
         */}
         <Photo id="hero-mobile" alt="" sizes="100vw" priority focalPoint="50% 44%" className="mobile-only" />
         <span className="banner-scrim" />
+        {/* Stars drifting out of the flower on the sign. Phones only, and
+            the component checks that before it sets anything up. */}
+        <BannerSparkle />
       </div>
 
       {/* The photograph is decorative above; this carries its description for

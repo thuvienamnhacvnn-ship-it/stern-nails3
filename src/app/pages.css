@@ -95,6 +95,27 @@
  * which is the thing the page is showing, arrived looking like weather. The
  * picture is now untouched everywhere except directly under the words.
  */
+/*
+ * The star field over the phone banner.
+ *
+ * Off by default and switched on at the phone width, which is also what the
+ * component reads to decide whether to run at all: a desktop never starts a
+ * canvas, a loop or a resize listener for this.
+ *
+ * Above the scrim rather than under it. The scrim is a shadow rising out of
+ * the floor to carry the headline, and stars are light - putting light under
+ * a shadow is how you get grey.
+ */
+.banner-sparkle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .banner-scrim {
   position: absolute;
   inset: 0;
@@ -621,6 +642,7 @@
    * header strip the copy scrolls over, so it landed across the paragraph.
    */
   .banner-script { display: none; }
+  .banner-sparkle { display: block; }
   /*
    * The mark is in the photograph.
    *
@@ -785,7 +807,7 @@
  * glance. The ink is the same deep rose-brown as the button, at 8.4:1.
  */
 .category-tab[aria-current='true'] {
-  background: linear-gradient(160deg, #f9e2dc 0%, #f1d0c8 100%);
+  background: linear-gradient(160deg, #fbdfd7 0%, #f0c1b5 100%);
   color: #4a2a24;
   border-color: rgb(196 142 124 / 55%);
   box-shadow: 0 6px 18px rgb(58 28 20 / 26%);
@@ -902,26 +924,62 @@
 .filter-divider { width: 1px; height: 24px; background: var(--hairline); }
 
 .look-grid {
+  list-style: none;
+  margin: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s2);
   align-content: start;
   min-width: 0;
+  /*
+   * The grid scrolls inside its row.
+   *
+   * The cards grew when the caption came off the photograph and moved under
+   * it, and this page is one screen tall by design: two rows of the taller
+   * card no longer fit, so the second row was being cut in half. Letterboxing
+   * the pictures until they did fit would have taken about a third of the
+   * height off each one, on the page whose whole purpose is the pictures.
+   * Scrolling also survives the seventh look, which nothing else here does.
+   */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  /* A list, so the browser would indent it; and clear of the scrollbar on
+     the right, so the last column is not clipped by it. */
+  padding: 0 4px 0 0;
 }
+/*
+ * A picture, then the words under it.
+ *
+ * The caption used to lie across the bottom of the photograph on a dark
+ * fade. On nail work the bottom of the frame is the subject - the tips are
+ * there - so the words covered what they named, and the fade behind them
+ * muted the colour on a page whose only job is to show colour.
+ */
 .look-card {
   position: relative;
-  display: block;
+  display: grid;
+  grid-template-rows: auto auto;
   border-radius: var(--r-panel);
   overflow: hidden;
-  aspect-ratio: 16 / 11;
-  background: var(--panel-soft);
-  transition: transform var(--t-fast) var(--ease);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .look-card:hover,
 .look-card:focus-visible {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lift);
 }
+/* The frame the picture fills. It holds the aspect ratio now that the card
+   itself has a caption under it and is therefore taller than its picture. */
+.look-card-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--panel-soft);
+}
+.look-card-media picture { position: absolute; inset: 0; display: block; }
 .look-card img {
   position: absolute;
   inset: 0;
@@ -933,18 +991,33 @@
 /* The picture moves under its own frame rather than the frame growing, so the
    caption and the favourite button stay exactly where they were. */
 .look-card:hover img { transform: scale(1.05); }
-.look-card-caption { transition: padding-bottom var(--t-slow) var(--ease); }
-.look-card:hover .look-card-caption { padding-bottom: 20px; }
 .look-card-caption {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  padding: var(--s4) 16px 14px;
-  background: linear-gradient(to top, var(--scrim), transparent);
-  color: var(--on-photo);
+  display: grid;
+  gap: 1px;
+  padding: 10px 14px 12px;
+  color: var(--ink);
 }
-.look-card-caption .tag { font-size: 11px; letter-spacing: 0.08em; opacity: 0.85; }
-.look-card-caption h3 { font-size: 22px; }
-.look-card-caption p { font-size: 13px; opacity: 0.9; }
+.look-card-caption .tag {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.look-card-caption h2 { font-size: 19px; line-height: 1.15; }
+/*
+ * One line, cut with an ellipsis.
+ *
+ * The teasers are three short sentences and most of them fit; the point is
+ * the ones that do not. Six cards in a grid have to be the same height, and
+ * a card whose teaser wraps to a second line makes its whole row taller.
+ */
+.look-card-caption p {
+  font-size: 13px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .look-fav {
   position: absolute;
   top: 12px; right: 12px;

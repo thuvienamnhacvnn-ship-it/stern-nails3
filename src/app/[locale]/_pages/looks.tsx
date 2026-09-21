@@ -225,7 +225,7 @@ export async function LooksPage({
             </div>
           </div>
         ) : (
-          <ul className="look-grid" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          <ul className="look-grid">
             {filtered.map((look) => (
               <li key={look.id} style={{ position: 'relative' }}>
                 <FavoriteButton
@@ -235,13 +235,16 @@ export async function LooksPage({
                   signedIn={Boolean(customer)}
                 />
                 <Link className="look-card" href={withFilter('look', look.slug, false)} scroll={false}>
-                  {hasPhoto(look.mediaSlug) ? (
-                    <Photo
-                      id={look.mediaSlug as PhotoId}
-                      alt=""
-                      sizes="(max-width: 1099px) 50vw, 280px"
-                    />
-                  ) : null}
+                  {/* The picture keeps its whole frame; the words sit under it. */}
+                  <span className="look-card-media">
+                    {hasPhoto(look.mediaSlug) ? (
+                      <Photo
+                        id={look.mediaSlug as PhotoId}
+                        alt=""
+                        sizes="(max-width: 1099px) 50vw, 280px"
+                      />
+                    ) : null}
+                  </span>
                   <span className="look-card-caption">
                     <span className="tag">{copy.looks.inspiration}</span>
                     <h2>{name(look)}</h2>
