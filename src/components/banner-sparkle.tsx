@@ -155,10 +155,14 @@ export function BannerSparkle() {
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      place();
+      if (!stars.length) stars = Array.from({ length: STARS }, () => makeStar(spread, false));
+    };
+
+    const place = () => {
       locate();
       // Far enough to reach the corners of the frame from the flower.
       spread = Math.hypot(Math.max(origin.x, width - origin.x), Math.max(origin.y, height - origin.y));
-      if (!stars.length) stars = Array.from({ length: STARS }, () => makeStar(spread, false));
     };
 
     /*
@@ -211,9 +215,24 @@ export function BannerSparkle() {
     resize();
     if (!width || !height) return;
 
+    /*
+     * The flower cannot be found until the picture has arrived.
+     *
+     * `locate` needs the image's intrinsic size to work out the cover crop, and
+     * on a cold load it runs before any of that exists — it falls back to a
+     * rough guess, and without this the stars would sit at the guess until
+     * something resized the window. Which, on a phone, is never.
+     */
+    const img = canvas.parentElement?.querySelector<HTMLImageElement>('img.mobile-only') ?? null;
+    const onLoad = () => {
+      place();
+      if (still) draw(0);
+    };
+    if (img && !img.complete) img.addEventListener('load', onLoad);
+
     if (still) {
       draw(0);
-      return;
+      return () => img?.removeEventListener('load', onLoad);
     }
 
     let raf = 0;
@@ -260,6 +279,7 @@ export function BannerSparkle() {
     return () => {
       stop();
       observer.disconnect();
+      img?.removeEventListener('load', onLoad);
       window.removeEventListener('resize', onResize);
       document.removeEventListener('visibilitychange', onVisibility);
     };

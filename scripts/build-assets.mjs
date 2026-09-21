@@ -73,7 +73,27 @@ const PHOTOS = [
    * and no third of the wide shot contains the whole room; this one is drawn
    * at 9:16 with the planted wall centred, so nothing has to be thrown away.
    */
-  { id: 'hero-mobile', file: 'interiors/hero-mobile.png', kind: 'ai_concept' },
+  {
+    id: 'hero-mobile',
+    file: 'interiors/hero-mobile.png',
+    kind: 'ai_concept',
+    /*
+     * Graded, because as delivered it is pale.
+     *
+     * The room is lit by warm lamps, so simply raising saturation raises the
+     * cast with it and the cream walls and ceiling go amber — the ffmpeg
+     * `vibrance` filter is worse still, because it boosts muted colours
+     * hardest and cream is a muted colour. So the warmth comes out of the
+     * midtones and highlights first, and the saturation goes up afterwards:
+     * the planted wall and the blossom get their colour, the walls stay
+     * cream.
+     *
+     * Measured against the original: highlights pinned at 255 go from 1.61%
+     * of the frame to 1.80%, shadows at 0 from 0.53% to 1.65%. The second
+     * number is the foliage in shadow, which was already almost black.
+     */
+    grade: 'colorbalance=rh=-0.10:bh=0.10:rm=-0.06:bm=0.06,eq=saturation=1.6:contrast=1.06',
+  },
   { id: 'studio-portrait', file: 'interiors/studio-portrait.png', kind: 'ai_concept' },
   { id: 'pedicure-wide', file: 'interiors/pedicure-wide.png', kind: 'ai_concept' },
   { id: 'care-still-life', file: 'interiors/care-still-life.png', kind: 'ai_concept' },
@@ -102,14 +122,18 @@ for (const photo of PHOTOS) {
     // -2 keeps the aspect ratio and rounds to an even number, which the
     // yuv420p chroma subsampling below requires.
     const scale = `scale=${width}:-2:flags=lanczos`;
-    ff(['-i', src, '-vf', scale, '-c:v', 'libaom-av1', '-still-picture', '1', '-cpu-used', '6', '-crf', '32',
+    // Grade first, then resample: colour work on the full-size pixels, not
+    // on whatever survived the downscale.
+    const vf = photo.grade ? `${photo.grade},${scale}` : scale;
+    ff(['-i', src, '-vf', vf, '-c:v', 'libaom-av1', '-still-picture', '1', '-cpu-used', '6', '-crf', '32',
       '-pix_fmt', 'yuv420p', join(OUT, 'photo', `${photo.id}-${width}.avif`)]);
-    ff(['-i', src, '-vf', scale, '-c:v', 'libwebp', '-quality', '80', '-compression_level', '6',
+    ff(['-i', src, '-vf', vf, '-c:v', 'libwebp', '-quality', '80', '-compression_level', '6',
       join(OUT, 'photo', `${photo.id}-${width}.webp`)]);
   }
   // One JPEG at full width: the fallback for a browser that has neither, and
   // the file an <img src> can point at without a <picture> wrapper.
-  ff(['-i', src, '-c:v', 'mjpeg', '-q:v', '4', '-pix_fmt', 'yuvj420p', join(OUT, 'photo', `${photo.id}.jpg`)]);
+  ff(['-i', src, ...(photo.grade ? ['-vf', photo.grade] : []),
+    '-c:v', 'mjpeg', '-q:v', '4', '-pix_fmt', 'yuvj420p', join(OUT, 'photo', `${photo.id}.jpg`)]);
 
   /*
    * A content fingerprint, carried into the URL as `?v=`.
@@ -121,7 +145,18 @@ for (const photo of PHOTOS) {
    * doing exactly what it was told. The fingerprint makes a changed picture a
    * different URL, which is the only thing `immutable` accepts as news.
    */
-  const version = createHash('sha256').update(readFileSync(src)).digest('hex').slice(0, 8);
+  /*
+   * The grade is part of the fingerprint, not just the file.
+   *
+   * Otherwise changing only the grade leaves the URL identical, and these
+   * files are served `immutable` — every browser that already has one would
+   * keep the ungraded picture for good.
+   */
+  const version = createHash('sha256')
+    .update(readFileSync(src))
+    .update(photo.grade ?? '')
+    .digest('hex')
+    .slice(0, 8);
   manifest.photo[photo.id] = { width: w, height: h, widths, kind: photo.kind, v: version };
   console.log(`photo ${photo.id} ${w}x${h} -> ${widths.length} widths`);
 }
